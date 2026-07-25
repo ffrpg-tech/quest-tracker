@@ -9,6 +9,16 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+### Added
+
+- Item names in the inventory, results, and shortfall summary now link out to their buddy.farm item page.
+- A FAQ entry about hard-refreshing when a new feature or data update isn't showing up, since the browser or a CDN in between can serve a stale cache.
+
+### Changed
+
+- The questline picker's status, eligibility, and main-quest filters are now compact icons instead of text pills, and the expired-season filter is relabeled Unavailable to match the UNAVAILABLE badge it controls.
+- Completed questlines are now hidden from the picker by default — toggle the Done icon back on to see them.
+
 ## [0.2.0] - 2026-07-21
 
 ### Added
