@@ -17,6 +17,8 @@ the page parses this file directly, so an entry added here is what users see.
 - Quest-to-quest prerequisites are now checked too — a quest that depends on progress in another questline shows LOCKED with a "Complete X first" explanation until that prerequisite is actually done.
 - A "Player stats" panel for viewing and hand-editing your pasted skill/Tower/NPC levels, alongside a matching paste tab in the Import dialog.
 - Items that can't be sent via in-game mail are flagged with a "CAN'T MAIL" badge, so shortfall planning accounts for items you'll have to source yourself.
+- Main-story questlines get a star in the picker, plus a "Main quest" filter pill alongside the existing status/eligibility filters, to narrow the list to just the main story.
+- The Shortfall summary can now be filtered to just mailable or just not-mailable items.
 
 ## [0.1.5] - 2026-07-19
 
