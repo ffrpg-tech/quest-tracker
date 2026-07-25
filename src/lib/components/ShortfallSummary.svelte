@@ -3,6 +3,7 @@
 	import { matchesQuery } from '$lib/ui/matchesQuery';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
+	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
 	import type { QuestlineDiffResult, QueueItemShortfall } from '$lib/quest/calc/diff';
 	import ItemIcon from './ItemIcon.svelte';
 
@@ -111,7 +112,9 @@
 							<li class="border-b border-gray-100 py-1 dark:border-gray-700">
 								<div class="flex items-center gap-1.5 font-medium text-gray-900 dark:text-gray-100">
 									<ItemIcon name={s.item} />
-									{s.item}
+									<a href={buddyFarmItemUrl(s.item)} target="_blank" rel="noopener noreferrer" class="hover:underline"
+										>{s.item}</a
+									>
 									{#if s.capped}
 										<button
 											type="button"

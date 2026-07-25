@@ -3,6 +3,7 @@
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { matchesQuery } from '$lib/ui/matchesQuery';
 	import type { InventoryEntry } from '$lib/quest/types';
+	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
 	import ItemIcon from './ItemIcon.svelte';
 
 	let {
@@ -114,9 +115,12 @@
 						<td class="p-2">
 							<div class="flex items-center gap-1.5">
 								<ItemIcon name={entry.item} />
-								{entry.item}{#if entry.maxed}<span class="text-red-600 dark:text-red-400"
-										> (MAX)</span
-									>{/if}
+								<a
+									href={buddyFarmItemUrl(entry.item)}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="hover:underline">{entry.item}</a
+								>{#if entry.maxed}<span class="text-red-600 dark:text-red-400"> (MAX)</span>{/if}
 							</div>
 						</td>
 						<td class="p-2">

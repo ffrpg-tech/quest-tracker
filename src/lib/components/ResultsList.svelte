@@ -5,6 +5,7 @@
 	import { statusTextColorClass } from '$lib/ui/statusColor';
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
+	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
 	import ItemIcon from './ItemIcon.svelte';
 
 	let {
@@ -127,7 +128,9 @@
 			<li>
 				<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
 					<ItemIcon name={s.item} />
-					{s.item}</span
+					<a href={buddyFarmItemUrl(s.item)} target="_blank" rel="noopener noreferrer" class="hover:underline"
+						>{s.item}</a
+					></span
 				>: need
 				<span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>, have
 				<span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
