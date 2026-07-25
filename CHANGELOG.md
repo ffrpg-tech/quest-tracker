@@ -9,6 +9,8 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-07-25
+
 ### Added
 
 - Item names in the inventory, results, and shortfall summary now link out to their buddy.farm item page.
