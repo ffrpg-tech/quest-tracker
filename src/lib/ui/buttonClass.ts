@@ -26,10 +26,18 @@ export function buttonClass(
 				? `${base} rounded-full border border-red-600 bg-red-600 px-2.5 py-1 text-white hover:bg-red-700 active:bg-red-800`
 				: `${base} rounded-full border border-gray-300 px-2.5 py-1 text-gray-600 hover:bg-gray-100 active:bg-gray-200 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:active:bg-gray-700`;
 		case 'icon':
-			return `${base} rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 dark:active:bg-gray-700 disabled:opacity-30 disabled:hover:bg-transparent`;
+			// `active` here also covers icon-as-checkbox toggles (e.g. the questline
+			// picker's filter icons), not just the plain one-shot icon buttons this
+			// variant started as — hence the filled state below.
+			return active
+				? `${base} rounded bg-emerald-600 p-1.5 text-white hover:bg-emerald-700 active:bg-emerald-800`
+				: `${base} rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-800 active:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100 dark:active:bg-gray-700 disabled:opacity-30 disabled:hover:bg-transparent`;
 		case 'icon-danger':
 			// Destructive/clearing actions (remove item, clear inventory, clear a search or paste field) get a consistent red tint instead of the neutral icon color, so their intent reads at a glance.
-			return `${base} rounded p-1.5 text-red-500 hover:bg-red-50 hover:text-red-700 active:bg-red-100 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300 dark:active:bg-red-900 disabled:opacity-30 disabled:hover:bg-transparent`;
+			// `active` covers the same toggle case as 'icon' above, for danger-toned toggles (e.g. "show unavailable").
+			return active
+				? `${base} rounded bg-red-600 p-1.5 text-white hover:bg-red-700 active:bg-red-800`
+				: `${base} rounded p-1.5 text-red-500 hover:bg-red-50 hover:text-red-700 active:bg-red-100 dark:text-red-400 dark:hover:bg-red-950 dark:hover:text-red-300 dark:active:bg-red-900 disabled:opacity-30 disabled:hover:bg-transparent`;
 		case 'link':
 			return `${base} text-xs text-emerald-600 hover:text-emerald-700 hover:underline active:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300`;
 		default:

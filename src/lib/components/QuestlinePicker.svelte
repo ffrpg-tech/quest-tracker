@@ -1,5 +1,18 @@
 <script lang="ts">
-	import { Upload, GripVertical, ChevronUp, ChevronDown, X, Star } from '@lucide/svelte';
+	import {
+		Upload,
+		GripVertical,
+		ChevronUp,
+		ChevronDown,
+		X,
+		Star,
+		CircleDashed,
+		CircleDot,
+		CircleCheck,
+		Lock,
+		LockOpen,
+		CalendarOff
+	} from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { matchesQuery } from '$lib/ui/matchesQuery';
 	import { retryQuestlines, getQuestlinesState } from '$lib/quest/storage/questlinesStore.svelte';
@@ -111,10 +124,22 @@
 
 	let questlineQuery = $state('');
 	type QuestlineStatusFilter = 'not-started' | 'ongoing' | 'done';
-	// Checkbox-style multi-select, all three checked by default (no filtering).
+	// Checkbox-style multi-select. "Done" starts unchecked so finished questlines
+	// don't clutter the list by default — opt in via the icon to see them again.
 	let questlineStatusFilters = $state<Set<QuestlineStatusFilter>>(
-		new Set(['not-started', 'ongoing', 'done'])
+		new Set(['not-started', 'ongoing'])
 	);
+
+	const statusFilterIcon = {
+		'not-started': CircleDashed,
+		ongoing: CircleDot,
+		done: CircleCheck
+	} as const;
+
+	const eligibilityFilterIcon = {
+		eligible: LockOpen,
+		locked: Lock
+	} as const;
 
 	const questlinesState = getQuestlinesState();
 	const dataLastUpdatedLabel = $derived(
@@ -268,28 +293,34 @@
 	     any combination can be active at once, e.g. "Not started" + "Locked" together. -->
 	<div class="flex flex-wrap items-center gap-1.5 text-xs" role="group" aria-label="Filter by status">
 		{#each [['not-started', 'Not started'], ['ongoing', 'Ongoing'], ['done', 'Done']] as [value, label] (value)}
+			{@const Icon = statusFilterIcon[value as QuestlineStatusFilter]}
 			<button
 				role="checkbox"
 				onclick={() =>
 					(questlineStatusFilters = toggleInSet(questlineStatusFilters, value as QuestlineStatusFilter))}
-				class={buttonClass('pill', questlineStatusFilters.has(value as QuestlineStatusFilter))}
+				title={label}
+				aria-label={label}
+				class={buttonClass('icon', questlineStatusFilters.has(value as QuestlineStatusFilter))}
 				aria-checked={questlineStatusFilters.has(value as QuestlineStatusFilter)}
 			>
-				{label}
+				<Icon size={14} />
 			</button>
 		{/each}
 		{#if hasEligibilityData}
 			<span class="mx-0.5 h-4 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></span>
 			<span role="group" aria-label="Filter by eligibility" class="contents">
 				{#each [['eligible', 'Eligible'], ['locked', 'Locked']] as [value, label] (value)}
+					{@const Icon = eligibilityFilterIcon[value as EligibilityFilter]}
 					<button
 						role="checkbox"
 						onclick={() =>
 							(eligibilityFilters = toggleInSet(eligibilityFilters, value as EligibilityFilter))}
-						class={buttonClass('pill', eligibilityFilters.has(value as EligibilityFilter))}
+						title={label}
+						aria-label={label}
+						class={buttonClass('icon', eligibilityFilters.has(value as EligibilityFilter))}
 						aria-checked={eligibilityFilters.has(value as EligibilityFilter)}
 					>
-						{label}
+						<Icon size={14} />
 					</button>
 				{/each}
 			</span>
@@ -297,22 +328,24 @@
 			<button
 				role="checkbox"
 				onclick={() => (showUnavailable = !showUnavailable)}
-				title="Expired-seasonal quests, hidden by default"
-				class={buttonClass('pill-danger', showUnavailable)}
+				title="Unavailable — expired-seasonal quests, hidden by default"
+				aria-label="Unavailable"
+				class={buttonClass('icon-danger', showUnavailable)}
 				aria-checked={showUnavailable}
 			>
-				Show expired-season
+				<CalendarOff size={14} />
 			</button>
 		{/if}
 		<span class="mx-0.5 h-4 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></span>
 		<button
 			role="checkbox"
 			onclick={() => (mainQuestOnly = !mainQuestOnly)}
-			title="Only show main-story questlines"
-			class={buttonClass('pill', mainQuestOnly)}
+			title="Main quest — only show main-story questlines"
+			aria-label="Main quest"
+			class={buttonClass('icon', mainQuestOnly)}
 			aria-checked={mainQuestOnly}
 		>
-			Main quest
+			<Star size={14} class={mainQuestOnly ? 'fill-amber-400 text-amber-400' : ''} />
 		</button>
 	</div>
 
