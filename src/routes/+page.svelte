@@ -124,6 +124,10 @@
 		new Map(inventory.filter((e) => e.maxed).map((e) => [e.item, e.qty]))
 	);
 
+	// Same underlying "MAX ON HAND" flag as inventoryCaps, just as a Set for
+	// cheap membership checks in the results/shortfall UI's MAXED badge.
+	const maxedItems = $derived(new Set(inventoryCaps.keys()));
+
 	// ---------- Questline queue ----------
 
 	let selectedQuestlineNames = $state<string[]>([]);
@@ -413,9 +417,9 @@
 			/>
 		</section>
 
-		<ShortfallSummary {diffResults} {shortfallSummary} />
+		<ShortfallSummary {diffResults} {shortfallSummary} {maxedItems} />
 
-		<ResultsList {diffResults} {eligibilityByQuestline} onToggleCompleted={toggleCompleted} />
+		<ResultsList {diffResults} {eligibilityByQuestline} {maxedItems} onToggleCompleted={toggleCompleted} />
 	</main>
 
 	<SiteFooter />

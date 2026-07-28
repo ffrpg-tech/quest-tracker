@@ -13,6 +13,8 @@ export interface QuestDiffResult {
 	questName: string;
 	seq: number;
 	shortfalls: ItemShortfall[];
+	/** Every requirement for this quest, met or not (unlike `shortfalls`, which only holds the unmet subset) — lets the UI offer a "show all items" view instead of only ever showing what's missing. Empty for a `done` quest, same as `shortfalls`. */
+	requirements: ItemShortfall[];
 	ok: boolean;
 	/** True when the player has already marked this quest done — its requirements are neither checked against nor deducted from the simulated inventory, since that consumption already happened before this inventory snapshot was taken. */
 	done: boolean;
@@ -76,6 +78,7 @@ function walkQuestline(
 				questName: q.name,
 				seq: q.seq,
 				shortfalls: [],
+				requirements: [],
 				ok: true,
 				done: true
 			});
@@ -83,15 +86,18 @@ function walkQuestline(
 		}
 
 		const shortfalls: ItemShortfall[] = [];
+		const requirements: ItemShortfall[] = [];
 		let ok = true;
 
 		for (const req of q.requirements) {
 			const have = inv.get(req.item) ?? 0;
+			const short = Math.max(0, req.qty - have);
+			const cap = caps.get(req.item);
+			const capped = cap !== undefined && req.qty > cap ? true : undefined;
+			requirements.push({ item: req.item, needed: req.qty, have, short, capped });
+
 			if (have < req.qty) {
 				ok = false;
-				const short = req.qty - have;
-				const cap = caps.get(req.item);
-				const capped = cap !== undefined && req.qty > cap ? true : undefined;
 				shortfalls.push({ item: req.item, needed: req.qty, have, short, capped });
 
 				const existing = totalShortfallMap.get(req.item);
@@ -121,7 +127,7 @@ function walkQuestline(
 			inv.set(req.item, Math.max(0, have - req.qty));
 		}
 
-		quests.push({ questName: q.name, seq: q.seq, shortfalls, ok, done: false });
+		quests.push({ questName: q.name, seq: q.seq, shortfalls, requirements, ok, done: false });
 		if (!ok && wallPointIndex === null) wallPointIndex = i;
 	}
 

@@ -9,10 +9,13 @@
 
 	let {
 		diffResults,
-		shortfallSummary
+		shortfallSummary,
+		maxedItems
 	}: {
 		diffResults: QuestlineDiffResult[];
 		shortfallSummary: QueueItemShortfall[];
+		/** Items the player's current pasted inventory reports as "MAX ON HAND" — surfaced as a MAXED badge so a still-short item is flagged as not worth farming further right now. */
+		maxedItems: Set<string>;
 	} = $props();
 
 	let shortfallSearch = $state('');
@@ -53,6 +56,9 @@
 
 	const CAPPED_EXPLANATION =
 		'A single requirement for this item exceeds your known storage cap — no amount of farming clears this until the cap is raised or spent down elsewhere.';
+
+	const MAXED_EXPLANATION =
+		"Your pasted inventory shows this item at \"MAX ON HAND\" right now — farming more of it won't add anything until some is spent, so focus on a different item instead.";
 </script>
 
 {#if shortfallSummary.length > 0}
@@ -123,6 +129,13 @@
 											aria-expanded={expandedCappedItem === s.item}
 											class="cursor-pointer rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
 											>CAPPED</button
+										>
+									{/if}
+									{#if maxedItems.has(s.item)}
+										<span
+											title={MAXED_EXPLANATION}
+											class="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+											>MAXED</span
 										>
 									{/if}
 								</div>

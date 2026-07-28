@@ -1,22 +1,31 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
-	import type { QuestDiffResult, QuestlineDiffResult } from '$lib/quest/calc/diff';
+	import type { ItemShortfall, QuestDiffResult, QuestlineDiffResult } from '$lib/quest/calc/diff';
 	import { isUnavailable, type EligibilityGap, type QuestlineEligibility } from '$lib/quest/calc/eligibility';
 	import { statusTextColorClass } from '$lib/ui/statusColor';
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
+	import { buttonClass } from '$lib/ui/buttonClass';
 	import ItemIcon from './ItemIcon.svelte';
 
 	let {
 		diffResults,
 		eligibilityByQuestline,
+		maxedItems,
 		onToggleCompleted
 	}: {
 		diffResults: QuestlineDiffResult[];
 		eligibilityByQuestline: Map<string, QuestlineEligibility>;
+		/** Items the player's current pasted inventory reports as "MAX ON HAND" — surfaced as a MAXED badge so the player knows farming more of it right now is wasted, even on a row that's still short. */
+		maxedItems: Set<string>;
 		onToggleCompleted: (questlineName: string, questName: string) => void;
 	} = $props();
+
+	// Off by default — shortfalls-only is the existing/expected view; showing
+	// every requirement (including already-satisfied ones) is opt-in so a
+	// MAXED item can be spotted even where it isn't blocking anything.
+	let showAllItems = $state(false);
 
 	// Eligibility is a second, independent "wall" from the material shortfalls
 	// diffResults already carries — a locked quest still gets walked/deducted
@@ -61,6 +70,9 @@
 
 	const CAPPED_EXPLANATION =
 		'This requirement exceeds your known storage cap for this item — no amount of farming clears this until the cap is raised or spent down elsewhere.';
+
+	const MAXED_EXPLANATION =
+		"Your pasted inventory shows this item at \"MAX ON HAND\" right now — farming more of it won't add anything until some is spent, so focus on a different item instead.";
 </script>
 
 {#snippet statusLabel(q: QuestDiffResult, isWallPoint: boolean, small: boolean, gaps: EligibilityGap[])}
@@ -121,10 +133,11 @@
 	</ul>
 {/snippet}
 
-{#snippet shortfallList(q: QuestDiffResult)}
+{#snippet itemList(q: QuestDiffResult, items: ItemShortfall[])}
 	<ul class="space-y-0.5 text-xs">
-		{#each q.shortfalls as s (s.item)}
+		{#each items as s (s.item)}
 			{@const cappedKey = q.questName + ':' + s.item}
+			{@const maxed = maxedItems.has(s.item)}
 			<li>
 				<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
 					<ItemIcon name={s.item} />
@@ -134,8 +147,12 @@
 				>: need
 				<span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>, have
 				<span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
-				(short
-				<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span>)
+				{#if s.short > 0}
+					(short
+					<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span>)
+				{:else}
+					<span class="font-medium {statusTextColorClass('good')}">(met)</span>
+				{/if}
 				{#if s.capped}
 					<button
 						type="button"
@@ -144,6 +161,13 @@
 						aria-expanded={expandedCapped === cappedKey}
 						class="ml-1 cursor-pointer rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
 						>CAPPED</button
+					>
+				{/if}
+				{#if maxed}
+					<span
+						title={MAXED_EXPLANATION}
+						class="ml-1 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+						>MAXED</span
 					>
 				{/if}
 				{#if s.capped && expandedCapped === cappedKey}
@@ -158,7 +182,17 @@
 
 {#if diffResults.length > 0}
 	<section class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-		<h2 class="mb-2 font-semibold">Results</h2>
+		<div class="mb-2 flex items-center justify-between gap-2">
+			<h2 class="font-semibold">Results</h2>
+			<button
+				type="button"
+				onclick={() => (showAllItems = !showAllItems)}
+				aria-pressed={showAllItems}
+				class={buttonClass('pill', showAllItems)}
+			>
+				Show all items
+			</button>
+		</div>
 		<ul class="divide-y divide-gray-100 dark:divide-gray-700">
 			{#each diffResults as diffResult, i (diffResult.questlineName)}
 				{@const block = effectiveBlock(diffResult)}
@@ -224,6 +258,7 @@
 								<tbody>
 									{#each diffResult.quests as q, qi (q.questName + qi)}
 										{@const gaps = questGaps(diffResult.questlineName, qi)}
+										{@const items = showAllItems ? q.requirements : q.shortfalls}
 										<tr
 											class="border-t border-gray-100 dark:border-gray-700"
 											class:bg-red-50={qi === block?.qi}
@@ -248,8 +283,8 @@
 												{#if gaps.length > 0}
 													{@render eligibilityGapList(gaps)}
 												{/if}
-												{#if q.shortfalls.length > 0}
-													{@render shortfallList(q)}
+												{#if items.length > 0}
+													{@render itemList(q, items)}
 												{/if}
 											</td>
 										</tr>
@@ -263,6 +298,7 @@
 						>
 							{#each diffResult.quests as q, qi (q.questName + qi)}
 								{@const gaps = questGaps(diffResult.questlineName, qi)}
+								{@const items = showAllItems ? q.requirements : q.shortfalls}
 								<div
 									class="flex flex-col gap-1.5 p-2"
 									class:bg-red-50={qi === block?.qi}
@@ -288,9 +324,9 @@
 											{@render eligibilityGapList(gaps)}
 										</div>
 									{/if}
-									{#if q.shortfalls.length > 0}
+									{#if items.length > 0}
 										<div class="pl-6">
-											{@render shortfallList(q)}
+											{@render itemList(q, items)}
 										</div>
 									{/if}
 								</div>
