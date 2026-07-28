@@ -9,6 +9,17 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-07-28
+
+### Added
+
+- Results gained a "Show all items" toggle to list every requirement per quest, not just shortfalls, so a fully satisfied item is still visible.
+- A MAXED badge now appears next to items in Results and the Shortfall summary when your pasted inventory reports them at "MAX ON HAND", so it's clear when farming more of that item won't help right now.
+
+### Fixed
+
+- Fixed parsing of completed quests whose requester has no name (e.g. Curious Postal Note), which was silently dropped from the Completed paste.
+
 ## [0.2.1] - 2026-07-25
 
 ### Added
