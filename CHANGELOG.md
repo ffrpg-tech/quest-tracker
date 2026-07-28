@@ -15,6 +15,8 @@ the page parses this file directly, so an entry added here is what users see.
 
 - Results gained a "Show all items" toggle to list every requirement per quest, not just shortfalls, so a fully satisfied item is still visible.
 - A MAXED badge now appears next to items in Results and the Shortfall summary when your pasted inventory reports them at "MAX ON HAND", so it's clear when farming more of that item won't help right now.
+- A RUNS DRY HERE marker pinpoints the exact quest where a maxed item's stockpile actually stops being enough, in both Results and the Shortfall summary.
+- The Shortfall summary gained a "Maxed only" filter to narrow a long shortfall list down to just the items currently at your storage cap.
 
 ### Fixed
 
