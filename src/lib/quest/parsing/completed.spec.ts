@@ -77,6 +77,27 @@ check`;
 		expect(parseCompletedQuestNames(text)).toEqual(['You Spin Me Right Round, Buddy, Right Round']);
 	});
 
+	it('parses an entry whose requester has no name (bare "Request from" line)', () => {
+		// Real-world case: "Curious Postal Note" quests are requested by no one
+		// in particular — the line is literally "Request from" with nothing
+		// after it, not "Request from <name>".
+		const text = `Completed Requests (2)
+
+Curious Postal Note II
+Request from
+Completed on 2025-10-22 01:34:44
+34,742 players (3%) have completed
+check
+
+Curious Postal Note I
+Request from
+Completed on 2025-10-22 01:34:38
+35,311 players (3.04%) have completed
+check`;
+
+		expect(parseCompletedQuestNames(text)).toEqual(['Curious Postal Note II', 'Curious Postal Note I']);
+	});
+
 	it('throws when the "Completed Requests" anchor is missing', () => {
 		expect(() => parseCompletedQuestNames('nothing relevant here')).toThrow(CompletedQuestParseError);
 	});

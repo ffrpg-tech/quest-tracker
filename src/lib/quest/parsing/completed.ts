@@ -8,7 +8,7 @@ import { parseCommaNumber, parseFromAnchor } from './pasteParsing';
 export class CompletedQuestParseError extends Error {}
 
 const ANCHOR = 'Completed Requests';
-const REQUEST_FROM_PREFIX = 'Request from ';
+const REQUEST_FROM_PREFIX = 'Request from';
 
 /**
  * A quest title normally occupies one line, but long titles wrap onto a
@@ -16,6 +16,10 @@ const REQUEST_FROM_PREFIX = 'Request from ';
  * Lemons Back!"). The "Request from ..." line is a reliable anchor right
  * after the title in every entry, so fold every line before it into the name
  * instead of assuming the title is always exactly one line.
+ *
+ * Some in-game requesters have no name at all (e.g. "Curious Postal Note"),
+ * so the anchor line can be the bare word "Request from" with nothing after
+ * it — matched without a trailing space so that case isn't missed.
  *
  * A chunk with no "Request from ..." line at all isn't a completed-quest
  * entry — the page has no explicit end marker for this section, so trailing
