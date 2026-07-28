@@ -1,7 +1,7 @@
 {
 	"name": "farm-rpg-quest-tracker",
 	"private": true,
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"type": "module",
 	"scripts": {
 		"seed-data": "node scripts/seed-data.mjs",
