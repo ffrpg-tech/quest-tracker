@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
-	import type { ItemShortfall, QuestDiffResult, QuestlineDiffResult } from '$lib/quest/calc/diff';
+	import type {
+		ItemRunsDryAt,
+		ItemShortfall,
+		QuestDiffResult,
+		QuestlineDiffResult
+	} from '$lib/quest/calc/diff';
 	import { isUnavailable, type EligibilityGap, type QuestlineEligibility } from '$lib/quest/calc/eligibility';
 	import { statusTextColorClass } from '$lib/ui/statusColor';
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
@@ -13,12 +18,15 @@
 		diffResults,
 		eligibilityByQuestline,
 		maxedItems,
+		runsDryAt,
 		onToggleCompleted
 	}: {
 		diffResults: QuestlineDiffResult[];
 		eligibilityByQuestline: Map<string, QuestlineEligibility>;
 		/** Items the player's current pasted inventory reports as "MAX ON HAND" — surfaced as a MAXED badge so the player knows farming more of it right now is wasted, even on a row that's still short. */
 		maxedItems: Set<string>;
+		/** For each currently-maxed item, the exact (questline, quest) where its stockpile first runs out in queue order — surfaced as a RUNS DRY badge on that one row. */
+		runsDryAt: Map<string, ItemRunsDryAt>;
 		onToggleCompleted: (questlineName: string, questName: string) => void;
 	} = $props();
 
@@ -73,6 +81,14 @@
 
 	const MAXED_EXPLANATION =
 		"Your pasted inventory shows this item at \"MAX ON HAND\" right now — farming more of it won't add anything until some is spent, so focus on a different item instead.";
+
+	const RUNS_DRY_EXPLANATION =
+		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
+
+	function isRunsDryHere(item: string, questlineName: string, questName: string): boolean {
+		const loc = runsDryAt.get(item);
+		return loc !== undefined && loc.questlineName === questlineName && loc.questName === questName;
+	}
 </script>
 
 {#snippet statusLabel(q: QuestDiffResult, isWallPoint: boolean, small: boolean, gaps: EligibilityGap[])}
@@ -133,11 +149,12 @@
 	</ul>
 {/snippet}
 
-{#snippet itemList(q: QuestDiffResult, items: ItemShortfall[])}
+{#snippet itemList(q: QuestDiffResult, items: ItemShortfall[], questlineName: string)}
 	<ul class="space-y-0.5 text-xs">
 		{#each items as s (s.item)}
 			{@const cappedKey = q.questName + ':' + s.item}
 			{@const maxed = maxedItems.has(s.item)}
+			{@const runsDryHere = isRunsDryHere(s.item, questlineName, q.questName)}
 			<li>
 				<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
 					<ItemIcon name={s.item} />
@@ -168,6 +185,13 @@
 						title={MAXED_EXPLANATION}
 						class="ml-1 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
 						>MAXED</span
+					>
+				{/if}
+				{#if runsDryHere}
+					<span
+						title={RUNS_DRY_EXPLANATION}
+						class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+						>RUNS DRY HERE</span
 					>
 				{/if}
 				{#if s.capped && expandedCapped === cappedKey}
@@ -284,7 +308,7 @@
 													{@render eligibilityGapList(gaps)}
 												{/if}
 												{#if items.length > 0}
-													{@render itemList(q, items)}
+													{@render itemList(q, items, diffResult.questlineName)}
 												{/if}
 											</td>
 										</tr>
@@ -326,7 +350,7 @@
 									{/if}
 									{#if items.length > 0}
 										<div class="pl-6">
-											{@render itemList(q, items)}
+											{@render itemList(q, items, diffResult.questlineName)}
 										</div>
 									{/if}
 								</div>

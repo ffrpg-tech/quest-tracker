@@ -222,3 +222,43 @@ export function aggregateQueueShortfalls(results: QuestlineDiffResult[]): QueueI
 
 	return Array.from(map.values()).sort((a, b) => b.short - a.short);
 }
+
+/** Where a given item's shortfall first appears in queue order — the exact quest where a stockpile that started out covering everything finally stops being enough. */
+export interface ItemRunsDryAt {
+	item: string;
+	questlineName: string;
+	questName: string;
+}
+
+/**
+ * For each item in `items` (typically the set currently maxed in the
+ * player's pasted inventory), finds the first quest — walking `results` in
+ * queue order, same order the shared inventory was actually consumed in —
+ * where that item goes short. Only meaningful for an item whose stockpile
+ * started out covering everything; an item that's already short from the
+ * first quest that needs it doesn't need this, since every row already
+ * shows the shortfall.
+ */
+export function findRunsDryPoints(
+	results: QuestlineDiffResult[],
+	items: Iterable<string>
+): Map<string, ItemRunsDryAt> {
+	const targets = new Set(items);
+	const found = new Map<string, ItemRunsDryAt>();
+
+	for (const result of results) {
+		for (const q of result.quests) {
+			for (const s of q.shortfalls) {
+				if (targets.has(s.item) && !found.has(s.item)) {
+					found.set(s.item, {
+						item: s.item,
+						questlineName: result.questlineName,
+						questName: q.questName
+					});
+				}
+			}
+		}
+	}
+
+	return found;
+}

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { aggregateQueueShortfalls, diffQuestline, diffQuestlineQueue } from './diff';
+import { aggregateQueueShortfalls, diffQuestline, diffQuestlineQueue, findRunsDryPoints } from './diff';
 import { questKey, type Questline } from '../types';
 
 const questline: Questline = {
@@ -207,5 +207,48 @@ describe('aggregateQueueShortfalls', () => {
 				]
 			}
 		]);
+	});
+
+	describe('findRunsDryPoints', () => {
+		const scarceItemQuestline = (name: string): Questline => ({
+			name,
+			questCount: 1,
+			quests: [
+				{
+					name: `${name} I`,
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Iron', qty: 10 }],
+					seq: 1
+				}
+			]
+		});
+
+		it('finds the first quest, in queue order, where a tracked item goes short', () => {
+			const a = scarceItemQuestline('Chain A');
+			const b = scarceItemQuestline('Chain B');
+			const results = diffQuestlineQueue([a, b], new Map([['Iron', 10]]));
+
+			const runsDryAt = findRunsDryPoints(results, ['Iron']);
+
+			expect(runsDryAt.get('Iron')).toEqual({
+				item: 'Iron',
+				questlineName: 'Chain B',
+				questName: 'Chain B I'
+			});
+		});
+
+		it('omits an item that never goes short across the whole queue', () => {
+			const a = scarceItemQuestline('Chain A');
+			const results = diffQuestlineQueue([a], new Map([['Iron', 999]]));
+
+			expect(findRunsDryPoints(results, ['Iron']).has('Iron')).toBe(false);
+		});
+
+		it('ignores items not in the tracked set even if they go short', () => {
+			const results = diffQuestlineQueue([questline], new Map([['Wood', 12]]));
+
+			expect(findRunsDryPoints(results, ['Iron']).has('Wood')).toBe(false);
+		});
 	});
 });

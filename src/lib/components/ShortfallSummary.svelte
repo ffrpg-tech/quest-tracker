@@ -4,18 +4,21 @@
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
-	import type { QuestlineDiffResult, QueueItemShortfall } from '$lib/quest/calc/diff';
+	import type { ItemRunsDryAt, QuestlineDiffResult, QueueItemShortfall } from '$lib/quest/calc/diff';
 	import ItemIcon from './ItemIcon.svelte';
 
 	let {
 		diffResults,
 		shortfallSummary,
-		maxedItems
+		maxedItems,
+		runsDryAt
 	}: {
 		diffResults: QuestlineDiffResult[];
 		shortfallSummary: QueueItemShortfall[];
 		/** Items the player's current pasted inventory reports as "MAX ON HAND" — surfaced as a MAXED badge so a still-short item is flagged as not worth farming further right now. */
 		maxedItems: Set<string>;
+		/** For each currently-maxed item, the exact (questline, quest) where its stockpile first runs out in queue order — surfaced as a RUNS DRY marker on that one entry below. */
+		runsDryAt: Map<string, ItemRunsDryAt>;
 	} = $props();
 
 	let shortfallSearch = $state('');
@@ -39,9 +42,16 @@
 		return mailFilters.has(canMail ? 'mailable' : 'not-mailable');
 	}
 
+	// Off by default (no narrowing) — an opt-in way to jump straight to items
+	// that are worth stopping farming for right now, in a long shortfall list.
+	let maxedOnly = $state(false);
+
 	const filteredShortfallSummary = $derived(
 		shortfallSummary.filter(
-			(s) => matchesQuery(s.item, shortfallSearch) && matchesMailFilter(s.item)
+			(s) =>
+				matchesQuery(s.item, shortfallSearch) &&
+				matchesMailFilter(s.item) &&
+				(!maxedOnly || maxedItems.has(s.item))
 		)
 	);
 
@@ -59,6 +69,14 @@
 
 	const MAXED_EXPLANATION =
 		"Your pasted inventory shows this item at \"MAX ON HAND\" right now — farming more of it won't add anything until some is spent, so focus on a different item instead.";
+
+	const RUNS_DRY_EXPLANATION =
+		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
+
+	function isRunsDryHere(item: string, questlineName: string, questName: string): boolean {
+		const loc = runsDryAt.get(item);
+		return loc !== undefined && loc.questlineName === questlineName && loc.questName === questName;
+	}
 </script>
 
 {#if shortfallSummary.length > 0}
@@ -105,6 +123,15 @@
 							{label}
 						</button>
 					{/each}
+					<button
+						role="checkbox"
+						onclick={() => (maxedOnly = !maxedOnly)}
+						class={buttonClass('pill', maxedOnly)}
+						aria-checked={maxedOnly}
+						title="Only show items currently at your known storage cap"
+					>
+						Maxed only
+					</button>
 				</div>
 				{#if filteredShortfallSummary.length === 0}
 					<p class="text-sm text-gray-500 dark:text-gray-400">
@@ -164,7 +191,16 @@
 											<ul class="space-y-0.5" class:pl-4={s.byQuestline.length > 1}>
 												{#each ql.byQuest as bq (bq.seq)}
 													<li class="flex justify-between text-gray-500 dark:text-gray-400">
-														<span>{bq.questName}</span>
+														<span class="inline-flex items-center gap-1">
+															{bq.questName}
+															{#if isRunsDryHere(s.item, ql.questlineName, bq.questName)}
+																<span
+																	title={RUNS_DRY_EXPLANATION}
+																	class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+																	>RUNS DRY HERE</span
+																>
+															{/if}
+														</span>
 														<span class="tabular-nums">−{bq.short}</span>
 													</li>
 												{/each}

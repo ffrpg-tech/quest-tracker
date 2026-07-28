@@ -18,6 +18,7 @@
 	import {
 		aggregateQueueShortfalls,
 		diffQuestlineQueue,
+		findRunsDryPoints,
 		type QuestlineDiffResult
 	} from '$lib/quest/calc/diff';
 	import { evaluateQuestlineEligibility, type QuestlineEligibility } from '$lib/quest/calc/eligibility';
@@ -253,6 +254,11 @@
 		diffResults.length > 0 ? aggregateQueueShortfalls(diffResults) : []
 	);
 
+	// Where each currently-maxed item's stockpile first actually runs out, in
+	// queue order — only computed for maxed items, since a non-maxed item's
+	// shortfall is already visible on every row it's short on.
+	const runsDryAt = $derived(findRunsDryPoints(diffResults, maxedItems));
+
 	// ---------- Player stats / eligibility ----------
 
 	// Null means "never pasted" — skill/NPC gaps (and the LOCKED badges they
@@ -417,9 +423,15 @@
 			/>
 		</section>
 
-		<ShortfallSummary {diffResults} {shortfallSummary} {maxedItems} />
+		<ShortfallSummary {diffResults} {shortfallSummary} {maxedItems} {runsDryAt} />
 
-		<ResultsList {diffResults} {eligibilityByQuestline} {maxedItems} onToggleCompleted={toggleCompleted} />
+		<ResultsList
+			{diffResults}
+			{eligibilityByQuestline}
+			{maxedItems}
+			{runsDryAt}
+			onToggleCompleted={toggleCompleted}
+		/>
 	</main>
 
 	<SiteFooter />
