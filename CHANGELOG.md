@@ -9,6 +9,12 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.3] - 2026-08-01
+
+### Added
+
+- Progress backup export/import now also includes your pasted player stats, alongside completed quests and the questline queue, so restoring a backup on another device (or after clearing browser data) no longer requires re-pasting your stats from the "My Profile" page.
+
 ## [0.2.2] - 2026-07-28
 
 ### Added
