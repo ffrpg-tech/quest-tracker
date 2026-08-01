@@ -25,7 +25,7 @@ export const faqItems = [
 	{
 		question: 'Does it save my progress?',
 		answer:
-			'Yes — your inventory, questline queue, and completed quests are saved to your browser\'s local storage automatically, and you can export/import a backup file from the "Progress backup" button.'
+			'Yes — your inventory, questline queue, completed quests, and pasted player stats are all saved to your browser\'s local storage automatically. The "Progress backup" button exports/imports everything except your inventory as a JSON file (questline queue, completed quests, and player stats).'
 	},
 	{
 		question: 'Does it account for level, prerequisite, or event-availability requirements?',

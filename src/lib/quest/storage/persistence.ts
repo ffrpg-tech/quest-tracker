@@ -168,6 +168,10 @@ export interface ProgressExport {
 	/** Questline queue, in order — retains *what and why* the player was working toward,
 	 * not just which quests are already done. Absent from v1 exports. */
 	queue?: string[];
+	/** Pasted player stats (level/skill values), included so a backup/restore cycle
+	 * doesn't silently drop them from their own separate localStorage key. Absent when
+	 * the player never pasted stats, or in exports predating this field. */
+	playerStats?: PlayerStats;
 }
 
 export interface ImportedProgress {
@@ -175,14 +179,22 @@ export interface ImportedProgress {
 	/** Null when the imported file predates queue export (v1) or omitted it — callers
 	 * should leave the current queue untouched rather than clobbering it with an empty one. */
 	queue: string[] | null;
+	/** Null when the imported file predates player stats export, omitted them (never
+	 * pasted), or failed validation — callers should leave current stats untouched. */
+	playerStats: PlayerStats | null;
 }
 
-export function exportProgress(completed: Set<string>, queue: string[]): string {
+export function exportProgress(
+	completed: Set<string>,
+	queue: string[],
+	playerStats: PlayerStats | null
+): string {
 	const payload: ProgressExport = {
 		version: EXPORT_VERSION,
 		exportedAt: new Date().toISOString(),
 		completed: Array.from(completed).sort(),
-		queue
+		queue,
+		...(playerStats && { playerStats })
 	};
 	return JSON.stringify(payload, null, 2);
 }
@@ -198,7 +210,8 @@ export function importProgress(text: string): ImportedProgress | null {
 			),
 			queue: Array.isArray(parsed.queue)
 				? parsed.queue.filter((v: unknown): v is string => typeof v === 'string')
-				: null
+				: null,
+			playerStats: isPlayerStats(parsed.playerStats) ? parsed.playerStats : null
 		};
 	} catch {
 		return null;

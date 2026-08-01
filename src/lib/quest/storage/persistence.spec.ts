@@ -1,14 +1,34 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { exportProgress, importProgress, loadCompleted, loadInventory } from './persistence';
+import type { PlayerStats } from '../types';
+
+const samplePlayerStats: PlayerStats = {
+	farming: 10,
+	fishing: 5,
+	crafting: 3,
+	exploring: 7,
+	tower: 1,
+	cooking: 2,
+	npcLevels: { Otis: 4 }
+};
 
 describe('exportProgress / importProgress', () => {
 	it('round-trips a completed set and queue through JSON', () => {
 		const completed = new Set(['Chain A::Quest I', 'Chain A::Quest II']);
 		const queue = ['Chain B', 'Chain A'];
-		const json = exportProgress(completed, queue);
+		const json = exportProgress(completed, queue, null);
 		const restored = importProgress(json);
 		expect(restored?.completed).toEqual(completed);
 		expect(restored?.queue).toEqual(queue);
+		expect(restored?.playerStats).toBeNull();
+	});
+
+	it('round-trips player stats through JSON when present', () => {
+		const completed = new Set(['Chain A::Quest I']);
+		const queue = ['Chain A'];
+		const json = exportProgress(completed, queue, samplePlayerStats);
+		const restored = importProgress(json);
+		expect(restored?.playerStats).toEqual(samplePlayerStats);
 	});
 
 	it('returns queue: null when importing a v1 export that predates the queue field', () => {
@@ -21,6 +41,7 @@ describe('exportProgress / importProgress', () => {
 		const restored = importProgress(v1Json);
 		expect(restored?.completed).toEqual(completed);
 		expect(restored?.queue).toBeNull();
+		expect(restored?.playerStats).toBeNull();
 	});
 
 	it('returns null for unparseable JSON instead of throwing', () => {

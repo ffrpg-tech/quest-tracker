@@ -2,8 +2,9 @@
 	import { Save, Upload, X } from '@lucide/svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { buttonClass } from '$lib/ui/buttonClass';
-	import { exportProgress, importProgress } from '$lib/quest/storage/persistence';
+	import { exportProgress, importProgress, savePlayerStats } from '$lib/quest/storage/persistence';
 	import { trapFocus } from '$lib/ui/trapFocus';
+	import type { PlayerStats } from '$lib/quest/types';
 
 	let {
 		open = $bindable(),
@@ -11,18 +12,22 @@
 		inventoryBaseline,
 		staleKeys,
 		selectedQuestlineNames = $bindable(),
-		onCompletedChanged
+		playerStats = $bindable(),
+		onCompletedChanged,
+		onStorageWriteFailed
 	}: {
 		open: boolean;
 		completed: SvelteSet<string>;
 		inventoryBaseline: SvelteSet<string>;
 		staleKeys: SvelteSet<string>;
 		selectedQuestlineNames: string[];
+		playerStats: PlayerStats | null;
 		onCompletedChanged: () => void;
+		onStorageWriteFailed: () => void;
 	} = $props();
 
 	function handleExport() {
-		const json = exportProgress(completed, selectedQuestlineNames);
+		const json = exportProgress(completed, selectedQuestlineNames, playerStats);
 		const blob = new Blob([json], { type: 'application/json' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
@@ -48,10 +53,11 @@
 			importMessage = "That file doesn't look like a progress export.";
 			return;
 		}
+		const statsNote = imported.playerStats ? ' and your player stats' : '';
 		if (
 			completed.size === 0 ||
 			confirm(
-				`Replace your current progress (${completed.size} quests marked done) with the imported file (${imported.completed.size} quests)?`
+				`Replace your current progress (${completed.size} quests marked done) with the imported file (${imported.completed.size} quests${statsNote})?`
 			)
 		) {
 			completed.clear();
@@ -60,9 +66,12 @@
 			for (const key of imported.completed) if (!inventoryBaseline.has(key)) staleKeys.add(key);
 			onCompletedChanged();
 			if (imported.queue) selectedQuestlineNames = imported.queue;
-			importMessage = imported.queue
-				? `Imported ${imported.completed.size} completed quests and a ${imported.queue.length}-questline queue.`
-				: `Imported ${imported.completed.size} completed quests.`;
+			if (imported.playerStats) {
+				playerStats = imported.playerStats;
+				if (!savePlayerStats(imported.playerStats)) onStorageWriteFailed();
+			}
+			const queueNote = imported.queue ? ` and a ${imported.queue.length}-questline queue` : '';
+			importMessage = `Imported ${imported.completed.size} completed quests${queueNote}${statsNote}.`;
 		}
 		(e.target as HTMLInputElement).value = '';
 	}
@@ -89,9 +98,9 @@
 			</div>
 
 			<p class="mb-4 text-sm text-gray-600 dark:text-gray-300">
-				This backs up which quests you've marked done and your questline queue as a JSON file —
-				not your inventory. Export before clearing browser data, or import a file to restore
-				progress on another device.
+				This backs up which quests you've marked done, your questline queue, and your pasted
+				player stats as a JSON file — not your inventory. Export before clearing browser data, or
+				import a file to restore progress on another device.
 			</p>
 
 			<div class="flex gap-2">

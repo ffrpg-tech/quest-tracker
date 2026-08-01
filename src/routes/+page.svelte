@@ -443,7 +443,9 @@
 	{inventoryBaseline}
 	{staleKeys}
 	bind:selectedQuestlineNames
+	bind:playerStats
 	{onCompletedChanged}
+	onStorageWriteFailed={() => (storageUnavailable = true)}
 />
 
 <ImportModal
