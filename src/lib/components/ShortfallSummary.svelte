@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { ChevronRight, Search } from '@lucide/svelte';
+	import { ChevronRight, Search, ArrowDownWideNarrow, ArrowUpNarrowWide } from '@lucide/svelte';
 	import { matchesQuery } from '$lib/ui/matchesQuery';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
+	import { formatNumber } from '$lib/ui/formatNumber';
 	import type { ItemRunsDryAt, QuestlineDiffResult, QueueItemShortfall } from '$lib/quest/calc/diff';
 	import ItemIcon from './ItemIcon.svelte';
 
@@ -46,13 +47,20 @@
 	// that are worth stopping farming for right now, in a long shortfall list.
 	let maxedOnly = $state(false);
 
+	// Already sorted descending by `short` as computed (aggregateQueueShortfalls) —
+	// this only flips that order when the player wants ascending instead.
+	type SortDirection = 'desc' | 'asc';
+	let sortDirection = $state<SortDirection>('desc');
+
 	const filteredShortfallSummary = $derived(
-		shortfallSummary.filter(
-			(s) =>
-				matchesQuery(s.item, shortfallSearch) &&
-				matchesMailFilter(s.item) &&
-				(!maxedOnly || maxedItems.has(s.item))
-		)
+		shortfallSummary
+			.filter(
+				(s) =>
+					matchesQuery(s.item, shortfallSearch) &&
+					matchesMailFilter(s.item) &&
+					(!maxedOnly || maxedItems.has(s.item))
+			)
+			.sort((a, b) => (sortDirection === 'desc' ? b.short - a.short : a.short - b.short))
 	);
 
 	// CAPPED's `title` tooltip never reaches touch devices — tapping the badge
@@ -111,6 +119,24 @@
 						aria-label="Search items"
 						class="w-full rounded border border-gray-300 bg-white py-1.5 pl-8 pr-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
 					/>
+				</div>
+				<div class="flex flex-wrap items-center gap-1.5 text-xs">
+					<button
+						type="button"
+						onclick={() => (sortDirection = sortDirection === 'desc' ? 'asc' : 'desc')}
+						class={buttonClass('pill', false)}
+						title={sortDirection === 'desc'
+							? 'Sorted by most short first — click to sort least short first'
+							: 'Sorted by least short first — click to sort most short first'}
+					>
+						{#if sortDirection === 'desc'}
+							<ArrowDownWideNarrow size={12} class="-mt-0.5 inline" />
+							Most short
+						{:else}
+							<ArrowUpNarrowWide size={12} class="-mt-0.5 inline" />
+							Least short
+						{/if}
+					</button>
 				</div>
 				<div class="flex flex-wrap items-center gap-1.5 text-xs" role="group" aria-label="Filter by mailability">
 					{#each [['mailable', 'Mailable'], ['not-mailable', 'Not mailable']] as [value, label] (value)}
@@ -173,7 +199,9 @@
 									class="mt-1 flex justify-between border-l border-gray-200 pl-2 text-xs font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
 								>
 									<span>Total</span>
-									<span class="tabular-nums text-red-600 dark:text-red-400">−{s.short}</span>
+									<span class="tabular-nums text-red-600 dark:text-red-400"
+										>−{formatNumber(s.short)}</span
+									>
 								</div>
 								<ul
 									class="mt-1 space-y-1 border-l border-gray-200 pl-2 text-xs dark:border-gray-700"
@@ -184,7 +212,7 @@
 												<div class="flex justify-between text-gray-700 dark:text-gray-300">
 													<span class="font-medium">{ql.questlineName} subtotal</span>
 													<span class="tabular-nums text-amber-600 dark:text-amber-400"
-														>−{ql.short}</span
+														>−{formatNumber(ql.short)}</span
 													>
 												</div>
 											{/if}
@@ -201,7 +229,7 @@
 																>
 															{/if}
 														</span>
-														<span class="tabular-nums">−{bq.short}</span>
+														<span class="tabular-nums">−{formatNumber(bq.short)}</span>
 													</li>
 												{/each}
 											</ul>
