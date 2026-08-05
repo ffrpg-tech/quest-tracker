@@ -654,6 +654,13 @@ describe('parsePlayerStatsPaste', () => {
 		});
 	});
 
+	it('parses a "Not Started" skill (not yet unlocked) as level 0', () => {
+		const stats = parsePlayerStatsPaste(
+			PROFILE_TOWER_LOCKED.replace('Cooking\nLevel 4', 'Cooking\nNot Started')
+		);
+		expect(stats.cooking).toBe(0);
+	});
+
 	it('throws StatsParseError on input with no recognizable skills block', () => {
 		expect(() => parsePlayerStatsPaste('just some random pasted text with no skills')).toThrow(
 			StatsParseError

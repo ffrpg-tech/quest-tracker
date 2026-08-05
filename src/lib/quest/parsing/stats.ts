@@ -13,6 +13,11 @@ export class StatsParseError extends Error {}
  * matches that shape wherever it's searched for. */
 const LEVEL_LINE = /^Level (\d+)$/i;
 
+/** A skill not yet unlocked (e.g. Cooking before a player's first meal) renders
+ * "Not Started" in place of a "Level N" line — treat that as level 0 rather than
+ * failing the whole parse. */
+const NOT_STARTED_LINE = /^Not Started$/i;
+
 const SKILL_LINES: { key: keyof Omit<PlayerStats, 'tower' | 'npcLevels'>; line: string }[] = [
 	{ key: 'farming', line: 'Farming' },
 	{ key: 'fishing', line: 'Fishing' },
@@ -85,6 +90,7 @@ function findLevelAfter(lines: string[], keywordLine: string, maxScan = 4): numb
 		for (let i = idx + 1; i < Math.min(lines.length, idx + 1 + maxScan); i++) {
 			const m = LEVEL_LINE.exec(lines[i]);
 			if (m) return parseInt(m[1], 10);
+			if (NOT_STARTED_LINE.test(lines[i])) return 0;
 		}
 	}
 	return null;
