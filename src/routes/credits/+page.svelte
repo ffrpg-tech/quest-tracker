@@ -50,7 +50,9 @@
 			<ol class="mt-1 list-decimal space-y-1 pl-5">
 				<li><span class="font-medium text-emerald-600 dark:text-emerald-400">Erisere</span> — shared their stored quest data via CSV to initialize the data.</li>
 				<li><span class="font-medium text-emerald-600 dark:text-emerald-400">Natsulus</span> — offered early insights on client-side inventory collection that helped shape the direction of the inventory parser.</li>
-				<li>FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400">coderanger</span> — provided technical access and guidance for the data pipeline and several clarifications.</li>
+				<li>FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400">coderanger</span> — provided technical assistance and guidance for the data pipeline and several clarifications.</li>
+				<li><span class="font-medium text-emerald-600 dark:text-emerald-400">Lex 26</span> — contributed in testing and provided feedback, gained inspiration from their <a href="https://crafttree.pages.dev" target="_blank" rel="noopener noreferrer" class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">CraftTree</a> website.</li>
+				<li>and <span class="font-medium text-emerald-600 dark:text-emerald-400">you!</span> — for using the application itself!</li>
 			</ol>
 		</div>
 
