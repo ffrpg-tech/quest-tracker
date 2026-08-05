@@ -9,6 +9,20 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.4] - 2026-08-04
+
+### Added
+
+- The Shortfall summary can now be sorted ascending or descending by shortfall amount, in addition to the existing search and mail/maxed filters.
+
+### Changed
+
+- Shortfall amounts in the Shortfall summary now show thousands separators (e.g. 1,000,000) instead of a long unbroken digit string.
+
+### Fixed
+
+- Fixed player stats parsing treating a not-yet-unlocked skill (e.g. Cooking before your first meal, shown as "Not Started" on the profile page) as a parse failure instead of level 0.
+
 ## [0.2.3] - 2026-08-01
 
 ### Added
