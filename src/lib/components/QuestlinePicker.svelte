@@ -254,7 +254,7 @@
 >
 	<div class="flex items-center justify-between">
 		<h2 class="font-semibold">
-			2. Questline
+			1. Questline
 			{#if dataLastUpdatedLabel}
 				<span class="text-xs font-normal text-gray-500 dark:text-gray-400"
 					>&middot; Data updated {dataLastUpdatedLabel}</span

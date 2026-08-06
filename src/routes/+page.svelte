@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { asset } from '$app/paths';
-	import { TriangleAlert } from '@lucide/svelte';
+	import { asset, resolve } from '$app/paths';
+	import { TriangleAlert, Compass } from '@lucide/svelte';
 	import { SvelteSet, SvelteMap } from 'svelte/reactivity';
 	import { canonicalUrl, DEFAULT_DESCRIPTION, SITE_NAME } from '$lib/seo';
 	import {
@@ -397,6 +397,22 @@
 		</div>
 	{/if}
 
+	{#if inventoryHydrated && inventory.length === 0}
+		<div
+			class="flex items-start gap-2 rounded border border-emerald-300 bg-emerald-50 p-3 text-xs text-emerald-900 dark:border-emerald-700 dark:bg-emerald-950 dark:text-emerald-200"
+		>
+			<Compass size={14} class="mt-0.5 shrink-0" />
+			<span>
+				New here? (1) Import your player stats (optional). (2) Import your already-completed
+				quests. (3) Pick the questlines you're working on. (4) Import your inventory and bank.
+				<a
+					href="{resolve('/about')}#tutorial"
+					class="font-medium underline hover:no-underline">Full walkthrough &rarr;</a
+				>
+			</span>
+		</div>
+	{/if}
+
 	<main class="space-y-8">
 		<PlayerStatsPanel
 			{playerStats}
@@ -406,11 +422,6 @@
 		/>
 
 		<section class="grid grid-rows-[60vh_70vh] gap-6 md:h-[100vh] md:grid-cols-2 md:grid-rows-none">
-			<InventoryPanel
-				bind:inventory
-				{inventoryStale}
-				onOpenImport={() => openImportModal('inventory')}
-			/>
 			<QuestlinePicker
 				{questlineOptions}
 				{questlineByName}
@@ -420,6 +431,11 @@
 				{questlinesHydrated}
 				{questlinesError}
 				onOpenImportCompleted={() => openImportModal('completed')}
+			/>
+			<InventoryPanel
+				bind:inventory
+				{inventoryStale}
+				onOpenImport={() => openImportModal('inventory')}
 			/>
 		</section>
 

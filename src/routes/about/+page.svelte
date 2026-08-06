@@ -2,10 +2,11 @@
 	import { resolve } from '$app/paths';
 	import { canonicalUrl, SITE_NAME } from '$lib/seo';
 	import { faqItems } from '$lib/faq';
+	import { tutorialSteps } from '$lib/tutorial';
 
 	const title = `About — ${SITE_NAME}`;
 	const description =
-		'Why the Farm RPG Quest Wall Calculator exists, and frequently asked questions about how it works, whether it saves progress, and how to get started.';
+		'Why the Farm RPG Quest Wall Calculator exists, a step-by-step tutorial for getting started, and frequently asked questions about how it works.';
 
 	const faqJsonLd = {
 		'@context': 'https://schema.org',
@@ -14,6 +15,18 @@
 			'@type': 'Question',
 			name: f.question,
 			acceptedAnswer: { '@type': 'Answer', text: f.answer }
+		}))
+	};
+
+	const tutorialJsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'HowTo',
+		name: `Getting started with ${SITE_NAME}`,
+		step: tutorialSteps.map((s) => ({
+			'@type': 'HowToStep',
+			position: s.step,
+			name: s.title,
+			text: s.details
 		}))
 	};
 </script>
@@ -31,11 +44,13 @@
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
 
-	<!-- eslint-disable svelte/no-at-html-tags -- JSON-LD script tag: content is
-	     JSON.stringify of a static, developer-authored object above (faqItems
-	     from $lib/faq), not user input, so there's no injection surface.
-	     {@html} is the only way to emit a literal <script> tag from svelte:head. -->
+	<!-- eslint-disable svelte/no-at-html-tags -- JSON-LD script tags: content is
+	     JSON.stringify of static, developer-authored objects above (faqItems
+	     from $lib/faq, tutorialSteps from $lib/tutorial), not user input, so
+	     there's no injection surface. {@html} is the only way to emit a
+	     literal <script> tag from svelte:head. -->
 	{@html `<script type="application/ld+json">${JSON.stringify(faqJsonLd)}</` + 'script>'}
+	{@html `<script type="application/ld+json">${JSON.stringify(tutorialJsonLd)}</` + 'script>'}
 	<!-- eslint-enable svelte/no-at-html-tags -->
 </svelte:head>
 
@@ -44,9 +59,35 @@
 		>&larr; Back to the calculator</a
 	>
 
+	<section id="tutorial" class="scroll-mt-6 space-y-4">
+		<header>
+			<h1 class="text-2xl font-bold">Getting started</h1>
+			<p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
+				A quick walkthrough of the setup, then the loop you'll repeat while you play. Tap a step
+				for more detail.
+			</p>
+		</header>
+
+		<ol class="divide-y divide-gray-100 dark:divide-gray-700">
+			{#each tutorialSteps as s (s.step)}
+				<li>
+					<details class="group py-2">
+						<summary class="cursor-pointer list-none text-sm font-medium">
+							{s.step}. {s.title}
+							<span class="block font-normal text-gray-600 dark:text-gray-300">{s.summary}</span>
+						</summary>
+						<p class="mt-1.5 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+							{s.details}
+						</p>
+					</details>
+				</li>
+			{/each}
+		</ol>
+	</section>
+
 	<section id="why" class="scroll-mt-6 space-y-4">
 		<header>
-			<h1 class="text-2xl font-bold">Why did I create this?</h1>
+			<h2 class="text-xl font-bold">Why did I create this?</h2>
 		</header>
 
 		<div class="space-y-4 text-sm leading-relaxed text-gray-700 dark:text-gray-300">

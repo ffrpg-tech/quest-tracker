@@ -18,19 +18,9 @@ export const faqItems = [
 		answer: 'No. This tool is free and will never be monetized.'
 	},
 	{
-		question: 'How do I get my inventory into the calculator?',
-		answer:
-			'Use the "Import data" button, which walks through selecting and copying your inventory (or completed quest list) directly from the FarmRPG page, then pasting it in here to parse.'
-	},
-	{
 		question: 'Does it save my progress?',
 		answer:
 			'Yes — your inventory, questline queue, completed quests, and pasted player stats are all saved to your browser\'s local storage automatically. The "Progress backup" button exports/imports everything except your inventory as a JSON file (questline queue, completed quests, and player stats).'
-	},
-	{
-		question: 'Does it account for level, prerequisite, or event-availability requirements?',
-		answer:
-			'Once you paste your player stats (from the "My Profile" page, via the "Import data" button), it checks skill and NPC friendship level requirements too, flagging locked questlines. It also checks quest-to-quest prerequisites against your completed quests. It doesn\'t verify event-availability windows, so only add event questlines you can already begin.'
 	},
 	{
 		question: "I'm not seeing a new feature or quest data that should be there — what's wrong?",

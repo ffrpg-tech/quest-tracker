@@ -9,7 +9,24 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
-## [0.2.4] - 2026-08-04
+## [0.2.5] - August 6, 2026
+
+### Added
+
+- A "Getting started" tutorial on the About page, replacing the old single FAQ entry on importing your inventory — six short steps covering the full setup-then-play loop (player stats, completed quests, questlines, inventory/silver, results, checking off), each explaining why the step matters rather than just how to do it. The header's "?" button now links here instead of straight to the FAQ.
+- A short inline nudge on the main page pointing new players to the tutorial, shown only while your inventory is still empty.
+
+### Changed
+
+- The changelog page now groups releases by minor version (e.g. all 0.2.x releases together), collapsed except for the most recent, so it stays easy to scan as the release history grows.
+- The changelog page date format is now (Month Day, Year) instead of (YYYY/MM/DD)
+- The main page now shows the Questline panel before the Inventory panel (desktop left/right and mobile stacking order), and the Import dialog's tabs are reordered to Player stats, Inventory, Bank, Completed — both now match the order you actually work through: stats, then questlines, then inventory/silver, then completed quests.
+
+### Fixed
+
+- Fixed completed-quest paste parsing failing entirely for some browsers, which copy the Completed Requests page without a blank line between entries.
+
+## [0.2.4] - August 4, 2026
 
 ### Added
 
@@ -23,13 +40,13 @@ the page parses this file directly, so an entry added here is what users see.
 
 - Fixed player stats parsing treating a not-yet-unlocked skill (e.g. Cooking before your first meal, shown as "Not Started" on the profile page) as a parse failure instead of level 0.
 
-## [0.2.3] - 2026-08-01
+## [0.2.3] - August 1, 2026
 
 ### Added
 
 - Progress backup export/import now also includes your pasted player stats, alongside completed quests and the questline queue, so restoring a backup on another device (or after clearing browser data) no longer requires re-pasting your stats from the "My Profile" page.
 
-## [0.2.2] - 2026-07-28
+## [0.2.2] - July 28, 2026
 
 ### Added
 
@@ -42,7 +59,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 - Fixed parsing of completed quests whose requester has no name (e.g. Curious Postal Note), which was silently dropped from the Completed paste.
 
-## [0.2.1] - 2026-07-25
+## [0.2.1] - July 25, 2026
 
 ### Added
 
@@ -54,7 +71,7 @@ the page parses this file directly, so an entry added here is what users see.
 - The questline picker's status, eligibility, and main-quest filters are now compact icons instead of text pills, and the expired-season filter is relabeled Unavailable to match the UNAVAILABLE badge it controls.
 - Completed questlines are now hidden from the picker by default — toggle the Done icon back on to see them.
 
-## [0.2.0] - 2026-07-21
+## [0.2.0] - July 21, 2026
 
 ### Added
 
@@ -65,7 +82,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Main-story questlines get a star in the picker, plus a "Main quest" filter pill alongside the existing status/eligibility filters, to narrow the list to just the main story.
 - The Shortfall summary can now be filtered to just mailable or just not-mailable items.
 
-## [0.1.5] - 2026-07-19
+## [0.1.5] - July 19, 2026
 
 ### Changed
 
@@ -76,7 +93,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Each questline's expandable quest list now renders as a stacked card per quest on mobile instead of a 5-column table, so quest names and shortfall numbers no longer wrap awkwardly or overlap.
 - The footer's text is smaller and its paragraphs have more breathing room on mobile.
 
-## [0.1.4] - 2026-07-18
+## [0.1.4] - July 18, 2026
 
 ### Added
 
@@ -106,7 +123,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Fixed a bug where leftover text after your completed-quests list could get miscounted as an extra completed quest.
 - Fixed the results table's sticky header rendering underneath checked-off (faded) rows instead of on top of them.
 
-## [0.1.3] - 2026-07-16
+## [0.1.3] - July 16, 2026
 
 ### Added
 
@@ -122,7 +139,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 - A failed questlines fetch no longer wipes your saved questline queue — it's treated the same as still-loading rather than "nothing matched."
 
-## [0.1.2] - 2026-07-16
+## [0.1.2] - July 16, 2026
 
 ### Changed
 
@@ -133,7 +150,7 @@ the page parses this file directly, so an entry added here is what users see.
 - The small per-quest label badge (e.g. "II", "Part 2") is replaced by its position number in the chain.
 - The "MAX ON HAND" storage-cap indicator is no longer conflated with the separate "Mastered"/"Grand Mastered" crafting indicators.
 
-## [0.1.1] - 2026-07-16
+## [0.1.1] - July 16, 2026
 
 ### Added
 
@@ -149,7 +166,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Layout: inventory and questline panels now fill the viewport height
   instead of a fixed max height.
 
-## [0.1.0] - 2026-07-15
+## [0.1.0] - July 15, 2026
 
 ### Added
 

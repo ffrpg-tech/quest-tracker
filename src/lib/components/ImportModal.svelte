@@ -339,6 +339,14 @@
 
 			<div class="mb-4 flex gap-1.5 text-sm" role="tablist">
 				<button
+					onclick={() => (tab = 'stats')}
+					class={buttonClass('pill', tab === 'stats')}
+					role="tab"
+					aria-selected={tab === 'stats'}
+				>
+					Player stats
+				</button>
+				<button
 					onclick={() => (tab = 'inventory')}
 					class={buttonClass('pill', tab === 'inventory')}
 					role="tab"
@@ -361,14 +369,6 @@
 					aria-selected={tab === 'completed'}
 				>
 					Completed quests
-				</button>
-				<button
-					onclick={() => (tab = 'stats')}
-					class={buttonClass('pill', tab === 'stats')}
-					role="tab"
-					aria-selected={tab === 'stats'}
-				>
-					Player stats
 				</button>
 			</div>
 

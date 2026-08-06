@@ -49,9 +49,9 @@
 			<span class="hidden sm:inline">Progress backup</span>
 		</button>
 		<a
-			href="{resolve('/about')}#faq"
-			title="Help / FAQ"
-			aria-label="Help / FAQ"
+			href="{resolve('/about')}#tutorial"
+			title="Help / Getting started"
+			aria-label="Help / Getting started"
 			class={buttonClass('icon')}
 		>
 			<CircleHelp size={16} />

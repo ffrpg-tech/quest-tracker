@@ -41,7 +41,7 @@
 	class="flex min-h-0 flex-col space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
 >
 	<div class="flex items-center justify-between">
-		<h2 class="font-semibold">1. Inventory ({inventory.length})</h2>
+		<h2 class="font-semibold">2. Inventory ({inventory.length})</h2>
 		<div class="flex items-center gap-1">
 			<button
 				onclick={onOpenImport}

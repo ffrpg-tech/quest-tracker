@@ -58,3 +58,37 @@ export function releasedEntries(entries: ChangelogEntry[]): ChangelogEntry[] {
 export function latestVersion(entries: ChangelogEntry[]): string | null {
 	return releasedEntries(entries)[0]?.version ?? null;
 }
+
+export interface ChangelogGroup {
+	/** The shared "major.minor" prefix (e.g. "0.2" for 0.2.5, 0.2.4, ...). */
+	minor: string;
+	entries: ChangelogEntry[];
+}
+
+/**
+ * Groups entries by their "major.minor" version (0.2.5 and 0.2.4 both land
+ * under "0.2"), preserving the newest-first order `entries` already comes
+ * in. Used to collapse older minor versions in the changelog page as the
+ * release list keeps growing, without needing separate pages/routes per
+ * version — a version string that doesn't match the expected shape falls
+ * back to grouping under itself rather than being dropped.
+ */
+export function groupByMinor(entries: ChangelogEntry[]): ChangelogGroup[] {
+	const groups: ChangelogGroup[] = [];
+	const byMinor = new Map<string, ChangelogGroup>();
+
+	for (const entry of entries) {
+		const match = /^(\d+\.\d+)\./.exec(entry.version);
+		const minor = match ? match[1] : entry.version;
+
+		let group = byMinor.get(minor);
+		if (!group) {
+			group = { minor, entries: [] };
+			byMinor.set(minor, group);
+			groups.push(group);
+		}
+		group.entries.push(entry);
+	}
+
+	return groups;
+}
