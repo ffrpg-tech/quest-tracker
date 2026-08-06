@@ -30,6 +30,76 @@ check`;
 		]);
 	});
 
+	it('parses entries with no blank line between them and per-line leading whitespace', () => {
+		// Real-world case: some browser/extension combinations copy the page's
+		// list markup without the blank line between entries the game's own
+		// rendering has, and with every line but the first indented — "check"
+		// is the only delimiter that reliably survives that shape.
+		const text = `Completed Requests (2)
+
+    A Towering Investment X
+    Request from Cecil -  Main Quest
+    Completed on 2026-07-15 05:10:55
+    30,203 players (2.62%) have completed
+    check
+    Thomas's Summer Shark Research II
+    Request from Thomas
+    Completed on 2026-07-14 22:03:26
+    6,565 players (0.57%) have completed
+    check`;
+
+		expect(parseCompletedQuestNames(text)).toEqual([
+			'A Towering Investment X',
+			"Thomas's Summer Shark Research II"
+		]);
+	});
+
+	// The two tests above cover the extremes of what a browser's DOM-to-text
+	// copy can vary on: blank line between entries (yes/no) and per-line
+	// indentation (none/present). These two round out the matrix — every
+	// paste shape we know a browser can produce reduces to one of these four
+	// combinations, and all four must parse identically.
+	it('parses entries that are both blank-line-separated and indented', () => {
+		const text = `Completed Requests (2)
+
+    A Towering Investment X
+    Request from Cecil -  Main Quest
+    Completed on 2026-07-15 05:10:55
+    30,203 players (2.62%) have completed
+    check
+
+    Thomas's Summer Shark Research II
+    Request from Thomas
+    Completed on 2026-07-14 22:03:26
+    6,565 players (0.57%) have completed
+    check`;
+
+		expect(parseCompletedQuestNames(text)).toEqual([
+			'A Towering Investment X',
+			"Thomas's Summer Shark Research II"
+		]);
+	});
+
+	it('parses entries with no blank line between them and no indentation', () => {
+		const text = `Completed Requests (2)
+
+A Towering Investment X
+Request from Cecil -  Main Quest
+Completed on 2026-07-15 05:10:55
+30,203 players (2.62%) have completed
+check
+Thomas's Summer Shark Research II
+Request from Thomas
+Completed on 2026-07-14 22:03:26
+6,565 players (0.57%) have completed
+check`;
+
+		expect(parseCompletedQuestNames(text)).toEqual([
+			'A Towering Investment X',
+			"Thomas's Summer Shark Research II"
+		]);
+	});
+
 	it('ignores quest-like names that appear before the "Completed Requests" anchor (e.g. Active/Special Requests)', () => {
 		const text = `Active Requests (1)
 

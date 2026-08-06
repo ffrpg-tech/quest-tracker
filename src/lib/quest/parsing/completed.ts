@@ -1,4 +1,4 @@
-import { parseCommaNumber, parseFromAnchor } from './pasteParsing';
+import { parseCommaNumber, parseFromAnchor, toTrimmedLines } from './pasteParsing';
 
 // Client-side only — parses a manual select-all + copy of the FarmRPG
 // "Help Needed" / Completed screen. This has no relationship to the offline
@@ -9,6 +9,7 @@ export class CompletedQuestParseError extends Error {}
 
 const ANCHOR = 'Completed Requests';
 const REQUEST_FROM_PREFIX = 'Request from';
+const CHECK_LINE = 'check';
 
 /**
  * A quest title normally occupies one line, but long titles wrap onto a
@@ -22,10 +23,9 @@ const REQUEST_FROM_PREFIX = 'Request from';
  * it — matched without a trailing space so that case isn't missed.
  *
  * A chunk with no "Request from ..." line at all isn't a completed-quest
- * entry — the page has no explicit end marker for this section, so trailing
- * nav/footer text (or, coincidentally, a chat message) after the last real
- * entry would otherwise get swept in as a blank-line-separated "chunk" and
- * misread as a bogus extra quest name.
+ * entry — trailing nav/footer text (or, coincidentally, a chat message)
+ * swept in alongside the real entries would otherwise get misread as a
+ * bogus extra quest name.
  */
 function extractQuestName(chunkLines: string[]): string {
 	const nameLines: string[] = [];
@@ -42,10 +42,10 @@ function extractQuestName(chunkLines: string[]): string {
  * Requests) before the "Completed Requests (N)" heading — anchoring on that
  * heading is what keeps not-yet-completed quests from being misread as done.
  *
- * After the anchor, each completed entry is a blank-line-separated chunk of
- * several lines (name, requester, completion date, global completion stats,
- * a trailing "check" line) — only the lines before "Request from ..." (the
- * quest name) are used; everything else in the chunk is discarded.
+ * After the anchor, each completed entry is several lines (name, requester,
+ * completion date, global completion stats, a trailing "check" line) — only
+ * the lines before "Request from ..." (the quest name) are used; everything
+ * else is discarded.
  */
 export function parseCompletedQuestNames(rawText: string): string[] {
 	return parseFromAnchor(
@@ -70,14 +70,26 @@ function parseCompletedBlock(afterAnchor: string): string[] {
 	const anchorLine = anchorLineEnd === -1 ? afterAnchor : afterAnchor.slice(0, anchorLineEnd);
 	const block = anchorLineEnd === -1 ? '' : afterAnchor.slice(anchorLineEnd + 1);
 
-	const chunks = block
-		.split(/\r?\n\s*\r?\n/)
-		.map((c) => c.trim())
-		.filter((c) => c.length > 0);
+	// Entries are only reliably delimited by their trailing "check" line —
+	// some paste sources (e.g. certain browser/extension combinations) don't
+	// preserve the blank line between entries that the game's own rendering
+	// has, so splitting on blank lines silently collapsed the whole block
+	// into one unparseable chunk for those pastes. "check" is a UI element
+	// present after every single entry, blank-line or not.
+	const lines = toTrimmedLines(block);
 
-	const names = chunks
-		.map((chunk) => extractQuestName(chunk.split(/\r?\n/)))
-		.filter((name) => name.length > 0);
+	const chunks: string[][] = [];
+	let current: string[] = [];
+	for (const line of lines) {
+		if (line.toLowerCase() === CHECK_LINE) {
+			if (current.length > 0) chunks.push(current);
+			current = [];
+		} else {
+			current.push(line);
+		}
+	}
+
+	const names = chunks.map(extractQuestName).filter((name) => name.length > 0);
 
 	if (names.length === 0) {
 		throw new CompletedQuestParseError(
