@@ -6,7 +6,7 @@
 
 	const title = `About — ${SITE_NAME}`;
 	const description =
-		'Why the Farm RPG Quest Wall Calculator exists, a step-by-step tutorial for getting started, and frequently asked questions about how it works.';
+		'Why the FarmRPG Quest Tracker exists, a step-by-step tutorial for getting started, and frequently asked questions about how it works.';
 
 	const faqJsonLd = {
 		'@context': 'https://schema.org',

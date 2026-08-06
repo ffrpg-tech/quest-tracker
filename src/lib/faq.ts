@@ -4,7 +4,7 @@
  * same answers. */
 export const faqItems = [
 	{
-		question: 'What is the Farm RPG Quest Wall Calculator?',
+		question: 'What is the FarmRPG Quest Tracker?',
 		answer:
 			"A free tool for the FarmRPG game: paste your in-game inventory, pick a Quest Wall questline, and it tells you the first quest in that chain you can't complete with your current materials — before you start turning items in."
 	},

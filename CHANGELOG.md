@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Farm RPG Quest Wall Calculator are documented here.
+All notable changes to the FarmRPG Quest Tracker are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Entries
 are grouped by feature/release, not by individual commit.
 

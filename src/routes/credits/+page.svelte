@@ -4,7 +4,7 @@
 
 	const title = `Credits — ${SITE_NAME}`;
 	const description =
-		'Credits for the Farm RPG Quest Wall Calculator: the FarmRPG developers and Discord community, and the spreadsheet maintainers whose work made this tool possible.';
+		'Credits for the FarmRPG Quest Tracker: the FarmRPG developers and Discord community, and the spreadsheet maintainers whose work made this tool possible.';
 </script>
 
 <svelte:head>

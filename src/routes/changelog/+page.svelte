@@ -7,7 +7,7 @@
 	import changelogRaw from '../../../CHANGELOG.md?raw';
 
 	const title = `Changelog — ${SITE_NAME}`;
-	const description = 'What changed in the Farm RPG Quest Wall Calculator, release by release.';
+	const description = 'What changed in the FarmRPG Quest Tracker, release by release.';
 
 	const entries = releasedEntries(parseChangelog(changelogRaw));
 	const groups = groupByMinor(entries);

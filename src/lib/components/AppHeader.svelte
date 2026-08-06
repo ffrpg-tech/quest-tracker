@@ -20,7 +20,7 @@
 
 <header class="flex flex-wrap items-start justify-between gap-4">
 	<div class="space-y-1">
-		<h1 class="text-2xl font-bold">Farm RPG Quest Wall Calculator</h1>
+		<h1 class="text-2xl font-bold">FarmRPG Quest Tracker</h1>
 		<p class="text-sm text-gray-500 dark:text-gray-400">
 			Paste your inventory, pick a questline, and see exactly which quest you'll run dry on.
 		</p>

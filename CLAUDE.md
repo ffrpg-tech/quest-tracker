@@ -6,12 +6,12 @@ verification standard) — those still apply here and aren't repeated below.
 
 ## What this project is
 
-Farm RPG Quest Wall Calculator — a SvelteKit static app. Player pastes
-their FarmRPG inventory, queues one or more questlines (order matters — they
-share one inventory), and the app reports the first quest in each chain they
-can't complete with current materials, plus a combined shortfall summary
-across the whole queue. Fan project, not affiliated with FarmRPG, will never
-be monetized.
+FarmRPG Quest Tracker — a SvelteKit static app. Player pastes their FarmRPG
+inventory (and optionally player stats, for eligibility checks) and queues
+one or more questlines (order matters — they share one inventory). The app
+reports the first quest in each chain they can't complete with current
+materials, plus a combined shortfall summary across the whole queue. Fan
+project, not affiliated with FarmRPG, will never be monetized.
 
 ## Data pipeline (read before touching quest/item data)
 

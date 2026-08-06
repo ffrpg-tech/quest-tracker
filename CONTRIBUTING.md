@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for wanting to help improve the Farm RPG Quest Wall Calculator! This
+Thanks for wanting to help improve the FarmRPG Quest Tracker! This
 is a fan project — not affiliated with FarmRPG, and it will never be
 monetized. There are a few ways to contribute, depending on how comfortable
 you are with git.
