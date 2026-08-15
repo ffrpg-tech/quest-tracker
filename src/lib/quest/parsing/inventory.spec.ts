@@ -79,6 +79,41 @@ describe('parseInventoryPaste', () => {
 		expect(parsed).toEqual([{ itemName: 'Wood', quantity: 42, category: undefined, maxed: false }]);
 	});
 
+	it('discards a "Use a/an <item>" active-boost banner instead of parsing it as an item', () => {
+		// Real paste shape for an unused single-use consumable (e.g. a
+		// Heart-shaped Gem): no bare item-name line at all, just a "Use a/an"
+		// prompt, an effect line, and a "will be consumed!" warning before the
+		// trailing quantity. In an actual paste, "Sort Options" is always
+		// immediately followed by the first category's "chevron_down" header
+		// (confirmed against a real paste excerpt), so the banner lands right
+		// after that header as if it were the category's first item, not
+		// folded into unrelated preamble text. The game's own footer count
+		// excludes this banner, so it must be discarded rather than mis-parsed
+		// as a bogus item (which previously inflated the parsed count past the
+		// footer's stated total and broke the cross-check).
+		const text = wrap(
+			[
+				'Sort Options:',
+				'Item Name, Quantity (ASC), Quantity (DESC)',
+				'Meals chevron_down',
+				'',
+				'Use a Heart-shaped Gem',
+				'Increases Inventory Cap by +50',
+				'Heart-shaped Gem will be consumed!',
+				'1',
+				'',
+				'Bone Broth',
+				'Useful to cook other things',
+				'10,033'
+			].join('\n')
+		).replace('Inventory Stats\nFooter junk', 'Inventory Stats\nYour inventory contains 1 unique items.');
+
+		const parsed = parseInventoryPaste(text);
+		expect(parsed).toEqual([
+			{ itemName: 'Bone Broth', quantity: 10033, category: 'Meals', maxed: false }
+		]);
+	});
+
 	it('throws when the anchor text is missing', () => {
 		expect(() => parseInventoryPaste('nothing relevant here')).toThrow(InventoryParseError);
 	});

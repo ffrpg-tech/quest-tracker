@@ -25,6 +25,17 @@ const CATEGORY_SUFFIX = ' chevron_down';
 // no bearing on whether the item is at cap — they're just discarded like any
 // other description line, not folded into `maxed`.
 const STATUS_FLAGS = ['MAX ON HAND'];
+// A single-use "active boost" item (e.g. a cap-increasing gem) renders as a
+// promo banner rather than a normal inventory row — no bare item-name line at
+// all, just a "Use a/an <name>" prompt, an effect line, and a "<name> will be
+// consumed!" warning before the trailing quantity. The game's own "unique
+// items" footer count doesn't include this banner, so treating chunkLines[0]
+// as a literal item name here (as for a normal row) both produces a bogus
+// unmatched item and inflates the parsed count past the footer's stated
+// total. Detected by content (a real item's first line is always a bare
+// name, never a sentence) rather than by position, so it doesn't matter
+// where in the paste this banner appears.
+const USE_PROMPT = /^Use (?:a|an) .+$/i;
 
 /**
  * Parses raw copy-pasted inventory page text into structured item lines.
@@ -88,6 +99,14 @@ function parseInventoryBlock(afterAnchor: string): ParsedInventoryLine[] {
 				throw new InventoryParseError(
 					`Found a quantity line ("${line}") with no preceding item name — the paste may be truncated or malformed.`
 				);
+			}
+			// A "Sort Options" preamble line can fold into the same chunk as a
+			// promo banner when no category header separates them (there's no
+			// other reset point before the first category), so the banner check
+			// has to scan the whole chunk rather than assume it's chunkLines[0].
+			if (chunkLines.some((l) => USE_PROMPT.test(l))) {
+				chunkLines = [];
+				continue;
 			}
 			const itemName = chunkLines[0];
 			const maxed = chunkLines.some((l) =>
