@@ -189,9 +189,12 @@ export function inventoryToMap(entries: InventoryEntry[]): Map<string, number> {
 /**
  * Merges a batch of updates into an inventory array: entries with a matching
  * `item` name are replaced, everything else is kept, and the result is
- * re-sorted alphabetically. Shared by both the "parse a paste" flow (many
- * updates at once) and the "manually add/update one item" flow (a single
- * update) so there's one merge rule instead of two hand-rolled ones.
+ * re-sorted alphabetically. For a targeted update that shouldn't touch
+ * anything else in the inventory (e.g. the Bank tab folding wallet/bank
+ * Silver into a single synthetic entry) — NOT for a full inventory-page
+ * paste, which must use `replaceInventory` instead so items that dropped to
+ * zero (and so no longer appear in the paste at all) don't keep their stale
+ * last-known quantity forever.
  */
 export function mergeInventory(
 	current: InventoryEntry[],
@@ -200,4 +203,29 @@ export function mergeInventory(
 	const merged = new Map(current.map((e) => [e.item, e]));
 	for (const [name, entry] of updates) merged.set(name, entry);
 	return Array.from(merged.values()).sort((a, b) => a.item.localeCompare(b.item));
+}
+
+/**
+ * Replaces the entire inventory with a freshly parsed inventory-page paste.
+ * A pasted inventory page is a complete snapshot of everything the player
+ * owns — FarmRPG simply omits items the player has zero of, so an item
+ * missing from `parsed` means its true quantity is now 0, not "unknown, keep
+ * the old number." `mergeInventory` would wrongly leave such items at their
+ * last pasted quantity indefinitely.
+ *
+ * Previously-tracked items missing from `parsed` are kept in the result at
+ * qty 0 (maxed cleared) rather than dropped, so the player can still see
+ * "I used to have this, now I have none" in the inventory table instead of
+ * the row silently vanishing. Items that were never tracked before and still
+ * aren't in `parsed` obviously don't appear.
+ */
+export function replaceInventory(
+	current: InventoryEntry[],
+	parsed: Map<string, InventoryEntry>
+): InventoryEntry[] {
+	const result = new Map(
+		current.map((e) => [e.item, { item: e.item, qty: 0, maxed: false }])
+	);
+	for (const [name, entry] of parsed) result.set(name, entry);
+	return Array.from(result.values()).sort((a, b) => a.item.localeCompare(b.item));
 }

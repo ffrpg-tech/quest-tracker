@@ -8,7 +8,8 @@
 		parseInventoryPaste,
 		InventoryParseError,
 		toInventoryEntries,
-		mergeInventory
+		mergeInventory,
+		replaceInventory
 	} from '$lib/quest/parsing/inventory';
 	import { parseCompletedQuestNames, CompletedQuestParseError } from '$lib/quest/parsing/completed';
 	import { parseBankPaste, BankParseError } from '$lib/quest/parsing/bank';
@@ -145,8 +146,11 @@
 			return;
 		}
 
-		// Paste overwrites matching item names in the current inventory.
-		inventory = mergeInventory(inventory, parsed);
+		// A full inventory-page paste is a complete snapshot: replace the whole
+		// inventory rather than merging, so items that dropped to 0 (and so no
+		// longer appear in the paste) don't keep their stale last-known qty —
+		// they're kept in the table at qty 0 instead of vanishing outright.
+		inventory = replaceInventory(inventory, parsed);
 		const text = `Parsed ${parsed.size} item${parsed.size === 1 ? '' : 's'}.`;
 		parseMessage = { text, ok: true };
 		flashSuccess(text);
@@ -455,7 +459,7 @@
 					{/if}
 				</div>
 				<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
-					This overwrites quantities for any item name already in your inventory below.
+					This replaces your entire inventory below with what's in the paste.
 				</p>
 			{:else if tab === 'bank'}
 				<details

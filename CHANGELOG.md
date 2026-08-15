@@ -14,6 +14,7 @@ the page parses this file directly, so an entry added here is what users see.
 ### Fixed
 
 - Fixed inventory paste parsing failing for players holding an unused single-use active-boost item (e.g. a Heart-shaped Gem) — its "Use a/an ___" promo banner was previously mis-parsed as a bogus inventory item, inflating the parsed count past the page's own reported total and causing the paste to be rejected as truncated.
+- Fixed a re-pasted inventory keeping stale quantities for items you've since used up — FarmRPG's inventory page omits items you have zero of, so those items previously stuck at their last-pasted amount instead of dropping to 0. A new inventory paste now zeroes out any previously-tracked item that's no longer in the paste (kept visible in the table at 0) rather than leaving it at its old count.
 
 ## [0.2.5] - August 6, 2026
 
