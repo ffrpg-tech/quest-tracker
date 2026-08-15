@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { InventoryParseError, parseInventoryPaste, toInventoryEntries } from './inventory';
+import { InventoryParseError, parseInventoryPaste, toInventoryEntries, replaceInventory } from './inventory';
 
 const ANCHOR_LINE = 'Currently, you cannot have more than 999 of most items.';
 
@@ -291,5 +291,43 @@ describe('toInventoryEntries', () => {
 
 		expect(map.has('Wood')).toBe(true);
 		expect(map.has('Mystery Widget')).toBe(false);
+	});
+});
+
+describe('replaceInventory', () => {
+	it('zeroes out previously-tracked items absent from the new paste instead of keeping their stale qty', () => {
+		// Regression: FarmRPG's inventory page omits items the player has zero
+		// of, so a re-paste that no longer mentions "Purple Dye" means its true
+		// qty is now 0 — not "unknown, keep the old 113." The row stays visible
+		// at 0 rather than disappearing, so the player can see it dropped out.
+		const current = [{ item: 'Purple Dye', qty: 113, maxed: false }];
+		const parsed = new Map([['Wood', { item: 'Wood', qty: 42, maxed: false }]]);
+
+		const result = replaceInventory(current, parsed);
+
+		expect(result).toEqual([
+			{ item: 'Purple Dye', qty: 0, maxed: false },
+			{ item: 'Wood', qty: 42, maxed: false }
+		]);
+	});
+
+	it('clears a stale maxed flag on an item that zeroed out', () => {
+		const current = [{ item: 'Purple Dye', qty: 113, maxed: true }];
+
+		const result = replaceInventory(current, new Map());
+
+		expect(result).toEqual([{ item: 'Purple Dye', qty: 0, maxed: false }]);
+	});
+
+	it('adds newly-appearing items and sorts the result alphabetically', () => {
+		const current = [{ item: 'Zinc', qty: 1, maxed: false }];
+		const parsed = new Map([
+			['Wood', { item: 'Wood', qty: 42, maxed: false }],
+			['Iron', { item: 'Iron', qty: 5, maxed: false }]
+		]);
+
+		const result = replaceInventory(current, parsed);
+
+		expect(result.map((e) => e.item)).toEqual(['Iron', 'Wood', 'Zinc']);
 	});
 });
