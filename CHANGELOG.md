@@ -9,6 +9,12 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.6] - August 15, 2026
+
+### Fixed
+
+- Fixed inventory paste parsing failing for players holding an unused single-use active-boost item (e.g. a Heart-shaped Gem) — its "Use a/an ___" promo banner was previously mis-parsed as a bogus inventory item, inflating the parsed count past the page's own reported total and causing the paste to be rejected as truncated.
+
 ## [0.2.5] - August 6, 2026
 
 ### Added
