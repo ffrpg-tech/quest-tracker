@@ -421,7 +421,7 @@
 			onUpdate={handleUpdatePlayerStats}
 		/>
 
-		<section class="grid grid-rows-[60vh_70vh] gap-6 md:h-[100vh] md:grid-cols-2 md:grid-rows-none">
+		<section class="grid grid-cols-1 grid-rows-[60vh_70vh] gap-6 md:h-[100vh] md:grid-cols-2 md:grid-rows-none">
 			<QuestlinePicker
 				{questlineOptions}
 				{questlineByName}

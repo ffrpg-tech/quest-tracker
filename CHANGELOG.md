@@ -24,6 +24,7 @@ the page parses this file directly, so an entry added here is what users see.
 ### Fixed
 
 - Fixed Silver being silently wiped back to 0 after re-pasting the Inventory page. Silver is set separately via the Bank tab and never appears on the Inventory page itself, but a fresh Inventory paste was treating its absence there the same as any other item dropping to zero — overwriting whatever Silver total you'd previously imported.
+- Fixed the questline column overflowing the screen on mobile once the "Locked" filter was enabled — long questline names plus the LOCKED badge were stretching the layout wider than the viewport instead of truncating within the row.
 
 ## [0.2.6] - August 15, 2026
 
