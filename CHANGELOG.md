@@ -11,6 +11,16 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [0.2.7] - August 31, 2026
 
+### Added
+
+- A "Created by kodyy" credit in the footer, next to the copyright year.
+- FarmRPG Staff Rkm13 added to the credits page's special thanks, for providing suggestions and clarifications.
+- A "Message kodyy in-game" button on the Feedback / report a bug dialog, linking straight to FarmRPG's in-game send-message page instead of just naming who to contact.
+
+### Changed
+
+- Results now say "Runs out of resources at [quest]" instead of "Runs dry at [quest]" for the quest where a chain's shortfall first appears.
+
 ### Fixed
 
 - Fixed Silver being silently wiped back to 0 after re-pasting the Inventory page. Silver is set separately via the Bank tab and never appears on the Inventory page itself, but a fresh Inventory paste was treating its absence there the same as any other item dropping to zero — overwriting whatever Silver total you'd previously imported.

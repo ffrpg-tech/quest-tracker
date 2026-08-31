@@ -66,5 +66,12 @@
 	</p>
 	<p class="mt-2">
 		&copy; {copyrightYears} <span class="text-gray-300 dark:text-gray-600">&middot;</span>
+		<span class="group relative inline-block">
+			Created by <span class="font-semibold text-emerald-600 dark:text-emerald-400">kodyy</span>
+			<span
+				class="pointer-events-none absolute top-full left-1/2 mt-0.5 -translate-x-1/2 whitespace-nowrap text-[9px] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+				>(Rkm made me put my name on here)</span
+			>
+		</span>
 	</p>
 </footer>

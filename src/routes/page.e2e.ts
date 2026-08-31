@@ -69,7 +69,7 @@ test('queuing two questlines that share a scarce item shifts the shortfall on re
 	await expect(rows.nth(0)).toContainText('10,000 Players!');
 	await expect(rows.nth(0)).toContainText('Clear — enough to finish the chain');
 	await expect(rows.nth(1)).toContainText('Welcome to your Farm');
-	await expect(rows.nth(1)).toContainText('Runs dry at');
+	await expect(rows.nth(1)).toContainText('Runs out of resources at');
 
 	// Shortfall summary rolls the shared shortfall up across both questlines —
 	// expand it and confirm the breakdown identifies the losing questline
@@ -92,7 +92,7 @@ test('queuing two questlines that share a scarce item shifts the shortfall on re
 	await expect(rows.nth(0)).toContainText('Welcome to your Farm');
 	await expect(rows.nth(0)).toContainText('Clear — enough to finish the chain');
 	await expect(rows.nth(1)).toContainText('10,000 Players!');
-	await expect(rows.nth(1)).toContainText('Runs dry at');
+	await expect(rows.nth(1)).toContainText('Runs out of resources at');
 });
 
 test('expanding a result row reveals the per-quest table', async ({ page }) => {

@@ -30,6 +30,15 @@
 				Please contact <span class="font-semibold text-emerald-600 dark:text-emerald-400">kodyy</span> in-game and explain what happened — what you were
 				doing, what you expected, and what actually happened.
 			</p>
+
+			<a
+				href="https://farmrpg.com/#!/sendmessage.php?to=kodyy"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="{buttonClass('primary')} mt-4 inline-block"
+			>
+				Message kodyy in-game
+			</a>
 		</div>
 	</div>
 {/if}
