@@ -319,6 +319,21 @@ describe('replaceInventory', () => {
 		expect(result).toEqual([{ item: 'Purple Dye', qty: 0, maxed: false }]);
 	});
 
+	it('does not zero out Silver, since it never appears on an Inventory-page paste', () => {
+		// Regression: Silver is set via the separate Bank tab (mergeInventory),
+		// not the Inventory page. Re-pasting Inventory to refresh other items
+		// was silently wiping a previously-set Silver balance back to 0.
+		const current = [{ item: 'Silver', qty: 8098331005, maxed: false }];
+		const parsed = new Map([['Wood', { item: 'Wood', qty: 42, maxed: false }]]);
+
+		const result = replaceInventory(current, parsed);
+
+		expect(result).toEqual([
+			{ item: 'Silver', qty: 8098331005, maxed: false },
+			{ item: 'Wood', qty: 42, maxed: false }
+		]);
+	});
+
 	it('adds newly-appearing items and sorts the result alphabetically', () => {
 		const current = [{ item: 'Zinc', qty: 1, maxed: false }];
 		const parsed = new Map([

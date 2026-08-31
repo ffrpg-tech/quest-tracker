@@ -218,13 +218,22 @@ export function mergeInventory(
  * "I used to have this, now I have none" in the inventory table instead of
  * the row silently vanishing. Items that were never tracked before and still
  * aren't in `parsed` obviously don't appear.
+ *
+ * Silver is exempt from the zero-out: it never appears on an Inventory-page
+ * paste (it's Bank-only, set via the separate Bank tab / `mergeInventory`),
+ * so its absence from `parsed` means "not applicable to this paste," not
+ * "the player now has zero Silver." Without this exception, re-pasting the
+ * Inventory page after setting Silver from the Bank tab would silently wipe
+ * it back to 0.
  */
 export function replaceInventory(
 	current: InventoryEntry[],
 	parsed: Map<string, InventoryEntry>
 ): InventoryEntry[] {
 	const result = new Map(
-		current.map((e) => [e.item, { item: e.item, qty: 0, maxed: false }])
+		current.map((e) =>
+			e.item === 'Silver' ? [e.item, e] : [e.item, { item: e.item, qty: 0, maxed: false }]
+		)
 	);
 	for (const [name, entry] of parsed) result.set(name, entry);
 	return Array.from(result.values()).sort((a, b) => a.item.localeCompare(b.item));
