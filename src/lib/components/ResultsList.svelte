@@ -259,7 +259,7 @@
 								<span
 									class="shrink-0 rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-950 dark:text-red-300"
 								>
-									Runs dry at {diffResult.quests[block.qi].questName}
+									Runs out of resources at {diffResult.quests[block.qi].questName}
 								</span>
 							{/if}
 						</summary>
