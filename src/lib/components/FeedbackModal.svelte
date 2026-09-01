@@ -27,18 +27,31 @@
 			</div>
 
 			<p class="text-sm text-gray-600 dark:text-gray-300">
-				Please contact <span class="font-semibold text-emerald-600 dark:text-emerald-400">kodyy</span> in-game and explain what happened — what you were
-				doing, what you expected, and what actually happened.
+				The quickest way to reach me is to fill out the feedback form — describe what you were
+				doing, what you expected, and what actually happened. If you'd rather not use a form, you
+				can still message <span class="font-semibold text-emerald-600 dark:text-emerald-400"
+					>kodyy</span
+				> in-game instead.
 			</p>
 
-			<a
-				href="https://farmrpg.com/#!/sendmessage.php?to=kodyy"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="{buttonClass('primary')} mt-4 inline-block"
-			>
-				Message kodyy in-game
-			</a>
+			<div class="mt-4 flex flex-wrap gap-2">
+				<a
+					href="https://forms.gle/2UfCBoDASW2g97Rq9"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="{buttonClass('primary')} inline-block"
+				>
+					Answer the feedback form
+				</a>
+				<a
+					href="https://farmrpg.com/#!/sendmessage.php?to=kodyy"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="{buttonClass('default')} inline-block"
+				>
+					Message kodyy in-game
+				</a>
+			</div>
 		</div>
 	</div>
 {/if}
