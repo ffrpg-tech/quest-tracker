@@ -9,6 +9,17 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.8] - September 1, 2026
+
+### Added
+
+- An "Answer the feedback form" button on the Feedback / report a bug dialog, linking to a Google Form so you can send structured feedback without needing an in-game account.
+- A note in the credits thanking FarmRPG Staff Rkm13 for adding this tool to the game's official Community Guides wiki page.
+
+### Changed
+
+- The Feedback / report a bug dialog now points to the feedback form as the primary way to get in touch, with messaging kodyy in-game kept as the alternative.
+
 ## [0.2.7] - August 31, 2026
 
 ### Added
