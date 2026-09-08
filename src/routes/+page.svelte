@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import { asset, resolve } from '$app/paths';
 	import { TriangleAlert, Compass } from '@lucide/svelte';
 	import { SvelteSet, SvelteMap } from 'svelte/reactivity';
@@ -21,7 +21,11 @@
 		findRunsDryPoints,
 		type QuestlineDiffResult
 	} from '$lib/quest/calc/diff';
-	import { evaluateQuestlineEligibility, type QuestlineEligibility } from '$lib/quest/calc/eligibility';
+	import {
+		buildPredReverseIndex,
+		evaluateQuestlineEligibility,
+		type QuestlineEligibility
+	} from '$lib/quest/calc/eligibility';
 	import {
 		loadCompleted,
 		saveCompleted,
@@ -201,6 +205,8 @@
 	/** Passed to ImportModal/ProgressBackupModal, which mutate `completed` directly (it's a shared SvelteSet reference) but don't own `completedCountByQuestline` — this is how they trigger the recount after a bulk change. */
 	function onCompletedChanged() {
 		applyCompletedCounts(computeCompletedCounts(completed));
+		// A bulk change touches an unknown set of questlines — full eligibility pass.
+		recomputeEligibility();
 	}
 
 	$effect(() => {
@@ -238,6 +244,10 @@
 
 		if (adding && !inventoryBaseline.has(key)) staleKeys.add(key);
 		else if (!adding) staleKeys.delete(key);
+
+		// Patch only this questline's eligibility plus any that `pred`-reference it,
+		// rather than re-walking the whole catalogue on every checkbox click.
+		recomputeEligibility(eligibilityDependents(questlineName));
 	}
 
 	// ---------- Diff ----------
@@ -282,14 +292,50 @@
 		trackSave(savePlayerStats(stats));
 	}
 
-	const eligibilityByQuestline = $derived.by(() => {
+	// Which questlines' eligibility a quest toggle in a given questline can affect
+	// (itself + anything that `pred`-references it). Rebuilt only when the
+	// questline catalogue changes — effectively once, on load.
+	const predReverseIndex = $derived(buildPredReverseIndex(questlineOptions, questlineByName));
+
+	// Incrementally-maintained eligibility cache. Rebuilding the whole map on
+	// every quest toggle re-evaluated all ~2500 quests (pred lookups, Date
+	// construction) and showed up as ~1.5s main-thread Long Tasks. Instead the
+	// full rebuild runs only when the catalogue or player stats change (the
+	// $effect below), and single/bulk completion changes patch just the affected
+	// entries via recomputeEligibility().
+	const eligibilityByQuestline = new SvelteMap<string, QuestlineEligibility>();
+
+	function recomputeEligibility(names?: Iterable<string>) {
 		const now = new Date();
-		return new Map(
-			questlineOptions.map((g) => [
-				g.name,
-				evaluateQuestlineEligibility(g, playerStats, completed, questlineByName, now)
-			])
-		);
+		for (const name of names ?? questlineOptions.map((g) => g.name)) {
+			const g = questlineByName.get(name);
+			if (g) {
+				eligibilityByQuestline.set(
+					name,
+					evaluateQuestlineEligibility(g, playerStats, completed, questlineByName, now)
+				);
+			}
+		}
+	}
+
+	/** Questlines whose eligibility can change when a quest in `questlineName` is toggled. */
+	function eligibilityDependents(questlineName: string): string[] {
+		return [questlineName, ...(predReverseIndex.get(questlineName) ?? [])];
+	}
+
+	$effect(() => {
+		// Reactive deps for a *full* rebuild: the questline catalogue, player stats,
+		// and the flag marking `completed` as loaded from storage. `completed`
+		// itself is deliberately read only inside `untrack` — a single quest toggle
+		// patches just the affected questlines via toggleCompleted/onCompletedChanged
+		// instead of re-walking the whole catalogue here.
+		const deps = {
+			options: questlineOptions,
+			stats: playerStats,
+			completedLoaded: hydrated,
+			ready: questlinesHydrated
+		};
+		if (deps.ready) untrack(() => recomputeEligibility());
 	});
 
 	// ---------- Modals ----------
@@ -403,11 +449,10 @@
 		>
 			<Compass size={14} class="mt-0.5 shrink-0" />
 			<span>
-				New here? (1) Import your player stats (optional). (2) Import your already-completed
-				quests. (3) Pick the questlines you're working on. (4) Import your inventory and bank.
-				<a
-					href="{resolve('/about')}#tutorial"
-					class="font-medium underline hover:no-underline">Full walkthrough &rarr;</a
+				New here? (1) Import your player stats (optional). (2) Import your already-completed quests.
+				(3) Pick the questlines you're working on. (4) Import your inventory and bank.
+				<a href="{resolve('/about')}#tutorial" class="font-medium underline hover:no-underline"
+					>Full walkthrough &rarr;</a
 				>
 			</span>
 		</div>
@@ -421,7 +466,9 @@
 			onUpdate={handleUpdatePlayerStats}
 		/>
 
-		<section class="grid grid-cols-1 grid-rows-[60vh_70vh] gap-6 md:h-[100vh] md:grid-cols-2 md:grid-rows-none">
+		<section
+			class="grid grid-cols-1 grid-rows-[60vh_70vh] gap-6 md:h-[100vh] md:grid-cols-2 md:grid-rows-none"
+		>
 			<QuestlinePicker
 				{questlineOptions}
 				{questlineByName}

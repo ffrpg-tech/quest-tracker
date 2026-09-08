@@ -1,4 +1,10 @@
-import { questKey, type PlayerStats, type Quest, type Questline, type SkillLevelRequirement } from '../types';
+import {
+	questKey,
+	type PlayerStats,
+	type Quest,
+	type Questline,
+	type SkillLevelRequirement
+} from '../types';
 
 export interface EligibilityGap {
 	kind: 'skill' | 'npc' | 'season' | 'pred';
@@ -65,7 +71,11 @@ function normalizeNpcName(name: string): string {
 }
 
 function formatDate(iso: string): string {
-	return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+	return new Date(iso).toLocaleDateString(undefined, {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric'
+	});
 }
 
 /** `Quest.startDate`/`endDate` are '' for non-seasonal quests (see fetch-questlines.mjs) —
@@ -177,6 +187,41 @@ export function evaluateQuestEligibility(
 		eligible: gaps.length === 0,
 		gaps
 	};
+}
+
+/**
+ * Reverse `pred` dependency index: questline name -> names of questlines that
+ * have at least one quest whose `pred` references it. Completing or uncompleting
+ * a quest only ever changes eligibility for its own questline and for these
+ * dependents (whose `pred` gap can open or close), so a per-toggle recompute can
+ * be scoped to that set instead of re-evaluating the whole catalogue — a full
+ * rebuild on every checkbox toggle was showing up as ~1.5s main-thread Long
+ * Tasks (2000+ pred lookups + Date construction per pass).
+ *
+ * Refs resolve by questline *title*; the index is keyed by the resolved
+ * questline's `name` (via `allQuestlines`), matching how `predGaps` looks its
+ * targets up. An unresolvable title is skipped — `predGaps` fails open on it, so
+ * it can never produce a gap and nothing depends on it.
+ */
+export function buildPredReverseIndex(
+	questlineOptions: Questline[],
+	allQuestlines: Map<string, Questline>
+): Map<string, Set<string>> {
+	const index = new Map<string, Set<string>>();
+
+	for (const g of questlineOptions) {
+		for (const q of g.quests) {
+			for (const ref of q.pred?.questlines ?? []) {
+				const target = allQuestlines.get(ref.questline.title);
+				if (!target) continue;
+				let dependents = index.get(target.name);
+				if (!dependents) index.set(target.name, (dependents = new Set()));
+				dependents.add(g.name);
+			}
+		}
+	}
+
+	return index;
 }
 
 export function evaluateQuestlineEligibility(

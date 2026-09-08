@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { ChevronRight } from '@lucide/svelte';
+	import { MediaQuery, SvelteMap, SvelteSet } from 'svelte/reactivity';
 	import type {
 		ItemRunsDryAt,
 		ItemShortfall,
 		QuestDiffResult,
 		QuestlineDiffResult
 	} from '$lib/quest/calc/diff';
-	import { isUnavailable, type EligibilityGap, type QuestlineEligibility } from '$lib/quest/calc/eligibility';
+	import {
+		isUnavailable,
+		type EligibilityGap,
+		type QuestlineEligibility
+	} from '$lib/quest/calc/eligibility';
 	import { statusTextColorClass } from '$lib/ui/statusColor';
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
@@ -34,6 +39,22 @@
 	// every requirement (including already-satisfied ones) is opt-in so a
 	// MAXED item can be spotted even where it isn't blocking anything.
 	let showAllItems = $state(false);
+
+	// Only mount a questline's quest rows while its <details> is actually open. A
+	// closed questline otherwise still rendered its whole row list (up to ~99
+	// rows), which dominated render/paint time whenever diffResults changed.
+	let openQuestlines = new SvelteSet<string>();
+
+	function handleToggle(name: string, event: Event) {
+		if ((event.currentTarget as HTMLDetailsElement).open) openQuestlines.add(name);
+		else openQuestlines.delete(name);
+	}
+
+	// Render only the layout for the current viewport rather than emitting both
+	// the desktop table and the mobile card list for every open questline and
+	// letting CSS hide one. `sm` breakpoint = 640px; fallback matches the
+	// desktop-first table for SSR / first paint.
+	const wide = new MediaQuery('min-width: 640px', true);
 
 	// Eligibility is a second, independent "wall" from the material shortfalls
 	// diffResults already carries — a locked quest still gets walked/deducted
@@ -66,6 +87,14 @@
 		return null;
 	}
 
+	// Computed once per questline whenever diffResults/eligibility changes, rather
+	// than re-run for every row on every render of the {#each} below.
+	const blockByQuestline = $derived.by(() => {
+		const map = new SvelteMap<string, ReturnType<typeof effectiveBlock>>();
+		for (const dr of diffResults) map.set(dr.questlineName, effectiveBlock(dr));
+		return map;
+	});
+
 	// CAPPED's `title` tooltip never reaches touch devices — tapping the badge
 	// toggles the same explanation inline instead, so the meaning is reachable
 	// without a mouse hover. Keyed by "questName:item" since the same item can
@@ -80,7 +109,7 @@
 		'This requirement exceeds your known storage cap for this item — no amount of farming clears this until the cap is raised or spent down elsewhere.';
 
 	const MAXED_EXPLANATION =
-		"Your pasted inventory shows this item at \"MAX ON HAND\" right now — farming more of it won't add anything until some is spent, so focus on a different item instead.";
+		'Your pasted inventory shows this item at "MAX ON HAND" right now — farming more of it won\'t add anything until some is spent, so focus on a different item instead.';
 
 	const RUNS_DRY_EXPLANATION =
 		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
@@ -91,20 +120,27 @@
 	}
 </script>
 
-{#snippet statusLabel(q: QuestDiffResult, isWallPoint: boolean, small: boolean, gaps: EligibilityGap[])}
+{#snippet statusLabel(
+	q: QuestDiffResult,
+	isWallPoint: boolean,
+	small: boolean,
+	gaps: EligibilityGap[]
+)}
 	{@const size = small ? 'shrink-0 text-xs' : ''}
 	{#if q.done}
 		<span class="{size} {statusTextColorClass('neutral')}">Done</span>
 	{:else if isUnavailable(gaps)}
 		<span
 			class="{size} font-semibold text-red-700 dark:text-red-400"
-			title="A seasonal window for this quest has already passed — there's no known guarantee it comes back">
+			title="A seasonal window for this quest has already passed — there's no known guarantee it comes back"
+		>
 			UNAVAILABLE
 		</span>
 	{:else if gaps.length > 0}
 		<span
 			class="{size} font-semibold text-amber-700 dark:text-amber-400"
-			title="Level/NPC requirement not met yet — this is a planning-only wall, separate from materials">
+			title="Level/NPC requirement not met yet — this is a planning-only wall, separate from materials"
+		>
 			LOCKED
 		</span>
 	{:else if q.ok}
@@ -140,7 +176,8 @@
 							loading="lazy"
 						/>
 					{/if}
-					<span class="font-medium text-amber-700 dark:text-amber-400">{gap.label}</span>: need level
+					<span class="font-medium text-amber-700 dark:text-amber-400">{gap.label}</span>: need
+					level
 					<span class="tabular-nums text-gray-500 dark:text-gray-400">{gap.required}</span>, have
 					<span class="tabular-nums text-sky-600 dark:text-sky-400">{gap.have}</span>
 				{/if}
@@ -158,8 +195,11 @@
 			<li>
 				<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
 					<ItemIcon name={s.item} />
-					<a href={buddyFarmItemUrl(s.item)} target="_blank" rel="noopener noreferrer" class="hover:underline"
-						>{s.item}</a
+					<a
+						href={buddyFarmItemUrl(s.item)}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="hover:underline">{s.item}</a
 					></span
 				>: need
 				<span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>, have
@@ -219,9 +259,9 @@
 		</div>
 		<ul class="divide-y divide-gray-100 dark:divide-gray-700">
 			{#each diffResults as diffResult, i (diffResult.questlineName)}
-				{@const block = effectiveBlock(diffResult)}
+				{@const block = blockByQuestline.get(diffResult.questlineName) ?? null}
 				<li data-testid="result-row">
-					<details class="group">
+					<details class="group" ontoggle={(e) => handleToggle(diffResult.questlineName, e)}>
 						<summary
 							class="flex cursor-pointer list-none flex-col items-start gap-1 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-2"
 						>
@@ -264,98 +304,104 @@
 							{/if}
 						</summary>
 
-						<div
-							class="hidden max-h-[32rem] overflow-y-auto rounded border border-gray-100 dark:border-gray-700 sm:block"
-						>
-							<table class="w-full text-sm">
-								<thead
-									class="sticky top-0 z-10 bg-gray-50 text-left text-xs uppercase text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+						{#if openQuestlines.has(diffResult.questlineName)}
+							{#if wide.current}
+								<div
+									class="max-h-[32rem] overflow-y-auto rounded border border-gray-100 dark:border-gray-700"
 								>
-									<tr>
-										<th class="p-2">Done</th>
-										<th class="p-2">#</th>
-										<th class="p-2">Quest</th>
-										<th class="p-2">Status</th>
-										<th class="p-2">Shortfall</th>
-									</tr>
-								</thead>
-								<tbody>
+									<table class="w-full text-sm">
+										<thead
+											class="sticky top-0 z-10 bg-gray-50 text-left text-xs uppercase text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+										>
+											<tr>
+												<th class="p-2">Done</th>
+												<th class="p-2">#</th>
+												<th class="p-2">Quest</th>
+												<th class="p-2">Status</th>
+												<th class="p-2">Shortfall</th>
+											</tr>
+										</thead>
+										<tbody>
+											{#each diffResult.quests as q, qi (q.questName + qi)}
+												{@const gaps = questGaps(diffResult.questlineName, qi)}
+												{@const items = showAllItems ? q.requirements : q.shortfalls}
+												<tr
+													class="border-t border-gray-100 dark:border-gray-700"
+													class:bg-red-50={qi === block?.qi}
+													class:dark:bg-red-950={qi === block?.qi}
+													class:opacity-50={q.done}
+												>
+													<td class="p-2">
+														<input
+															type="checkbox"
+															checked={q.done}
+															aria-label="Mark {q.questName} done"
+															onchange={() =>
+																onToggleCompleted(diffResult.questlineName, q.questName)}
+															class="cursor-pointer"
+														/>
+													</td>
+													<td class="p-2 text-xs text-gray-400">{q.seq}</td>
+													<td class="p-2" class:line-through={q.done}>{q.questName}</td>
+													<td class="p-2">
+														{@render statusLabel(q, qi === block?.qi, false, gaps)}
+													</td>
+													<td class="p-2">
+														{#if gaps.length > 0}
+															{@render eligibilityGapList(gaps)}
+														{/if}
+														{#if items.length > 0}
+															{@render itemList(q, items, diffResult.questlineName)}
+														{/if}
+													</td>
+												</tr>
+											{/each}
+										</tbody>
+									</table>
+								</div>
+							{:else}
+								<div
+									class="max-h-[32rem] divide-y divide-gray-100 overflow-y-auto rounded border border-gray-100 dark:divide-gray-700 dark:border-gray-700"
+								>
 									{#each diffResult.quests as q, qi (q.questName + qi)}
 										{@const gaps = questGaps(diffResult.questlineName, qi)}
 										{@const items = showAllItems ? q.requirements : q.shortfalls}
-										<tr
-											class="border-t border-gray-100 dark:border-gray-700"
+										<div
+											class="flex flex-col gap-1.5 p-2"
 											class:bg-red-50={qi === block?.qi}
 											class:dark:bg-red-950={qi === block?.qi}
 											class:opacity-50={q.done}
 										>
-											<td class="p-2">
-												<input
-													type="checkbox"
-													checked={q.done}
-													aria-label="Mark {q.questName} done"
-													onchange={() => onToggleCompleted(diffResult.questlineName, q.questName)}
-													class="cursor-pointer"
-												/>
-											</td>
-											<td class="p-2 text-xs text-gray-400">{q.seq}</td>
-											<td class="p-2" class:line-through={q.done}>{q.questName}</td>
-											<td class="p-2">
-												{@render statusLabel(q, qi === block?.qi, false, gaps)}
-											</td>
-											<td class="p-2">
-												{#if gaps.length > 0}
+											<div class="flex items-start justify-between gap-2">
+												<div class="flex min-w-0 items-center gap-2">
+													<input
+														type="checkbox"
+														checked={q.done}
+														aria-label="Mark {q.questName} done"
+														onchange={() =>
+															onToggleCompleted(diffResult.questlineName, q.questName)}
+														class="shrink-0 cursor-pointer"
+													/>
+													<span class="shrink-0 text-xs text-gray-400">#{q.seq}</span>
+													<span class="text-sm" class:line-through={q.done}>{q.questName}</span>
+												</div>
+												{@render statusLabel(q, qi === block?.qi, true, gaps)}
+											</div>
+											{#if gaps.length > 0}
+												<div class="pl-6">
 													{@render eligibilityGapList(gaps)}
-												{/if}
-												{#if items.length > 0}
+												</div>
+											{/if}
+											{#if items.length > 0}
+												<div class="pl-6">
 													{@render itemList(q, items, diffResult.questlineName)}
-												{/if}
-											</td>
-										</tr>
+												</div>
+											{/if}
+										</div>
 									{/each}
-								</tbody>
-							</table>
-						</div>
-
-						<div
-							class="max-h-[32rem] divide-y divide-gray-100 overflow-y-auto rounded border border-gray-100 dark:divide-gray-700 dark:border-gray-700 sm:hidden"
-						>
-							{#each diffResult.quests as q, qi (q.questName + qi)}
-								{@const gaps = questGaps(diffResult.questlineName, qi)}
-								{@const items = showAllItems ? q.requirements : q.shortfalls}
-								<div
-									class="flex flex-col gap-1.5 p-2"
-									class:bg-red-50={qi === block?.qi}
-									class:dark:bg-red-950={qi === block?.qi}
-									class:opacity-50={q.done}
-								>
-									<div class="flex items-start justify-between gap-2">
-										<div class="flex min-w-0 items-center gap-2">
-											<input
-												type="checkbox"
-												checked={q.done}
-												aria-label="Mark {q.questName} done"
-												onchange={() => onToggleCompleted(diffResult.questlineName, q.questName)}
-												class="shrink-0 cursor-pointer"
-											/>
-											<span class="shrink-0 text-xs text-gray-400">#{q.seq}</span>
-											<span class="text-sm" class:line-through={q.done}>{q.questName}</span>
-										</div>
-										{@render statusLabel(q, qi === block?.qi, true, gaps)}
-									</div>
-									{#if gaps.length > 0}
-										<div class="pl-6">
-											{@render eligibilityGapList(gaps)}
-										</div>
-									{/if}
-									{#if items.length > 0}
-										<div class="pl-6">
-											{@render itemList(q, items, diffResult.questlineName)}
-										</div>
-									{/if}
 								</div>
-							{/each}
-						</div>
+							{/if}
+						{/if}
 					</details>
 				</li>
 			{/each}

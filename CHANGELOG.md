@@ -9,6 +9,13 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.2.9] - September 8, 2026
+
+### Fixed
+
+- Fixed a noticeable freeze — up to a second or two, and longer on phones — every time you checked a quest off as done. Each tick was re-evaluating skill, NPC, and prerequisite eligibility for every questline in the game (500+ chains, ~2,500 quests) instead of just the questline you changed and any that list it as a prerequisite. That work is now roughly 200× faster.
+- Fixed the Results panel stuttering when you expand a questline, or after any change while a long queue is loaded. Every queued questline was building its full quest list twice (a desktop table and a mobile layout) and keeping both in the page even while collapsed. Collapsed questlines now render nothing until you open them, and only the layout for your current screen size is built.
+
 ## [0.2.8] - September 1, 2026
 
 ### Added

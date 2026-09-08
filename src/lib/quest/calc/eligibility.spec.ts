@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { evaluateQuestEligibility, evaluateQuestlineEligibility, isUnavailable } from './eligibility';
+import {
+	buildPredReverseIndex,
+	evaluateQuestEligibility,
+	evaluateQuestlineEligibility,
+	isUnavailable
+} from './eligibility';
 import type { PlayerStats, Quest, Questline } from '../types';
 
 const baseStats: PlayerStats = {
@@ -40,7 +45,9 @@ describe('evaluateQuestEligibility', () => {
 			};
 			const result = evaluateQuestEligibility(quest, baseStats);
 			expect(result.eligible).toBe(false);
-			expect(result.gaps).toEqual([{ kind: 'skill', label: expect.any(String), required: 15, have: 10 }]);
+			expect(result.gaps).toEqual([
+				{ kind: 'skill', label: expect.any(String), required: 15, have: 10 }
+			]);
 		}
 	);
 
@@ -149,7 +156,11 @@ describe('evaluateQuestEligibility', () => {
 		});
 
 		it('is expired/unavailable for an endDate-only window that already passed', () => {
-			const quest: Quest = { ...noRequirementQuest, startDate: '', endDate: '2026-06-30T00:00:00Z' };
+			const quest: Quest = {
+				...noRequirementQuest,
+				startDate: '',
+				endDate: '2026-06-30T00:00:00Z'
+			};
 			const result = evaluateQuestEligibility(quest, baseStats, now);
 			expect(result.eligible).toBe(false);
 			expect(result.gaps[0].expired).toBe(true);
@@ -157,7 +168,11 @@ describe('evaluateQuestEligibility', () => {
 		});
 
 		it('is locked but not expired for a startDate-only window not yet reached (no defined end)', () => {
-			const quest: Quest = { ...noRequirementQuest, startDate: '2026-08-01T00:00:00Z', endDate: '' };
+			const quest: Quest = {
+				...noRequirementQuest,
+				startDate: '2026-08-01T00:00:00Z',
+				endDate: ''
+			};
 			const result = evaluateQuestEligibility(quest, baseStats, now);
 			expect(result.eligible).toBe(false);
 			expect(result.gaps[0].expired).toBe(false);
@@ -262,7 +277,12 @@ describe('evaluateQuestlineEligibility', () => {
 		]);
 
 		it('reports a pred gap when the referenced predecessor quest is not completed', () => {
-			const result = evaluateQuestlineEligibility(gatedQuestline, baseStats, new Set(), allQuestlines);
+			const result = evaluateQuestlineEligibility(
+				gatedQuestline,
+				baseStats,
+				new Set(),
+				allQuestlines
+			);
 			expect(result.quests[0].eligible).toBe(false);
 			expect(result.quests[0].gaps).toEqual([
 				{ kind: 'pred', label: 'Upstream Chain', detail: 'Complete "Upstream II" first' }
@@ -271,7 +291,12 @@ describe('evaluateQuestlineEligibility', () => {
 
 		it('clears the pred gap once the referenced predecessor quest is completed', () => {
 			const completed = new Set(['Upstream Chain::Upstream II']);
-			const result = evaluateQuestlineEligibility(gatedQuestline, baseStats, completed, allQuestlines);
+			const result = evaluateQuestlineEligibility(
+				gatedQuestline,
+				baseStats,
+				completed,
+				allQuestlines
+			);
 			expect(result.quests[0].eligible).toBe(true);
 			expect(result.quests[0].gaps).toEqual([]);
 		});
@@ -344,5 +369,60 @@ describe('evaluateQuestlineEligibility', () => {
 			expect(result.quests[0].eligible).toBe(true);
 			expect(result.quests[0].gaps).toEqual([]);
 		});
+	});
+});
+
+describe('buildPredReverseIndex', () => {
+	const mkQuestline = (name: string, quests: Partial<Quest>[]): Questline => ({
+		name,
+		questCount: quests.length,
+		quests: quests.map((q, i) => ({
+			name: `${name} ${i}`,
+			startDate: '',
+			endDate: '',
+			requirements: [],
+			seq: i,
+			...q
+		}))
+	});
+
+	it('maps a referenced questline to the questlines that pred-reference it', () => {
+		const upstream = mkQuestline('Upstream', [{}, {}]);
+		const downstream = mkQuestline('Downstream', [
+			{ pred: { questlines: [{ questline: { title: 'Upstream' }, order: 1 }] } }
+		]);
+		const options = [upstream, downstream];
+		const byName = new Map(options.map((g) => [g.name, g]));
+
+		const index = buildPredReverseIndex(options, byName);
+
+		expect(index.get('Upstream')).toEqual(new Set(['Downstream']));
+		// Nothing references Downstream.
+		expect(index.has('Downstream')).toBe(false);
+	});
+
+	it('collects every dependent and dedupes multiple refs from the same questline', () => {
+		const upstream = mkQuestline('Upstream', [{}, {}]);
+		const a = mkQuestline('A', [
+			{ pred: { questlines: [{ questline: { title: 'Upstream' }, order: 0 }] } },
+			{ pred: { questlines: [{ questline: { title: 'Upstream' }, order: 1 }] } }
+		]);
+		const b = mkQuestline('B', [
+			{ pred: { questlines: [{ questline: { title: 'Upstream' }, order: 1 }] } }
+		]);
+		const options = [upstream, a, b];
+		const byName = new Map(options.map((g) => [g.name, g]));
+
+		expect(buildPredReverseIndex(options, byName).get('Upstream')).toEqual(new Set(['A', 'B']));
+	});
+
+	it('skips refs to unknown questline titles (predGaps fails open on them anyway)', () => {
+		const orphan = mkQuestline('Orphan', [
+			{ pred: { questlines: [{ questline: { title: 'Nonexistent' }, order: 0 }] } }
+		]);
+		const options = [orphan];
+		const byName = new Map(options.map((g) => [g.name, g]));
+
+		expect(buildPredReverseIndex(options, byName).size).toBe(0);
 	});
 });
