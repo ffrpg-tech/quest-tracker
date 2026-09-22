@@ -51,6 +51,7 @@
 	import ProgressBackupModal from '$lib/components/ProgressBackupModal.svelte';
 	import ImportModal from '$lib/components/ImportModal.svelte';
 	import FeedbackModal from '$lib/components/FeedbackModal.svelte';
+	import { getRecipesState, loadRecipes } from '$lib/quest/storage/recipesStore.svelte';
 
 	const webApplicationJsonLd = {
 		'@context': 'https://schema.org',
@@ -80,10 +81,15 @@
 	const npcsState = getNpcsState();
 	const npcsHydrated = $derived(npcsState.npcsHydrated);
 
+	const recipesState = getRecipesState();
+	const recipesHydrated = $derived(recipesState.recipesHydrated);
+	const recipesMap = $derived(recipesState.recipesByItem);
+
 	onMount(() => {
 		void loadQuestlines();
 		void loadItems();
 		void loadNpcs();
+		void loadRecipes();
 	});
 
 	const questlineOptions = $derived(
@@ -253,7 +259,7 @@
 	// ---------- Diff ----------
 
 	const diffResults = $derived<QuestlineDiffResult[]>(
-		diffQuestlineQueue(selectedQuestlines, inventoryMap, completed, inventoryCaps)
+		diffQuestlineQueue(selectedQuestlines, inventoryMap, completed, inventoryCaps, recipesMap)
 	);
 
 	// The single item-level shortfall view, regardless of queue length — this
@@ -382,7 +388,8 @@
 		{ label: 'Questline queue', done: queueHydrated },
 		{ label: 'Questlines', done: questlinesHydrated },
 		{ label: 'Items', done: itemsHydrated },
-		{ label: 'NPCs', done: npcsHydrated }
+		{ label: 'NPCs', done: npcsHydrated },
+		{ label: 'Recipes', done: recipesHydrated }
 	]);
 	const appReady = $derived(loadingStages.every((s) => s.done));
 </script>
@@ -407,6 +414,8 @@
 	<link rel="preload" href={asset('/questlines.json')} as="fetch" crossorigin="anonymous" />
 	<link rel="preload" href={asset('/items.json')} as="fetch" crossorigin="anonymous" />
 	<link rel="preload" href={asset('/questlines-meta.json')} as="fetch" crossorigin="anonymous" />
+	<link rel="preload" href={asset('/npc.json')} as="fetch" crossorigin="anonymous" />
+	<link rel="preload" href={asset('/recipes.json')} as="fetch" crossorigin="anonymous" />
 
 	<!-- eslint-disable svelte/no-at-html-tags -- JSON-LD script tags: content is
 	     JSON.stringify of static, developer-authored objects above, not user

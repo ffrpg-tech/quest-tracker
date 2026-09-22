@@ -9,6 +9,7 @@ const samplePlayerStats: PlayerStats = {
 	exploring: 7,
 	tower: 1,
 	cooking: 2,
+	mining: 4,
 	npcLevels: { Otis: 4 }
 };
 

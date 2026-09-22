@@ -26,6 +26,7 @@ Thumbs.db
 /static/items.json
 /static/npc.json
 /src/lib/data/items.json
+/static/recipes.json
 
 # Vite
 vite.config.js.timestamp-*

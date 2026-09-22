@@ -39,6 +39,7 @@
 	// every requirement (including already-satisfied ones) is opt-in so a
 	// MAXED item can be spotted even where it isn't blocking anything.
 	let showAllItems = $state(false);
+	let showCraftable = $state(true);
 
 	// Only mount a questline's quest rows while its <details> is actually open. A
 	// closed questline otherwise still rendered its whole row list (up to ~99
@@ -100,13 +101,21 @@
 	// without a mouse hover. Keyed by "questName:item" since the same item can
 	// be capped in more than one quest row.
 	let expandedCapped = $state<string | null>(null);
+	let expandedCraftable = $state<string | null>(null);
 
 	function toggleCappedExplanation(key: string) {
 		expandedCapped = toggleExpanded(expandedCapped, key);
 	}
 
+	function toggleCraftableExplanation(key: string) {
+		expandedCraftable = toggleExpanded(expandedCraftable, key);
+	}
+
 	const CAPPED_EXPLANATION =
 		'This requirement exceeds your known storage cap for this item — no amount of farming clears this until the cap is raised or spent down elsewhere.';
+
+	const CRAFTABLE_EXPLANATION =
+		'Purple text shows how many can be crafted from materials on hand.';
 
 	const MAXED_EXPLANATION =
 		'Your pasted inventory shows this item at "MAX ON HAND" right now — farming more of it won\'t add anything until some is spent, so focus on a different item instead.';
@@ -201,10 +210,25 @@
 						rel="noopener noreferrer"
 						class="hover:underline">{s.item}</a
 					></span
-				>: <span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span> / <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
-				{#if s.short > 0}
+				>: <span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
+				{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
+					<button
+						type="button"
+						onclick={() => toggleCraftableExplanation(cappedKey)}
+						title={CRAFTABLE_EXPLANATION}
+						aria-expanded={expandedCraftable === cappedKey}
+						class="cursor-pointer tabular-nums text-violet-600 underline decoration-dotted hover:decoration-solid dark:text-violet-400"
+						>(+{s.craftableQty})</button
+					>
+					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
+					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400"
+						>{s.short - s.craftableQty}</span
+					> left)
+				{:else if s.short > 0}	
+					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
 				{:else}
+					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 					<span class="font-medium {statusTextColorClass('good')}">(met)</span>
 				{/if}
 				{#if s.capped}
@@ -236,6 +260,11 @@
 						{CAPPED_EXPLANATION}
 					</div>
 				{/if}
+				{#if showCraftable && s.craftableQty !== undefined && s.craftableQty > 0 && expandedCraftable === cappedKey}
+					<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+						{CRAFTABLE_EXPLANATION}
+					</div>
+				{/if}
 			</li>
 		{/each}
 	</ul>
@@ -245,14 +274,24 @@
 	<section class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
 		<div class="mb-2 flex items-center justify-between gap-2">
 			<h2 class="font-semibold">Results</h2>
-			<button
-				type="button"
-				onclick={() => (showAllItems = !showAllItems)}
-				aria-pressed={showAllItems}
-				class={buttonClass('pill', showAllItems)}
-			>
-				Show all items
-			</button>
+			<div>
+				<button
+					type="button"
+					onclick={() => (showAllItems = !showAllItems)}
+					aria-pressed={showAllItems}
+					class={buttonClass('pill', showAllItems)}
+				>
+					Show all items
+				</button>
+				<button
+					type="button"
+					onclick={() => (showCraftable = !showCraftable)}
+					aria-pressed={showCraftable}
+					class={buttonClass('pill', showCraftable)}
+				>
+					Show craftable amounts
+				</button>
+			</div>
 		</div>
 		<ul class="divide-y divide-gray-100 dark:divide-gray-700">
 			{#each diffResults as diffResult, i (diffResult.questlineName)}

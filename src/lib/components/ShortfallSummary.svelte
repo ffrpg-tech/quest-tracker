@@ -195,14 +195,21 @@
 								{#if s.capped && expandedCappedItem === s.item}
 									<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{CAPPED_EXPLANATION}</p>
 								{/if}
-								<div
-									class="mt-1 flex justify-between border-l border-gray-200 pl-2 text-xs font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
-								>
-									<span>Total</span>
-									<span class="tabular-nums text-red-600 dark:text-red-400"
-										>−{formatNumber(s.short)}</span
-									>
-								</div>
+								<div class="mt-1 flex justify-between border-l border-gray-200 pl-2 text-xs font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300">
+								<span>Total</span>
+								{#if s.craftableQty !== undefined && s.craftableQty > 0}
+									<span class="tabular-nums">
+										<button
+											type="button"
+											class="cursor-pointer text-violet-600 underline decoration-dotted hover:decoration-solid dark:text-violet-400"
+											>+{formatNumber(s.craftableQty)}</button
+										>
+										<span class="text-red-600 dark:text-red-400">−{formatNumber(s.short - s.craftableQty)}</span>
+									</span>
+								{:else}
+									<span class="tabular-nums text-red-600 dark:text-red-400">−{formatNumber(s.short)}</span>
+								{/if}
+							</div>
 								<ul
 									class="mt-1 space-y-1 border-l border-gray-200 pl-2 text-xs dark:border-gray-700"
 								>
