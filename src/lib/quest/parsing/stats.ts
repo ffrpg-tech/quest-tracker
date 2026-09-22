@@ -23,7 +23,8 @@ const SKILL_LINES: { key: keyof Omit<PlayerStats, 'tower' | 'npcLevels'>; line: 
 	{ key: 'fishing', line: 'Fishing' },
 	{ key: 'crafting', line: 'Crafting' },
 	{ key: 'exploring', line: 'Exploring' },
-	{ key: 'cooking', line: 'Cooking' }
+	{ key: 'cooking', line: 'Cooking' },
+	{ key: 'mining', line: 'Mining'},
 ];
 
 // Mining has no leveled progression ("Now in Beta" instead of a level) — never
@@ -160,6 +161,7 @@ export function parsePlayerStatsPaste(
 		crafting: stats.crafting as number,
 		exploring: stats.exploring as number,
 		cooking: stats.cooking as number,
+		mining: stats.mining as number,
 		tower: findTowerLevel(lines),
 		npcLevels
 	};

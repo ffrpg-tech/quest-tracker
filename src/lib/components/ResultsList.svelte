@@ -193,7 +193,7 @@
 			{@const maxed = maxedItems.has(s.item)}
 			{@const runsDryHere = isRunsDryHere(s.item, questlineName, q.questName)}
 			<li>
-				<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
+				<span class="items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
 					<ItemIcon name={s.item} />
 					<a
 						href={buddyFarmItemUrl(s.item)}
@@ -201,12 +201,9 @@
 						rel="noopener noreferrer"
 						class="hover:underline">{s.item}</a
 					></span
-				>: need
-				<span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>, have
-				<span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
+				>: <span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span> / <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 				{#if s.short > 0}
-					(short
-					<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span>)
+					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
 				{:else}
 					<span class="font-medium {statusTextColorClass('good')}">(met)</span>
 				{/if}
@@ -331,14 +328,14 @@
 													class:dark:bg-red-950={qi === block?.qi}
 													class:opacity-50={q.done}
 												>
-													<td class="p-2">
+													<td class="p-2 m-2">
 														<input
 															type="checkbox"
 															checked={q.done}
 															aria-label="Mark {q.questName} done"
 															onchange={() =>
 																onToggleCompleted(diffResult.questlineName, q.questName)}
-															class="cursor-pointer"
+															class="cursor-pointer h-4 w-4 shrink-0"
 														/>
 													</td>
 													<td class="p-2 text-xs text-gray-400">{q.seq}</td>

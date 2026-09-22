@@ -216,9 +216,9 @@
 													>
 												</div>
 											{/if}
-											<ul class="space-y-0.5" class:pl-4={s.byQuestline.length > 1}>
+											<ul class="max-h-36 space-y-0.5 overflow-y-auto pr-1" class:pl-4={s.byQuestline.length > 1}>
 												{#each ql.byQuest as bq (bq.seq)}
-													<li class="flex justify-between text-gray-500 dark:text-gray-400">
+													<li class="flex justify-between text-gray-500 dark:text-gray-500">
 														<span class="inline-flex items-center gap-1">
 															{bq.questName}
 															{#if isRunsDryHere(s.item, ql.questlineName, bq.questName)}
@@ -229,7 +229,7 @@
 																>
 															{/if}
 														</span>
-														<span class="tabular-nums">−{formatNumber(bq.short)}</span>
+														<span class="text-red-300 tabular-nums">−{formatNumber(bq.short)}</span>
 													</li>
 												{/each}
 											</ul>

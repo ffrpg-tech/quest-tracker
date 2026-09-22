@@ -59,7 +59,8 @@ const SKILL_LABELS: Record<keyof SkillLevelRequirement, string> = {
 	crafting: 'Crafting',
 	exploring: 'Exploring',
 	tower: 'Tower',
-	cooking: 'Cooking'
+	cooking: 'Cooking',
+	mining: 'Mining'
 };
 
 /** Case/trim-insensitive only — a safety net for casing drift (e.g. `ROOMBA` vs `Roomba`)

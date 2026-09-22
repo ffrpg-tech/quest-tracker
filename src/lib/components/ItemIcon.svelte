@@ -13,7 +13,7 @@
 {#if cannotMail}
 	<span
 		title="Can't be mailed — you'll need to get this yourself"
-		class="inline-block shrink-0 rounded bg-red-100 px-1 text-[9px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
+		class="inline-block shrink-0 rounded border-l-4 border-red-500 bg-red-500/10 bg-red-100 px-1 text-[9px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
 		>CAN'T MAIL</span
 	>
 {/if}

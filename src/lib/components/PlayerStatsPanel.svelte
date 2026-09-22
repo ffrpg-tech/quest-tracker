@@ -25,6 +25,7 @@
 		{ key: 'crafting', label: 'Crafting' },
 		{ key: 'exploring', label: 'Exploring' },
 		{ key: 'cooking', label: 'Cooking' },
+		{ key: 'mining', label: 'Mining' },
 		{ key: 'tower', label: 'Tower' }
 	];
 
@@ -106,7 +107,7 @@
 			badges on the questline list.
 		</p>
 	{:else}
-		<div class="grid grid-cols-3 gap-2 text-center text-xs sm:grid-cols-6">
+		<div class="grid grid-cols-4 gap-2 text-center text-xs sm:grid-cols-7">
 			{#each SKILLS as skill (skill.key)}
 				<div class="rounded border border-gray-100 p-1.5 dark:border-gray-700">
 					<label class="text-gray-500 dark:text-gray-400" for="stat-{skill.key}">{skill.label}</label>

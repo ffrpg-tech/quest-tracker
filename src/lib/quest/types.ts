@@ -10,6 +10,7 @@ export interface SkillLevelRequirement {
 	exploring?: number;
 	tower?: number;
 	cooking?: number;
+	mining?: number;
 }
 
 export interface NpcLevelRequirement {
@@ -56,6 +57,7 @@ export interface PlayerStats {
 	exploring: number;
 	tower: number;
 	cooking: number;
+	mining: number;
 	npcLevels: Record<string, number>;
 }
 
@@ -105,7 +107,8 @@ const SKILL_KEYS: (keyof SkillLevelRequirement)[] = [
 	'crafting',
 	'exploring',
 	'tower',
-	'cooking'
+	'cooking',
+	'mining',
 ];
 
 function isSkillLevelRequirement(v: unknown): v is SkillLevelRequirement {

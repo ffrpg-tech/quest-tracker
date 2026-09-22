@@ -9,6 +9,19 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.3.0] - September 21, 2026
+
+### Added
+
+- Added Mining level in the Player stats. 
+- Added height capping with smooth vertical scrolling to the quest breakdown list in the Shortfall summary, preventing long repetitive quest chains (like Corn of Interest) from stretching the card.
+
+### Changed
+
+- Swapped repetitive "need / have / short" text labels in the quest shortfall rows for compact inline deficit counts, making multi-item bottlenecks easier to scan at a glance.
+- Replaced the heavy solid-red row background on the bottleneck quest step with a clean left border indicator and subtle tint, ensuring red "CAN'T MAIL" badges and text remain crisp and readable.
+- Expanded the hit-box padding for quest checkbox inputs on touch screens to prevent accidental mis-taps on nearby titles and carets.
+
 ## [0.2.9] - September 8, 2026
 
 ### Fixed
