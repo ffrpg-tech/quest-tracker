@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { diffQuestlineQueue } from './diff';
 import { createCraftingPlanner, type RecipeMap } from './recipes';
-import type { Questline } from '../types';
+import type { PlayerStats, Questline } from '../types';
 
 const questlines = Object.values(
 	JSON.parse(readFileSync(resolve('static/questlines.json'), 'utf8')) as Record<string, Questline>
@@ -85,4 +85,76 @@ describe('performance characterization', () => {
 		expect(plannerMs).toBeGreaterThanOrEqual(0);
 		}
 	);
+
+	it('measures realistic queues (1, 5, 20 questlines) with empty and realistic inventory', () => {
+		const realisticInventory = new Map<string, number>([
+			['Wood', 500],
+			['Stone', 500],
+			['Iron', 300],
+			['Board', 200],
+			['Nails', 200],
+			['Straw', 400],
+			['Cotton', 300],
+			['Apple', 200],
+			['Orange', 200],
+			['Lemon', 200],
+			['Wheat', 300],
+			['Copper Ore', 200],
+			['Iron Ore', 200],
+			['Leather', 100]
+		]);
+
+		const iterations = 5;
+		const results: Record<string, { emptyInvMs: number; realisticInvMs: number; quests: number }> = {};
+
+		for (const size of [1, 5, 20]) {
+			const queue = questlines.slice(0, size);
+			const quests = queue.reduce((sum, q) => sum + q.quests.length, 0);
+
+			const emptyInvMs = measure(
+				() => diffQuestlineQueue(queue, emptyInventory, new Set(), new Map(), recipes),
+				iterations
+			);
+			const realisticInvMs = measure(
+				() => diffQuestlineQueue(queue, realisticInventory, new Set(), new Map(), recipes),
+				iterations
+			);
+
+			results[`${size} questlines`] = { emptyInvMs, realisticInvMs, quests };
+		}
+
+		console.error('Realistic queue benchmark results:', results);
+		expect(Object.keys(results).length).toBe(3);
+	});
+
+	it('measures full catalogue eligibility rebuild', async () => {
+		const questlineMap = new Map(questlines.map((q) => [q.name, q]));
+		const stats: PlayerStats = {
+			farming: 99,
+			fishing: 99,
+			crafting: 99,
+			exploring: 99,
+			tower: 100,
+			cooking: 50,
+			mining: 50,
+			npcLevels: { Rosalie: 50, Borgen: 30 }
+		};
+
+		const { buildQuestlineTitleIndex, buildNpcLevelIndex, evaluateQuestlineEligibility } =
+			await import('./eligibility');
+
+		const titleIndex = buildQuestlineTitleIndex(questlineMap);
+		const npcIndex = buildNpcLevelIndex(stats);
+		const indexes = { questlinesByTitle: titleIndex, npcLevelsByName: npcIndex };
+
+		const iterations = 5;
+		const rebuildMs = measure(() => {
+			for (const q of questlines) {
+				evaluateQuestlineEligibility(q, stats, null, new Set(), questlineMap, new Date(), indexes);
+			}
+		}, iterations);
+
+		console.error({ totalQuestlines: questlines.length, fullEligibilityRebuildMs: rebuildMs });
+		expect(rebuildMs).toBeGreaterThanOrEqual(0);
+	});
 });
