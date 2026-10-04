@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { aggregateQueueShortfalls, diffQuestline, diffQuestlineQueue, findRunsDryPoints } from './diff';
+import {
+	aggregateQueueShortfalls,
+	diffQuestline,
+	diffQuestlineQueue,
+	findRunsDryPoints
+} from './diff';
 import { questKey, type Questline } from '../types';
 
 const questline: Questline = {
@@ -115,6 +120,56 @@ describe('diffQuestline', () => {
 		const result = diffQuestline(questline, new Map([['Wood', 6]]), new Set(), caps);
 
 		expect(result.quests[1].shortfalls[0].capped).toBeUndefined();
+	});
+
+	it('uses nested recipes and shares their raw materials across the walk', () => {
+		const craftQuestline: Questline = {
+			name: 'Craft Chain',
+			questCount: 2,
+			quests: [
+				{
+					name: 'Craft Chain I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 1 }],
+					seq: 1
+				},
+				{
+					name: 'Craft Chain II',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 1 }],
+					seq: 2
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 2 }]],
+			['Board', [{ item: 'Wood', qty: 1 }]]
+		]);
+
+		const result = diffQuestline(
+			craftQuestline,
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		expect(result.quests[0].shortfalls[0]).toEqual({
+			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 1
+		});
+		expect(result.quests[1].shortfalls[0]).toEqual({
+			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 0
+		});
 	});
 });
 

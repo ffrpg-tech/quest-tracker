@@ -1,0 +1,118 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`polluted external prerequisite references > captures unresolved and resolved prerequisite states before normalization 1`] = `
+[
+  {
+    "chain": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+    "result": {
+      "allEligible": false,
+      "canStartNow": true,
+      "questlineName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+      "quests": [
+        {
+          "done": false,
+          "eligible": true,
+          "gaps": [],
+          "questName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted I",
+          "seq": 0,
+        },
+        {
+          "done": false,
+          "eligible": false,
+          "gaps": [
+            {
+              "detail": "Complete "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted I" first",
+              "kind": "pred",
+              "label": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+            },
+          ],
+          "questName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted II",
+          "seq": 1,
+        },
+      ],
+    },
+    "state": "prerequisite incomplete",
+  },
+  {
+    "chain": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+    "result": {
+      "allEligible": true,
+      "canStartNow": true,
+      "questlineName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+      "quests": [
+        {
+          "done": true,
+          "eligible": true,
+          "gaps": [],
+          "questName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted I",
+          "seq": 0,
+        },
+        {
+          "done": false,
+          "eligible": true,
+          "gaps": [],
+          "questName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted II",
+          "seq": 1,
+        },
+      ],
+    },
+    "state": "prerequisite complete",
+  },
+  {
+    "chain": "Starting To Actually Realize Magic Ain't Pretty",
+    "result": {
+      "allEligible": false,
+      "canStartNow": true,
+      "questlineName": "Starting To Actually Realize Magic Ain't Pretty",
+      "quests": [
+        {
+          "done": false,
+          "eligible": true,
+          "gaps": [],
+          "questName": "Starting To Actually Realize Magic Ain't Pretty I",
+          "seq": 0,
+        },
+        {
+          "done": false,
+          "eligible": false,
+          "gaps": [
+            {
+              "detail": "Complete "Starting To Actually Realize Magic Ain't Pretty I" first",
+              "kind": "pred",
+              "label": "Starting To Actually Realize Magic Ain't Pretty",
+            },
+          ],
+          "questName": "Starting To Actually Realize Magic Ain't Pretty II",
+          "seq": 1,
+        },
+      ],
+    },
+    "state": "prerequisite incomplete",
+  },
+  {
+    "chain": "Starting To Actually Realize Magic Ain't Pretty",
+    "result": {
+      "allEligible": true,
+      "canStartNow": true,
+      "questlineName": "Starting To Actually Realize Magic Ain't Pretty",
+      "quests": [
+        {
+          "done": true,
+          "eligible": true,
+          "gaps": [],
+          "questName": "Starting To Actually Realize Magic Ain't Pretty I",
+          "seq": 0,
+        },
+        {
+          "done": false,
+          "eligible": true,
+          "gaps": [],
+          "questName": "Starting To Actually Realize Magic Ain't Pretty II",
+          "seq": 1,
+        },
+      ],
+    },
+    "state": "prerequisite complete",
+  },
+]
+`;

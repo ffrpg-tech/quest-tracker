@@ -1,4 +1,5 @@
-import { questKey, type ItemQty, type Questline } from '../types';
+import { questKey, type Questline } from '../types';
+import { createCraftingPlanner, type RecipeMap } from './recipes';
 
 export interface ItemShortfall {
 	item: string;
@@ -46,7 +47,9 @@ function accumulateShortfall(
 	target.short += short;
 	target.have = target.needed - target.short;
 	if (capped) target.capped = true;
-	if (craftableQty !== undefined) { target.craftableQty = (target.craftableQty ?? 0) + craftableQty; }
+	if (craftableQty !== undefined) {
+		target.craftableQty = (target.craftableQty ?? 0) + craftableQty;
+	}
 }
 
 export interface QuestlineDiffResult {
@@ -69,12 +72,12 @@ function walkQuestline(
 	inv: Map<string, number>,
 	completed: Set<string>,
 	caps: Map<string, number>,
-	recipes: Map<string, ItemQty[]> = new Map()
+	recipes: RecipeMap = new Map(),
+	craftingPlanner = createCraftingPlanner(inv, recipes)
 ): QuestlineDiffResult {
 	const quests: QuestDiffResult[] = [];
 	let wallPointIndex: number | null = null;
 	const totalShortfallMap = new Map<string, AggregatedItemShortfall>();
-	const ingredientLedger = new Map<string, number>();
 
 	for (let i = 0; i < questline.quests.length; i++) {
 		const q = questline.quests[i];
@@ -101,34 +104,21 @@ function walkQuestline(
 			const cap = caps.get(req.item);
 			const capped = cap !== undefined && req.qty > cap ? true : undefined;
 			let craftableQty: number | undefined;
+			craftingPlanner.consume(req.item, Math.min(req.qty, have));
 			if (short > 0) {
 				const ingredients = recipes.get(req.item);
 				if (ingredients && ingredients.length > 0) {
-					const maxByIngredient = ingredients.map((ing) => {
-						// First time this ingredient is asked about in this walk:
-						// seed the ledger from real inventory. Every subsequent
-						// ask reads whatever's left after earlier quests' claims.
-						if (!ingredientLedger.has(ing.item)) {
-							ingredientLedger.set(ing.item, inv.get(ing.item) ?? 0);
-						}
-						const available = ingredientLedger.get(ing.item)!;
-						return Math.floor(available / ing.qty);
-					});
-					craftableQty = Math.min(short, ...maxByIngredient);
-
-					// Claim what this quest used, so the next quest asking about
-					// the same ingredient sees a depleted pool, not the original.
-					for (const ing of ingredients) {
-						const available = ingredientLedger.get(ing.item)!;
-						ingredientLedger.set(ing.item, available - ing.qty * craftableQty);
-					}
+					craftableQty = craftingPlanner.plan(req.item, short).craftableQty;
 				}
 			}
-			requirements.push({ item: req.item, needed: req.qty, have, short, capped, craftableQty });
+			const requirement: ItemShortfall = { item: req.item, needed: req.qty, have, short };
+			if (capped !== undefined) requirement.capped = capped;
+			if (craftableQty !== undefined) requirement.craftableQty = craftableQty;
+			requirements.push(requirement);
 
 			if (have < req.qty) {
 				ok = false;
-				shortfalls.push({ item: req.item, needed: req.qty, have, short, capped, craftableQty });
+				shortfalls.push({ ...requirement });
 
 				const existing = totalShortfallMap.get(req.item);
 				if (existing) {
@@ -141,22 +131,26 @@ function walkQuestline(
 					if (share) share.short += short;
 					else existing.byQuest.push({ questName: q.name, seq: q.seq, short, craftableQty });
 				} else {
-					totalShortfallMap.set(req.item, {
+					const aggregate: AggregatedItemShortfall = {
 						item: req.item,
 						needed: req.qty,
 						have,
 						short,
-						capped,
 						craftableQty,
 						byQuest: [{ questName: q.name, seq: q.seq, short, craftableQty }]
-					});
+					};
+					if (capped !== undefined) aggregate.capped = capped;
+					if (craftableQty === undefined) {
+						delete aggregate.craftableQty;
+						delete aggregate.byQuest[0].craftableQty;
+					}
+					totalShortfallMap.set(req.item, aggregate);
 				}
 			}
 
 			// Decrement regardless of shortfall so later quests in the chain
 			// still show accurate running numbers (floor at 0, never negative).
 			inv.set(req.item, Math.max(0, have - req.qty));
-
 		}
 
 		quests.push({ questName: q.name, seq: q.seq, shortfalls, requirements, ok, done: false });
@@ -182,9 +176,17 @@ export function diffQuestline(
 	startingInventory: Map<string, number>,
 	completed: Set<string> = new Set(),
 	caps: Map<string, number> = new Map(),
-	recipes: Map<string, ItemQty[]> = new Map()
+	recipes: RecipeMap = new Map()
 ): QuestlineDiffResult {
-	return walkQuestline(questline, new Map(startingInventory), completed, caps, recipes);
+	const inv = new Map(startingInventory);
+	return walkQuestline(
+		questline,
+		inv,
+		completed,
+		caps,
+		recipes,
+		createCraftingPlanner(inv, recipes)
+	);
 }
 
 /**
@@ -198,10 +200,13 @@ export function diffQuestlineQueue(
 	startingInventory: Map<string, number>,
 	completed: Set<string> = new Set(),
 	caps: Map<string, number> = new Map(),
-	recipes: Map<string, ItemQty[]> = new Map()
+	recipes: RecipeMap = new Map()
 ): QuestlineDiffResult[] {
 	const inv = new Map(startingInventory);
-	return questlines.map((questline) => walkQuestline(questline, inv, completed, caps, recipes));
+	const craftingPlanner = createCraftingPlanner(inv, recipes);
+	return questlines.map((questline) =>
+		walkQuestline(questline, inv, completed, caps, recipes, craftingPlanner)
+	);
 }
 
 /** One questline's contribution to a queue-level aggregated item shortfall, still broken down by quest. */
@@ -209,7 +214,7 @@ export interface QuestlineShortfallShare {
 	questlineName: string;
 	short: number;
 	byQuest: QuestShortfallShare[];
-	craftableQty: number;
+	craftableQty?: number;
 }
 
 /** A queue-level aggregated shortfall, broken down by which questline(s) — and, within each, which quest(s) — it came from. */
@@ -235,9 +240,9 @@ export function aggregateQueueShortfalls(results: QuestlineDiffResult[]): QueueI
 				// which diffResults/shortfallSummary also hold a reference to; the
 				// UI already iterates byQuest in a keyed {#each}, one edit away
 				// from an in-place sort that would otherwise corrupt the source.
-				byQuest: [...s.byQuest],
-				craftableQty: s.craftableQty ?? 0
+				byQuest: [...s.byQuest]
 			};
+			if (s.craftableQty !== undefined) share.craftableQty = s.craftableQty;
 
 			const existing = map.get(s.item);
 			if (existing) {

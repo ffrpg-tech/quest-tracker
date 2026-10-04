@@ -9,6 +9,12 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed prerequisite checks for two questlines whose upstream reference titles contained HTML line-break tags. Their dependent quests now show the correct prerequisite lock state instead of being treated as available.
+
+## [0.3.1] - September 22, 2026 
+
 ### Added
 
 - Craftable amounts now show inline on shortfall items with a known recipe — e.g. "Board: 40 (+60) / 100 (0 left)" tells you 60 more are craftable right now from materials already in your inventory, on top of what you have. Covers a single crafting tier (an item's direct ingredients only, not multi-step chains), and accounts for the same ingredient being shared across multiple items in a queue — crafting one thing first correctly reduces what's left for the next. On by default; toggle "Show craftable amounts" in Results to turn it on.

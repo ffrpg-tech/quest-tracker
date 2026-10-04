@@ -426,3 +426,92 @@ describe('buildPredReverseIndex', () => {
 		expect(buildPredReverseIndex(options, byName).size).toBe(0);
 	});
 });
+
+describe('polluted external prerequisite references', () => {
+	const pollutedChains: Questline[] = [
+		{
+			name: 'Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted',
+			questCount: 2,
+			quests: [
+				{
+					name: 'Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted I',
+					startDate: '',
+					endDate: '',
+					requirements: [],
+					seq: 0
+				},
+				{
+					name: 'Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted II',
+					startDate: '',
+					endDate: '',
+					requirements: [],
+					seq: 1,
+					pred: {
+						questlines: [
+							{
+								questline: {
+									title: 'Pleasantly Arbitrating Misconstrued<br/>Relational Affronts, Troubles Skirted'
+								},
+								order: 0
+							}
+						]
+					}
+				}
+			]
+		},
+		{
+			name: "Starting To Actually Realize Magic Ain't Pretty",
+			questCount: 2,
+			quests: [
+				{
+					name: "Starting To Actually Realize Magic Ain't Pretty I",
+					startDate: '',
+					endDate: '',
+					requirements: [],
+					seq: 0
+				},
+				{
+					name: "Starting To Actually Realize Magic Ain't Pretty II",
+					startDate: '',
+					endDate: '',
+					requirements: [],
+					seq: 1,
+					pred: {
+						questlines: [
+							{
+								questline: { title: "Starting To Actually Realize <br/>Magic Ain't Pretty" },
+								order: 0
+							}
+						]
+					}
+				}
+			]
+		}
+	];
+
+	it('captures unresolved and resolved prerequisite states before normalization', () => {
+		const allQuestlines = new Map(pollutedChains.map((chain) => [chain.name, chain]));
+		const snapshots = pollutedChains.flatMap((chain) => {
+			const firstQuestKey = `${chain.name}::${chain.quests[0].name}`;
+			return [
+				{
+					chain: chain.name,
+					state: 'prerequisite incomplete',
+					result: evaluateQuestlineEligibility(chain, baseStats, new Set(), allQuestlines)
+				},
+				{
+					chain: chain.name,
+					state: 'prerequisite complete',
+					result: evaluateQuestlineEligibility(
+						chain,
+						baseStats,
+						new Set([firstQuestKey]),
+						allQuestlines
+					)
+				}
+			];
+		});
+
+		expect(snapshots).toMatchSnapshot();
+	});
+});

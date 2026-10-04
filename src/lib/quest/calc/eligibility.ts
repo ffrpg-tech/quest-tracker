@@ -71,6 +71,8 @@ function normalizeNpcName(name: string): string {
 	return name.trim().toLowerCase();
 }
 
+const norm = (s: string): string => s.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+
 function formatDate(iso: string): string {
 	return new Date(iso).toLocaleDateString(undefined, {
 		year: 'numeric',
@@ -116,7 +118,10 @@ function predGaps(
 	const gaps: EligibilityGap[] = [];
 
 	for (const ref of refs) {
-		const target = allQuestlines.get(ref.questline.title);
+		const normalizedTargetTitle = norm(ref.questline.title);
+		const target = [...allQuestlines.entries()].find(
+			([questlineName]) => norm(questlineName) === normalizedTargetTitle
+		)?.[1];
 		if (!target) continue;
 
 		const targetQuest = target.quests.find((q) => q.seq === ref.order);
@@ -213,7 +218,10 @@ export function buildPredReverseIndex(
 	for (const g of questlineOptions) {
 		for (const q of g.quests) {
 			for (const ref of q.pred?.questlines ?? []) {
-				const target = allQuestlines.get(ref.questline.title);
+				const normalizedTargetTitle = norm(ref.questline.title);
+				const target = [...allQuestlines.entries()].find(
+					([questlineName]) => norm(questlineName) === normalizedTargetTitle
+				)?.[1];
 				if (!target) continue;
 				let dependents = index.get(target.name);
 				if (!dependents) index.set(target.name, (dependents = new Set()));
