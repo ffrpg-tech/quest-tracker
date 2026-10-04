@@ -26,7 +26,6 @@ export interface CraftingPlanner {
 	consume(item: string, quantity: number): void;
 }
 
-
 function addQuantities(target: Map<string, number>, source: Map<string, number>): void {
 	for (const [item, quantity] of source) {
 		target.set(item, (target.get(item) ?? 0) + quantity);

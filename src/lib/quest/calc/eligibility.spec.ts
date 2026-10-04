@@ -15,7 +15,7 @@ const baseStats: PlayerStats = {
 	tower: 10,
 	cooking: 10,
 	mining: 10,
-	npcLevels: { Rosalie: 5 },
+	npcLevels: { Rosalie: 5 }
 };
 
 const noRequirementQuest: Quest = {
@@ -326,7 +326,13 @@ describe('evaluateQuestlineEligibility', () => {
 			};
 			// Only the order-0 predecessor is done; order-1 is still outstanding.
 			const completed = new Set(['Upstream Chain::Upstream I']);
-			const result = evaluateQuestlineEligibility(multiGated, baseStats, null, completed, allQuestlines);
+			const result = evaluateQuestlineEligibility(
+				multiGated,
+				baseStats,
+				null,
+				completed,
+				allQuestlines
+			);
 			expect(result.quests[0].eligible).toBe(false);
 			expect(result.quests[0].gaps).toEqual([
 				{ kind: 'pred', label: 'Upstream Chain', detail: 'Complete "Upstream II" first' }
@@ -348,7 +354,13 @@ describe('evaluateQuestlineEligibility', () => {
 					}
 				]
 			};
-			const result = evaluateQuestlineEligibility(dangling, baseStats, null, new Set(), allQuestlines);
+			const result = evaluateQuestlineEligibility(
+				dangling,
+				baseStats,
+				null,
+				new Set(),
+				allQuestlines
+			);
 			expect(result.quests[0].eligible).toBe(true);
 			expect(result.quests[0].gaps).toEqual([]);
 		});
@@ -368,7 +380,13 @@ describe('evaluateQuestlineEligibility', () => {
 					}
 				]
 			};
-			const result = evaluateQuestlineEligibility(dangling, baseStats, null, new Set(), allQuestlines);
+			const result = evaluateQuestlineEligibility(
+				dangling,
+				baseStats,
+				null,
+				new Set(),
+				allQuestlines
+			);
 			expect(result.quests[0].eligible).toBe(true);
 			expect(result.quests[0].gaps).toEqual([]);
 		});
@@ -522,73 +540,73 @@ describe('polluted external prerequisite references', () => {
 });
 
 describe('mining floor gates', () => {
-  it('reports a miningFloor gap when current floor is below required', () => {
-    const quest: Quest = {
-      ...noRequirementQuest,
-      name: 'A Whimper I',
-      requiredLevels: { mining: 45 },
-      requiredMiningFloor: { fenrirsDen: 100 }
-    };
+	it('reports a miningFloor gap when current floor is below required', () => {
+		const quest: Quest = {
+			...noRequirementQuest,
+			name: 'A Whimper I',
+			requiredLevels: { mining: 45 },
+			requiredMiningFloor: { fenrirsDen: 100 }
+		};
 
-    const statsWithFloors: PlayerStats = {
-      ...baseStats,
-      mining: 45,
-      miningFloors: { fenrirsDen: 80 }
-    };
+		const statsWithFloors: PlayerStats = {
+			...baseStats,
+			mining: 45,
+			miningFloors: { fenrirsDen: 80 }
+		};
 
-    const result = evaluateQuestEligibility(quest, statsWithFloors);
+		const result = evaluateQuestEligibility(quest, statsWithFloors);
 
-    expect(result.eligible).toBe(false);
-    expect(result.gaps).toEqual([
-      {
-        kind: 'miningFloor',
-        area: 'fenrirsDen',
-        label: "Fenrir's Den",
-        required: 100,
-        have: 80,
-        detail: 'Reach Floor 100 first'
-      }
-    ]);
-  });
+		expect(result.eligible).toBe(false);
+		expect(result.gaps).toEqual([
+			{
+				kind: 'miningFloor',
+				area: 'fenrirsDen',
+				label: "Fenrir's Den",
+				required: 100,
+				have: 80,
+				detail: 'Reach Floor 100 first'
+			}
+		]);
+	});
 
-  it('defaults unvisited mining areas to floor 0 without throwing', () => {
-    const quest: Quest = {
-      ...noRequirementQuest,
-      name: 'A Whimper I',
-      requiredMiningFloor: { fenrirsDen: 100 }
-    };
+	it('defaults unvisited mining areas to floor 0 without throwing', () => {
+		const quest: Quest = {
+			...noRequirementQuest,
+			name: 'A Whimper I',
+			requiredMiningFloor: { fenrirsDen: 100 }
+		};
 
-    // stats without any miningFloors defined
-    const result = evaluateQuestEligibility(quest, baseStats);
+		// stats without any miningFloors defined
+		const result = evaluateQuestEligibility(quest, baseStats);
 
-    expect(result.eligible).toBe(false);
-    expect(result.gaps).toEqual([
-      {
-        kind: 'miningFloor',
-        area: 'fenrirsDen',
-        label: "Fenrir's Den",
-        required: 100,
-        have: 0,
-        detail: 'Reach Floor 100 first'
-      }
-    ]);
-  });
+		expect(result.eligible).toBe(false);
+		expect(result.gaps).toEqual([
+			{
+				kind: 'miningFloor',
+				area: 'fenrirsDen',
+				label: "Fenrir's Den",
+				required: 100,
+				have: 0,
+				detail: 'Reach Floor 100 first'
+			}
+		]);
+	});
 
-  it('is eligible when player floor meets or exceeds required', () => {
-    const quest: Quest = {
-      ...noRequirementQuest,
-      name: 'A Whimper I',
-      requiredMiningFloor: { fenrirsDen: 100 }
-    };
+	it('is eligible when player floor meets or exceeds required', () => {
+		const quest: Quest = {
+			...noRequirementQuest,
+			name: 'A Whimper I',
+			requiredMiningFloor: { fenrirsDen: 100 }
+		};
 
-    const statsWithFloors: PlayerStats = {
-      ...baseStats,
-      miningFloors: { fenrirsDen: 105 }
-    };
+		const statsWithFloors: PlayerStats = {
+			...baseStats,
+			miningFloors: { fenrirsDen: 105 }
+		};
 
-    const result = evaluateQuestEligibility(quest, statsWithFloors);
+		const result = evaluateQuestEligibility(quest, statsWithFloors);
 
-    expect(result.eligible).toBe(true);
-    expect(result.gaps).toEqual([]);
-  });
+		expect(result.eligible).toBe(true);
+		expect(result.gaps).toEqual([]);
+	});
 });

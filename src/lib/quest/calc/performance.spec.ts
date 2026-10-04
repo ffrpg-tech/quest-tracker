@@ -9,7 +9,9 @@ const questlines = Object.values(
 	JSON.parse(readFileSync(resolve('static/questlines.json'), 'utf8')) as Record<string, Questline>
 );
 const recipes = new Map(
-	Object.entries(JSON.parse(readFileSync(resolve('static/recipes.json'), 'utf8')) as Record<string, unknown>)
+	Object.entries(
+		JSON.parse(readFileSync(resolve('static/recipes.json'), 'utf8')) as Record<string, unknown>
+	)
 ) as RecipeMap;
 const emptyInventory = new Map<string, number>();
 
@@ -64,25 +66,25 @@ describe('performance characterization', () => {
 	it.skipIf(process.env.BENCHMARK_WITH_PLANNER !== '1')(
 		'measures planner work independently from queue walking',
 		() => {
-		const planner = createCraftingPlanner(emptyInventory, recipes);
-		const craftableRequirements = questlines.flatMap((questline) =>
-			questline.quests.flatMap((quest) =>
-				quest.requirements.filter((requirement) => recipes.has(requirement.item))
-			)
-		);
-		const iterations = 1;
-		const plannerMs = measure(() => {
-			for (const requirement of craftableRequirements) {
-				planner.plan(requirement.item, requirement.qty);
-			}
-		}, iterations);
+			const planner = createCraftingPlanner(emptyInventory, recipes);
+			const craftableRequirements = questlines.flatMap((questline) =>
+				questline.quests.flatMap((quest) =>
+					quest.requirements.filter((requirement) => recipes.has(requirement.item))
+				)
+			);
+			const iterations = 1;
+			const plannerMs = measure(() => {
+				for (const requirement of craftableRequirements) {
+					planner.plan(requirement.item, requirement.qty);
+				}
+			}, iterations);
 
-		console.error({
-			craftableRequirements: craftableRequirements.length,
-			plannerMs
-		});
+			console.error({
+				craftableRequirements: craftableRequirements.length,
+				plannerMs
+			});
 
-		expect(plannerMs).toBeGreaterThanOrEqual(0);
+			expect(plannerMs).toBeGreaterThanOrEqual(0);
 		}
 	);
 
@@ -105,7 +107,8 @@ describe('performance characterization', () => {
 		]);
 
 		const iterations = 5;
-		const results: Record<string, { emptyInvMs: number; realisticInvMs: number; quests: number }> = {};
+		const results: Record<string, { emptyInvMs: number; realisticInvMs: number; quests: number }> =
+			{};
 
 		for (const size of [1, 5, 20]) {
 			const queue = questlines.slice(0, size);

@@ -8,7 +8,12 @@ function oracleAcquisition(
 	recipes: RecipeMap,
 	memo: Map<string, Map<string, number> | null>,
 	stack: Set<string>
-): { ok: boolean; rawRequirements: Map<string, number>; rawShortfalls: Map<string, number>; unresolved: boolean } {
+): {
+	ok: boolean;
+	rawRequirements: Map<string, number>;
+	rawShortfalls: Map<string, number>;
+	unresolved: boolean;
+} {
 	if (stack.has(item)) {
 		return { ok: false, rawRequirements: new Map(), rawShortfalls: new Map(), unresolved: true };
 	}
@@ -207,10 +212,13 @@ describe('createCraftingPlanner', () => {
 		const recipes: RecipeMap = new Map([
 			['Board', [{ item: 'Wood', qty: 2 }]],
 			['Handle', [{ item: 'Wood', qty: 2 }]],
-			['Bundle', [
-				{ item: 'Board', qty: 1 },
-				{ item: 'Handle', qty: 1 }
-			]]
+			[
+				'Bundle',
+				[
+					{ item: 'Board', qty: 1 },
+					{ item: 'Handle', qty: 1 }
+				]
+			]
 		]);
 		const planner = createCraftingPlanner(new Map([['Wood', 2]]), recipes);
 		const oracle = createOracleCraftingPlanner(new Map([['Wood', 2]]), recipes);
@@ -250,10 +258,13 @@ describe('createCraftingPlanner', () => {
 		const recipes: RecipeMap = new Map([
 			['Plank', [{ item: 'Wood', qty: 2 }]],
 			['Stick', [{ item: 'Wood', qty: 1 }]],
-			['Shelf', [
-				{ item: 'Plank', qty: 1 },
-				{ item: 'Stick', qty: 1 }
-			]]
+			[
+				'Shelf',
+				[
+					{ item: 'Plank', qty: 1 },
+					{ item: 'Stick', qty: 1 }
+				]
+			]
 		]);
 		const planner = createCraftingPlanner(new Map([['Wood', 3]]), recipes);
 		const oracle = createOracleCraftingPlanner(new Map([['Wood', 3]]), recipes);
