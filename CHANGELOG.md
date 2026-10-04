@@ -18,6 +18,8 @@ the page parses this file directly, so an entry added here is what users see.
 
 ### Fixed
 
+- Fixed a complete UI freeze when checking off a quest or changing inventory with craftable amounts enabled. Requirements with large unit counts previously simulated crafting item-by-item, stalling the browser for minutes on heavy quest chains. Crafting availability is now computed with a fast binary search demand check, making quest toggles instantaneous.
+- Fixed craft tree calculation bugs for nested recipes and shared ingredients: root requirements now properly include craftable quantities from intermediate items crafted out of raw materials (rather than showing +0), and sibling branches in multi-part recipes no longer over-count or double-spend shared raw materials.
 - Fixed prerequisite checks for questlines whose upstream titles contained HTML line breaks, ensuring dependent quests display the correct locked state.
 - Fixed severe input lag and stutter when typing in the Shortfall Summary search bar by debouncing input and optimizing list filtering.
 - Fixed duplicate key collision in the quest eligibility list when multiple prerequisite or mining floor gaps shared identical labels.
@@ -26,6 +28,7 @@ the page parses this file directly, so an entry added here is what users see.
 ### Changed
 
 - Craftable quantities (purple +N) are now reflected directly within individual Craft Tree sub-nodes in addition to primary requirement rows.
+- Initial page load now consolidates eligibility evaluation into a single pass once saved quest and player data finish restoring from storage, eliminating over 700ms of blocking script execution on startup.
 - Changelog page now reflects your browser's detected timezone.
 
 ## [0.3.1] - 2026-09-22T00:00:00+08:00
