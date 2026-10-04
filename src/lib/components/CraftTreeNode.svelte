@@ -15,6 +15,7 @@
 
 	const satisfied = $derived(node.left <= 0);
 	const hasChildren = $derived(node.craftable && node.children.length > 0);
+	const isReady = $derived(node.left <= 0 && node.craftableQty > 0);
 </script>
 
 <div class="border-l-2 border-gray-200 pl-2 dark:border-gray-700">
@@ -48,10 +49,17 @@
 				type="button"
 				onclick={() => (expanded = !expanded)}
 				aria-expanded={expanded}
-				class="inline-flex shrink-0 items-center gap-0.5 text-sky-700 hover:underline dark:text-sky-400"
+				class="inline-flex shrink-0 items-center gap-1 text-sky-700 hover:underline dark:text-sky-400"
 			>
 				{#if expanded}<ChevronDown size={13} />{:else}<ChevronRight size={13} />{/if}
 				<span>{expanded ? 'Hide' : 'Craft Tree'}</span>
+				{#if !expanded && isReady}
+					<span
+						class="rounded bg-emerald-100 px-1 py-0.5 text-[10px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+					>
+						Ready
+					</span>
+				{/if}
 			</button>
 		{:else}
 			<span class="w-[68px] shrink-0"></span>

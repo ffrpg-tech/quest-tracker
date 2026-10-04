@@ -5,9 +5,9 @@
 export const tutorialSteps = [
 	{
 		step: 1,
-		title: 'Import your player stats (optional, do it first)',
+		title: 'Import your player stats and mining floor(optional, do it first)',
 		summary:
-			'Paste your "My Profile" page to unlock level and NPC-friendship eligibility checks.',
+			'Paste your "My Profile" page and "Go Mining" page to unlock level, NPC-friendship and mining floor eligibility checks.',
 		details:
 			'This unlocks the eligibility filter and LOCKED badges on the questline list. Skip it if you don\'t care about eligibility checks — everything else still works without it.'
 	},
