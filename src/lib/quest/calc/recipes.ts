@@ -26,12 +26,6 @@ export interface CraftingPlanner {
 	consume(item: string, quantity: number): void;
 }
 
-interface Acquisition {
-	ok: boolean;
-	rawRequirements: Map<string, number>;
-	rawShortfalls: Map<string, number>;
-	unresolved: boolean;
-}
 
 function addQuantities(target: Map<string, number>, source: Map<string, number>): void {
 	for (const [item, quantity] of source) {
@@ -202,60 +196,20 @@ export function expandRecipe(
 	return new Map(leaves);
 }
 
-function createAcquisition(
-	item: string,
-	resources: Map<string, number>,
-	recipes: RecipeMap,
-	memo: Map<string, Map<string, number> | null>,
-	stack: Set<string>
-): Acquisition {
-	if (stack.has(item)) {
-		return { ok: false, rawRequirements: new Map(), rawShortfalls: new Map(), unresolved: true };
-	}
-
-	const available = resources.get(item) ?? 0;
-	if (available > 0) {
-		resources.set(item, available - 1);
-		return {
-			ok: true,
-			rawRequirements: new Map([[item, 1]]),
-			rawShortfalls: new Map(),
-			unresolved: false
-		};
-	}
-
-	const ingredients = recipes.get(item);
-	if (!ingredients || ingredients.length === 0) {
-		return {
-			ok: false,
-			rawRequirements: new Map(),
-			rawShortfalls: new Map([[item, 1]]),
-			unresolved: false
-		};
-	}
-	if (!expandRecipe(item, recipes, memo, stack)) {
-		return { ok: false, rawRequirements: new Map(), rawShortfalls: new Map(), unresolved: true };
-	}
-
-	stack.add(item);
-	const rawRequirements = new Map<string, number>();
-	const rawShortfalls = new Map<string, number>();
-	let unresolved = false;
-	for (const ingredient of ingredients) {
-		for (let i = 0; i < ingredient.qty; i++) {
-			const acquisition = createAcquisition(ingredient.item, resources, recipes, memo, stack);
-			if (acquisition.ok) addQuantities(rawRequirements, acquisition.rawRequirements);
-			else {
-				addQuantities(rawShortfalls, acquisition.rawShortfalls);
-				unresolved ||= acquisition.unresolved;
-			}
+function collectRawShortfalls(
+	node: CraftTreeNode,
+	result = new Map<string, number>()
+): Map<string, number> {
+	if (node.children.length === 0) {
+		if (node.left > 0) {
+			result.set(node.item, (result.get(node.item) ?? 0) + node.left);
 		}
+		return result;
 	}
-	stack.delete(item);
-	if (rawShortfalls.size > 0 || unresolved) {
-		return { ok: false, rawRequirements: new Map(), rawShortfalls, unresolved };
+	for (const child of node.children) {
+		collectRawShortfalls(child, result);
 	}
-	return { ok: true, rawRequirements, rawShortfalls: new Map(), unresolved: false };
+	return result;
 }
 
 export function createCraftingPlanner(
@@ -263,36 +217,29 @@ export function createCraftingPlanner(
 	recipes: RecipeMap
 ): CraftingPlanner {
 	const resources = new Map(startingInventory);
-	const memo = new Map<string, Map<string, number> | null>();
 
 	return {
 		plan(item, quantity) {
 			const treeResources = new Map(resources);
 			const craftTree = buildCraftTree(item, quantity, treeResources, recipes);
-			const rawRequirements = new Map<string, number>();
-			const rawShortfalls = new Map<string, number>();
-			let craftableQty = 0;
-			let unresolved = false;
-			let diagnosticResources = new Map(resources);
+			const have = resources.get(item) ?? 0;
+			const craftableQty = Math.min(quantity, have + craftTree.craftableQty);
 
-			for (let i = 0; i < quantity; i++) {
-				const attemptResources = new Map(diagnosticResources);
-				const acquisition = createAcquisition(item, attemptResources, recipes, memo, new Set());
-				if (!acquisition.ok) {
-					addQuantities(rawShortfalls, acquisition.rawShortfalls);
-					unresolved ||= acquisition.unresolved;
-					diagnosticResources = attemptResources;
-					continue;
-				}
-
-				resources.clear();
-				for (const [resource, available] of attemptResources) resources.set(resource, available);
-				diagnosticResources = attemptResources;
-				craftableQty++;
-				addQuantities(rawRequirements, acquisition.rawRequirements);
+			const usedOnHand = Math.min(quantity, have);
+			if (usedOnHand > 0) {
+				resources.set(item, have - usedOnHand);
+			}
+			if (craftTree.craftableQty > 0) {
+				canCraft(item, craftTree.craftableQty, resources, recipes);
 			}
 
-			return { craftableQty, rawRequirements, rawShortfalls, unresolved, craftTree };
+			return {
+				craftableQty,
+				rawRequirements: new Map(),
+				rawShortfalls: collectRawShortfalls(craftTree),
+				unresolved: craftTree.unresolved,
+				craftTree
+			};
 		},
 		consume(item, quantity) {
 			if (quantity <= 0) return;
