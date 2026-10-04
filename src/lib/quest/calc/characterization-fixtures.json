@@ -1,0 +1,1296 @@
+{
+	"Corn of Interest": {
+		"name": "Corn of Interest",
+		"questCount": 31,
+		"quests": [
+			{
+				"name": "Corn of Interest Part 01",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 0
+			},
+			{
+				"name": "Corn of Interest Part 02",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 1
+			},
+			{
+				"name": "Corn of Interest Part 03",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 2
+			},
+			{
+				"name": "Corn of Interest Part 04",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 3
+			},
+			{
+				"name": "Corn of Interest Part 05",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					}
+				],
+				"seq": 4
+			},
+			{
+				"name": "Corn of Interest Part 06",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					}
+				],
+				"seq": 5
+			},
+			{
+				"name": "Corn of Interest Part 07",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 6
+			},
+			{
+				"name": "Corn of Interest Part 08",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Salt",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					}
+				],
+				"seq": 7
+			},
+			{
+				"name": "Corn of Interest Part 09",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 100
+					},
+					{
+						"item": "Engine",
+						"qty": 100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Salt",
+						"qty": 100
+					}
+				],
+				"seq": 8
+			},
+			{
+				"name": "Corn of Interest Part 10",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Engine",
+						"qty": 110
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Salt",
+						"qty": 150
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 125
+					}
+				],
+				"seq": 9
+			},
+			{
+				"name": "Corn of Interest Part 11",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 150
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Salt",
+						"qty": 200
+					},
+					{
+						"item": "Engine",
+						"qty": 120
+					}
+				],
+				"seq": 10
+			},
+			{
+				"name": "Corn of Interest Part 12",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Engine",
+						"qty": 130
+					},
+					{
+						"item": "Salt",
+						"qty": 250
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 175
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 11
+			},
+			{
+				"name": "Corn of Interest Part 13",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Salt",
+						"qty": 300
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 200
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 140
+					}
+				],
+				"seq": 12
+			},
+			{
+				"name": "Corn of Interest Part 14",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Engine",
+						"qty": 150
+					},
+					{
+						"item": "Salt",
+						"qty": 350
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 225
+					}
+				],
+				"seq": 13
+			},
+			{
+				"name": "Corn of Interest Part 15",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Salt",
+						"qty": 400
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 250
+					},
+					{
+						"item": "Engine",
+						"qty": 160
+					}
+				],
+				"seq": 14
+			},
+			{
+				"name": "Corn of Interest Part 16",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn Oil",
+						"qty": 275
+					},
+					{
+						"item": "Salt",
+						"qty": 450
+					},
+					{
+						"item": "Engine",
+						"qty": 170
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					}
+				],
+				"seq": 15
+			},
+			{
+				"name": "Corn of Interest Part 17",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Engine",
+						"qty": 180
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 300
+					},
+					{
+						"item": "Salt",
+						"qty": 500
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 16
+			},
+			{
+				"name": "Corn of Interest Part 18",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 325
+					},
+					{
+						"item": "Engine",
+						"qty": 190
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Salt",
+						"qty": 550
+					}
+				],
+				"seq": 17
+			},
+			{
+				"name": "Corn of Interest Part 19",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Salt",
+						"qty": 600
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 350
+					},
+					{
+						"item": "Engine",
+						"qty": 200
+					}
+				],
+				"seq": 18
+			},
+			{
+				"name": "Corn of Interest Part 20",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 375
+					},
+					{
+						"item": "Engine",
+						"qty": 210
+					},
+					{
+						"item": "Salt",
+						"qty": 650
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 19
+			},
+			{
+				"name": "Corn of Interest Part 21",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 400
+					},
+					{
+						"item": "Engine",
+						"qty": 220
+					},
+					{
+						"item": "Salt",
+						"qty": 700
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 20
+			},
+			{
+				"name": "Corn of Interest Part 22",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn Oil",
+						"qty": 425
+					},
+					{
+						"item": "Engine",
+						"qty": 230
+					},
+					{
+						"item": "Salt",
+						"qty": 750
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 21
+			},
+			{
+				"name": "Corn of Interest Part 23",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 240
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 450
+					},
+					{
+						"item": "Salt",
+						"qty": 800
+					}
+				],
+				"seq": 22
+			},
+			{
+				"name": "Corn of Interest Part 24",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 475
+					},
+					{
+						"item": "Engine",
+						"qty": 250
+					},
+					{
+						"item": "Salt",
+						"qty": 850
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 23
+			},
+			{
+				"name": "Corn of Interest Part 25",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn Oil",
+						"qty": 500
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 260
+					},
+					{
+						"item": "Salt",
+						"qty": 900
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 24
+			},
+			{
+				"name": "Corn of Interest Part 26",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 270
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 525
+					},
+					{
+						"item": "Salt",
+						"qty": 950
+					}
+				],
+				"seq": 25
+			},
+			{
+				"name": "Corn of Interest Part 27",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 280
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 550
+					},
+					{
+						"item": "Salt",
+						"qty": 1000
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 26
+			},
+			{
+				"name": "Corn of Interest Part 28",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn Oil",
+						"qty": 575
+					},
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Engine",
+						"qty": 290
+					},
+					{
+						"item": "Salt",
+						"qty": 1050
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 27
+			},
+			{
+				"name": "Corn of Interest Part 29",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 1000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 600
+					},
+					{
+						"item": "Engine",
+						"qty": 300
+					},
+					{
+						"item": "Salt",
+						"qty": 1100
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 1000
+					}
+				],
+				"seq": 28
+			},
+			{
+				"name": "Corn of Interest Part 30",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Corn",
+						"qty": 2000
+					},
+					{
+						"item": "Corn Oil",
+						"qty": 1200
+					},
+					{
+						"item": "Engine",
+						"qty": 600
+					},
+					{
+						"item": "Salt",
+						"qty": 2000
+					},
+					{
+						"item": "Potato Battery",
+						"qty": 2000
+					}
+				],
+				"seq": 29
+			},
+			{
+				"name": "Corn of Interest Part 31",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Popcorn",
+						"qty": 2000
+					}
+				],
+				"seq": 30
+			}
+		]
+	},
+	"Deck The Town (With Bats And Lanterns)": {
+		"name": "Deck The Town (With Bats And Lanterns)",
+		"questCount": 20,
+		"quests": [
+			{
+				"name": "Deck The Town (With Bats And Lanterns) I",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Jack-o-lantern",
+						"qty": 200
+					}
+				],
+				"seq": 0
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) II",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Jack-o-lantern",
+						"qty": 350
+					}
+				],
+				"seq": 1
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) III",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Witch's Broom",
+						"qty": 25
+					},
+					{
+						"item": "Twine",
+						"qty": 200
+					}
+				],
+				"seq": 2
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) IV",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Witch's Brew",
+						"qty": 25
+					}
+				],
+				"seq": 3
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) V",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Bat Wing",
+						"qty": 500
+					},
+					{
+						"item": "Jack-o-lantern",
+						"qty": 500
+					}
+				],
+				"seq": 4
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) VI",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Witch's Brew",
+						"qty": 25
+					},
+					{
+						"item": "Cooking Pot",
+						"qty": 100
+					}
+				],
+				"seq": 5
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) VII",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Bat Wing",
+						"qty": 800
+					}
+				],
+				"seq": 6
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) VIII",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Candy Corn",
+						"qty": 400
+					},
+					{
+						"item": "Witch's Broom",
+						"qty": 75
+					}
+				],
+				"seq": 7
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) IX",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Jack-o-lantern",
+						"qty": 500
+					}
+				],
+				"seq": 8
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) X",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Witch's Brew",
+						"qty": 50
+					}
+				],
+				"seq": 9
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XI",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Bat Wing",
+						"qty": 400
+					},
+					{
+						"item": "Witch's Broom",
+						"qty": 100
+					},
+					{
+						"item": "Coal",
+						"qty": 400
+					},
+					{
+						"item": "Explosive",
+						"qty": 400
+					},
+					{
+						"item": "Lantern",
+						"qty": 400
+					},
+					{
+						"item": "Black Powder",
+						"qty": 400
+					}
+				],
+				"seq": 10
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XII",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Hockey Mask",
+						"qty": 100
+					},
+					{
+						"item": "Bucket",
+						"qty": 500
+					}
+				],
+				"seq": 11
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XIII",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Hockey Mask",
+						"qty": 50
+					}
+				],
+				"seq": 12
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XIV",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Candy",
+						"qty": 2000
+					},
+					{
+						"item": "Taffy",
+						"qty": 2000
+					},
+					{
+						"item": "Lollipop",
+						"qty": 2000
+					}
+				],
+				"seq": 13
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XV",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Yarn",
+						"qty": 500
+					}
+				],
+				"seq": 14
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XVI",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Coin Purse",
+						"qty": 2000
+					}
+				],
+				"seq": 15
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XVII",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Scrap Wire",
+						"qty": 2000
+					}
+				],
+				"seq": 16
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XVIII",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Tea Leaves",
+						"qty": 500
+					},
+					{
+						"item": "Cabbage",
+						"qty": 1000
+					},
+					{
+						"item": "Green Dye",
+						"qty": 1000
+					},
+					{
+						"item": "Emerald",
+						"qty": 2000
+					},
+					{
+						"item": "Essence of Slime",
+						"qty": 500
+					}
+				],
+				"seq": 17
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XIX",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Teapot",
+						"qty": 1
+					},
+					{
+						"item": "Spiked Shell",
+						"qty": 800
+					},
+					{
+						"item": "Pumpkin",
+						"qty": 1000
+					},
+					{
+						"item": "Cotton",
+						"qty": 1000
+					},
+					{
+						"item": "Gold Jelly",
+						"qty": 300
+					},
+					{
+						"item": "Wheat",
+						"qty": 1000
+					},
+					{
+						"item": "Apple",
+						"qty": 1000
+					}
+				],
+				"seq": 18
+			},
+			{
+				"name": "Deck The Town (With Bats And Lanterns) XX",
+				"startDate": "2025-10-25T05:00:00+00:00",
+				"endDate": "2025-11-04T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Lantern",
+						"qty": 1
+					}
+				],
+				"seq": 19
+			}
+		]
+	},
+	"Explosively Thankful": {
+		"name": "Explosively Thankful",
+		"questCount": 1,
+		"quests": [
+			{
+				"name": "Explosively Thankful",
+				"startDate": "2025-11-27T06:00:00+00:00",
+				"endDate": "2025-12-06T05:59:59+00:00",
+				"requirements": [
+					{
+						"item": "Explosive",
+						"qty": 2
+					},
+					{
+						"item": "Black Powder",
+						"qty": 10
+					},
+					{
+						"item": "Bottle Rocket",
+						"qty": 5
+					}
+				],
+				"seq": 0
+			}
+		]
+	},
+	"Cosplay Costume": {
+		"name": "Cosplay Costume",
+		"questCount": 1,
+		"quests": [
+			{
+				"name": "Cosplay Costume",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Sturdy Box",
+						"qty": 1
+					},
+					{
+						"item": "Rope",
+						"qty": 2
+					},
+					{
+						"item": "Emberstone",
+						"qty": 1
+					},
+					{
+						"item": "Wizard Hat",
+						"qty": 1
+					},
+					{
+						"item": "Bone",
+						"qty": 20
+					},
+					{
+						"item": "Antler",
+						"qty": 2
+					},
+					{
+						"item": "Hide",
+						"qty": 10
+					},
+					{
+						"item": "Prism Shard",
+						"qty": 6
+					}
+				],
+				"seq": 0
+			}
+		]
+	},
+	"A Taste for Gold": {
+		"name": "A Taste for Gold",
+		"questCount": 1,
+		"quests": [
+			{
+				"name": "A Taste for Gold",
+				"startDate": "",
+				"endDate": "",
+				"requirements": [
+					{
+						"item": "Gold Peppers",
+						"qty": 5
+					},
+					{
+						"item": "Gold Carrot",
+						"qty": 5
+					},
+					{
+						"item": "Gold Cucumber",
+						"qty": 5
+					},
+					{
+						"item": "Gold Peas",
+						"qty": 5
+					}
+				],
+				"seq": 0
+			}
+		]
+	}
+}

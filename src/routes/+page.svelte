@@ -14,6 +14,7 @@
 	import { loadQuestlines, getQuestlinesState } from '$lib/quest/storage/questlinesStore.svelte';
 	import { loadItems, getItemsState } from '$lib/quest/storage/itemsStore.svelte';
 	import { loadNpcs, getNpcsState } from '$lib/quest/storage/npcsStore.svelte';
+	import { loadMining, getMiningState } from '$lib/quest/storage/miningStore.svelte';
 	import { inventoryToMap } from '$lib/quest/parsing/inventory';
 	import {
 		aggregateQueueShortfalls,
@@ -23,6 +24,8 @@
 	} from '$lib/quest/calc/diff';
 	import {
 		buildPredReverseIndex,
+		buildNpcLevelIndex,
+		buildQuestlineTitleIndex,
 		evaluateQuestlineEligibility,
 		type QuestlineEligibility
 	} from '$lib/quest/calc/eligibility';
@@ -52,6 +55,7 @@
 	import ImportModal from '$lib/components/ImportModal.svelte';
 	import FeedbackModal from '$lib/components/FeedbackModal.svelte';
 	import { getRecipesState, loadRecipes } from '$lib/quest/storage/recipesStore.svelte';
+	import MiningFloorsPanel from '$lib/components/MiningFloorsPanel.svelte';
 
 	const webApplicationJsonLd = {
 		'@context': 'https://schema.org',
@@ -85,11 +89,15 @@
 	const recipesHydrated = $derived(recipesState.recipesHydrated);
 	const recipesMap = $derived(recipesState.recipesByItem);
 
+	const miningState = getMiningState();
+	const miningHydrated = $derived(miningState.miningHydrated);
+
 	onMount(() => {
 		void loadQuestlines();
 		void loadItems();
 		void loadNpcs();
 		void loadRecipes();
+		void loadMining();
 	});
 
 	const questlineOptions = $derived(
@@ -270,6 +278,8 @@
 		diffResults.length > 0 ? aggregateQueueShortfalls(diffResults) : []
 	);
 
+	let showAllItems = $state(false);
+
 	// Where each currently-maxed item's stockpile first actually runs out, in
 	// queue order — only computed for maxed items, since a non-maxed item's
 	// shortfall is already visible on every row it's short on.
@@ -294,14 +304,21 @@
 	}
 
 	function handleUpdatePlayerStats(stats: PlayerStats) {
-		playerStats = stats;
-		trackSave(savePlayerStats(stats));
+		playerStats = {
+			...stats,
+			miningFloors: playerStats?.miningFloors ?? stats.miningFloors
+		};
+		trackSave(savePlayerStats(playerStats));
 	}
 
 	// Which questlines' eligibility a quest toggle in a given questline can affect
 	// (itself + anything that `pred`-references it). Rebuilt only when the
 	// questline catalogue changes — effectively once, on load.
 	const predReverseIndex = $derived(buildPredReverseIndex(questlineOptions, questlineByName));
+	const eligibilityIndexes = $derived({
+		questlinesByTitle: buildQuestlineTitleIndex(questlineByName),
+		npcLevelsByName: buildNpcLevelIndex(playerStats)
+	});
 
 	// Incrementally-maintained eligibility cache. Rebuilding the whole map on
 	// every quest toggle re-evaluated all ~2500 quests (pred lookups, Date
@@ -318,7 +335,15 @@
 			if (g) {
 				eligibilityByQuestline.set(
 					name,
-					evaluateQuestlineEligibility(g, playerStats, completed, questlineByName, now)
+					evaluateQuestlineEligibility(
+						g,
+						playerStats,
+						miningFloors,
+						completed,
+						questlineByName,
+						now,
+						eligibilityIndexes
+					)
 				);
 			}
 		}
@@ -328,6 +353,20 @@
 	function eligibilityDependents(questlineName: string): string[] {
 		return [questlineName, ...(predReverseIndex.get(questlineName) ?? [])];
 	}
+
+	const miningQuestlineNames = $derived.by((): Set<string> => {
+		const set = new Set<string>();
+
+		for (const g of questlineOptions) {
+			for (const q of g.quests) {
+				if (q.requiredMiningFloor && Object.keys(q.requiredMiningFloor).length > 0) {
+					set.add(g.name);
+					break;
+				}
+			}
+		}
+		return set;
+	});
 
 	$effect(() => {
 		// Reactive deps for a *full* rebuild: the questline catalogue, player stats,
@@ -343,6 +382,24 @@
 		};
 		if (deps.ready) untrack(() => recomputeEligibility());
 	});
+
+	// ---------- Mining ----------
+	const miningFloors = $derived(playerStats?.miningFloors ?? null);
+
+	function handleClearMiningFloors() {
+		if (!playerStats) return;
+		const { miningFloors: _miningFloors, ...rest } = playerStats;
+		playerStats = rest;
+		trackSave(savePlayerStats(rest));
+		recomputeEligibility(miningQuestlineNames);
+	}
+
+	function handleUpdateMiningFloors(floors: Record<string, number>) {
+		if (!playerStats) return;
+		playerStats = { ...playerStats, miningFloors: floors };
+		trackSave(savePlayerStats(playerStats));
+		recomputeEligibility(miningQuestlineNames);
+	}
 
 	// ---------- Modals ----------
 
@@ -389,7 +446,8 @@
 		{ label: 'Questlines', done: questlinesHydrated },
 		{ label: 'Items', done: itemsHydrated },
 		{ label: 'NPCs', done: npcsHydrated },
-		{ label: 'Recipes', done: recipesHydrated }
+		{ label: 'Recipes', done: recipesHydrated },
+		{ label: 'Mining Floor Data', done: miningHydrated }
 	]);
 	const appReady = $derived(loadingStages.every((s) => s.done));
 </script>
@@ -416,6 +474,7 @@
 	<link rel="preload" href={asset('/questlines-meta.json')} as="fetch" crossorigin="anonymous" />
 	<link rel="preload" href={asset('/npc.json')} as="fetch" crossorigin="anonymous" />
 	<link rel="preload" href={asset('/recipes.json')} as="fetch" crossorigin="anonymous" />
+	<link rel="preload" href={asset('/mining.json')} as="fetch" crossorigin="anonymous" />
 
 	<!-- eslint-disable svelte/no-at-html-tags -- JSON-LD script tags: content is
 	     JSON.stringify of static, developer-authored objects above, not user
@@ -468,12 +527,26 @@
 	{/if}
 
 	<main class="space-y-8">
-		<PlayerStatsPanel
-			{playerStats}
-			onOpenImport={() => openImportModal('stats')}
-			onClear={handleClearPlayerStats}
-			onUpdate={handleUpdatePlayerStats}
-		/>
+		<div class="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-4">
+			<div class="flex flex-col lg:col-span-3">
+				<PlayerStatsPanel
+					{playerStats}
+					onOpenImport={() => openImportModal('stats')}
+					onClear={handleClearPlayerStats}
+					onUpdate={handleUpdatePlayerStats}
+				/>
+			</div>
+			<div class="flex flex-col lg:col-span-1">
+				<MiningFloorsPanel
+					miningFloorsStats={miningFloors}
+					hasPlayerStats={playerStats !== null}
+					onOpenImport={() => openImportModal('mining')}
+					onOpenStatsImport={() => openImportModal('stats')}
+					onClear={handleClearMiningFloors}
+					onUpdate={handleUpdateMiningFloors}
+				/>
+			</div>
+		</div>
 
 		<section
 			class="grid grid-cols-1 grid-rows-[60vh_70vh] gap-6 md:h-[100vh] md:grid-cols-2 md:grid-rows-none"
@@ -495,13 +568,14 @@
 			/>
 		</section>
 
-		<ShortfallSummary {diffResults} {shortfallSummary} {maxedItems} {runsDryAt} />
+		<ShortfallSummary {diffResults} {shortfallSummary} {maxedItems} {runsDryAt} bind:showAllItems />
 
 		<ResultsList
 			{diffResults}
 			{eligibilityByQuestline}
 			{maxedItems}
 			{runsDryAt}
+			bind:showAllItems
 			onToggleCompleted={toggleCompleted}
 		/>
 	</main>
@@ -517,7 +591,7 @@
 	bind:selectedQuestlineNames
 	bind:playerStats
 	{onCompletedChanged}
-	onStorageWriteFailed={() => (storageUnavailable = true)}
+	onUpdatePlayerStats={handleUpdatePlayerStats}
 />
 
 <ImportModal
@@ -531,6 +605,8 @@
 	{staleKeys}
 	{onCompletedChanged}
 	onStorageWriteFailed={() => (storageUnavailable = true)}
+	onUpdatePlayerStats={handleUpdatePlayerStats}
+	onUpdateMiningFloors={handleUpdateMiningFloors}
 />
 
 <FeedbackModal bind:open={feedbackModalOpen} />

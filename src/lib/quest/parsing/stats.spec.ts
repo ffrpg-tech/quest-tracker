@@ -650,6 +650,7 @@ describe('parsePlayerStatsPaste', () => {
 			crafting: 99,
 			exploring: 99,
 			cooking: 74,
+			mining: 20,
 			tower: 220
 		});
 	});

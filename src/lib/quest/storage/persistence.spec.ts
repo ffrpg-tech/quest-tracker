@@ -1,5 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { exportProgress, importProgress, loadCompleted, loadInventory } from './persistence';
+import {
+	exportProgress,
+	importProgress,
+	loadCompleted,
+	loadInventory,
+	loadPlayerStats,
+	savePlayerStats
+} from './persistence';
 import type { PlayerStats } from '../types';
 
 const samplePlayerStats: PlayerStats = {
@@ -98,5 +105,26 @@ describe('loadCompleted / loadInventory — per-element filtering', () => {
 			{ item: 'Wood', qty: 10, maxed: false },
 			{ item: 'Iron', qty: 3, maxed: true }
 		]);
+	});
+});
+
+describe('player stats persistence', () => {
+	afterEach(() => {
+		delete (globalThis as { window?: unknown }).window;
+	});
+
+	it('round-trips mining floors without dropping the rest of the profile', () => {
+		stubLocalStorage();
+		expect(savePlayerStats(samplePlayerStats)).toBe(true);
+		expect(loadPlayerStats()).toEqual(samplePlayerStats);
+	});
+
+	it('rejects a partial player stats object', () => {
+		stubLocalStorage({
+			'farmrpg-quest-tracker:player-stats-v1': JSON.stringify({
+				miningFloors: { fenrirsDen: 100 }
+			})
+		});
+		expect(loadPlayerStats()).toBeNull();
 	});
 });

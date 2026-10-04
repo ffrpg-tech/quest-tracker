@@ -11,11 +11,35 @@
 
 	const entries = releasedEntries(parseChangelog(changelogRaw));
 	const groups = groupByMinor(entries);
+	
+	let openGroups = $state<{ [key: string]: boolean }>({ [groups[0]?.minor]: true });
+
+	let isMounted = $state(false);
 
 	onMount(() => {
 		const latest = latestVersion(entries);
 		if (latest) saveLastSeenChangelogVersion(latest);
+		isMounted = true;
 	});
+
+	function toggleGroup(minor: string, event: Event) {
+		openGroups[minor] = (event.currentTarget as HTMLDetailsElement).open;
+	}
+
+	function formatToUserDate(rawDate: string): string {
+	const parsed = new Date(rawDate);
+
+	// Fallback to raw string if parsing fails or date is invalid
+	if (isNaN(parsed.getTime())) {
+		return rawDate;
+	}
+
+	return new Intl.DateTimeFormat(undefined, {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric'
+	}).format(parsed);
+	}
 </script>
 
 <svelte:head>
@@ -43,38 +67,43 @@
 
 	<section class="space-y-4">
 		{#each groups as group, i (group.minor)}
-			<details open={i === 0}>
+			<details
+				open={openGroups[group.minor]}
+				ontoggle={(e) => toggleGroup(group.minor, e)}
+			>
 				<summary
 					class="cursor-pointer text-sm font-semibold text-gray-900 select-none dark:text-gray-100"
 				>
 					{group.minor}.x
 				</summary>
-				<div class="mt-4 space-y-8 pl-1">
-					{#each group.entries as entry (entry.version)}
-						<div>
-							<h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-								{entry.version}
-								{#if entry.date}
-									<span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400"
-										>{entry.date}</span
-									>
-								{/if}
-							</h2>
-							{#each entry.sections as section (section.heading)}
-								<div class="mt-2">
-									<h3 class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
-										{section.heading}
-									</h3>
-									<ul class="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
-										{#each section.items as item (item)}
-											<li>{item}</li>
-										{/each}
-									</ul>
-								</div>
-							{/each}
-						</div>
-					{/each}
-				</div>
+				{#if openGroups[group.minor]}
+					<div class="mt-4 space-y-8 pl-1">
+						{#each group.entries as entry (entry.version)}
+							<div>
+								<h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+									{entry.version}
+									{#if entry.date}
+										<span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400"
+											>{isMounted ? formatToUserDate(entry.date) : entry.date}</span
+										>
+									{/if}
+								</h2>
+								{#each entry.sections as section (section.heading)}
+									<div class="mt-2">
+										<h3 class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+											{section.heading}
+										</h3>
+										<ul class="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
+											{#each section.items as item (item)}
+												<li>{item}</li>
+											{/each}
+										</ul>
+									</div>
+								{/each}
+							</div>
+						{/each}
+					</div>
+				{/if}
 			</details>
 		{/each}
 	</section>

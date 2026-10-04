@@ -7,8 +7,10 @@ import {
 } from '../types';
 
 export interface EligibilityGap {
-	kind: 'skill' | 'npc' | 'season' | 'pred';
+	kind: 'skill' | 'npc' | 'season' | 'pred' | 'miningFloor';
 	label: string;
+	/** Set for 'miningFloor' gaps (e.g. 'fenrirsDen', 'springCave'). */
+	area?: string;
 	/** Only meaningful for 'skill'/'npc' — a 'season' gap is a date window, not a level. */
 	required?: number;
 	have?: number;
@@ -63,6 +65,15 @@ const SKILL_LABELS: Record<keyof SkillLevelRequirement, string> = {
 	mining: 'Mining'
 };
 
+const MINING_AREA_LABELS: Record<string, string> = {
+	springCave: 'Spring Cave',
+	highlandHollow: 'Highland Hollow',
+	solGrotto: 'Sol Grotto',
+	emberCaverns: 'Ember Caverns',
+	fenrirsDen: "Fenrir's Den",
+	mossrockMine: 'Mossrock Mine'
+};
+
 /** Case/trim-insensitive only — a safety net for casing drift (e.g. `ROOMBA` vs `Roomba`)
  * between a pasted profile and `Quest.requiredNpc.name`. It does not resolve truncated
  * names (`Star` vs `Star Meerif`); that resolution happens once, at parse time, in
@@ -71,7 +82,30 @@ function normalizeNpcName(name: string): string {
 	return name.trim().toLowerCase();
 }
 
-const norm = (s: string): string => s.replace(/<br\s*\/?>/gi, ' ').replace(/\s+/g, ' ').trim();
+const norm = (s: string): string =>
+	s
+		.replace(/<br\s*\/?>/gi, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+
+export type EligibilityIndexes = {
+	questlinesByTitle: Map<string, Questline>;
+	npcLevelsByName: Map<string, number>;
+};
+
+export function buildQuestlineTitleIndex(
+	allQuestlines: Map<string, Questline>
+): Map<string, Questline> {
+	return new Map([...allQuestlines].map(([name, questline]) => [norm(name), questline]));
+}
+
+export function buildNpcLevelIndex(stats: PlayerStats | null): Map<string, number> {
+	return new Map(
+		stats
+			? Object.entries(stats.npcLevels).map(([name, level]) => [normalizeNpcName(name), level])
+			: []
+	);
+}
 
 function formatDate(iso: string): string {
 	return new Date(iso).toLocaleDateString(undefined, {
@@ -112,16 +146,15 @@ function seasonGap(quest: Quest, now: Date): EligibilityGap | null {
 function predGaps(
 	quest: Quest,
 	allQuestlines: Map<string, Questline>,
-	completed: Set<string>
+	completed: Set<string>,
+	questlinesByTitle = buildQuestlineTitleIndex(allQuestlines)
 ): EligibilityGap[] {
 	const refs = quest.pred?.questlines ?? [];
 	const gaps: EligibilityGap[] = [];
 
 	for (const ref of refs) {
 		const normalizedTargetTitle = norm(ref.questline.title);
-		const target = [...allQuestlines.entries()].find(
-			([questlineName]) => norm(questlineName) === normalizedTargetTitle
-		)?.[1];
+		const target = questlinesByTitle.get(normalizedTargetTitle);
 		if (!target) continue;
 
 		const targetQuest = target.quests.find((q) => q.seq === ref.order);
@@ -148,7 +181,9 @@ function predGaps(
 export function evaluateQuestEligibility(
 	quest: Quest,
 	stats: PlayerStats | null,
-	now: Date = new Date()
+	floors: Record<string, number> | null = null,
+	now: Date = new Date(),
+	npcLevelsByName = buildNpcLevelIndex(stats)
 ): QuestEligibility {
 	const gaps: EligibilityGap[] = [];
 
@@ -168,16 +203,32 @@ export function evaluateQuestEligibility(
 
 		if (quest.requiredNpc) {
 			const normalizedTarget = normalizeNpcName(quest.requiredNpc.npc);
-			const match = Object.entries(stats.npcLevels).find(
-				([name]) => normalizeNpcName(name) === normalizedTarget
-			);
-			const have = match ? match[1] : 0;
+			const have = npcLevelsByName.get(normalizedTarget) ?? 0;
 			if (have < quest.requiredNpc.level) {
 				gaps.push({
 					kind: 'npc',
 					label: quest.requiredNpc.npc,
 					required: quest.requiredNpc.level,
 					have
+				});
+			}
+		}
+	}
+
+	if (floors && quest.requiredMiningFloor) {
+		for (const [rawArea, reqFloor] of Object.entries(quest.requiredMiningFloor)) {
+			const areaKey = rawArea.trim();
+			const playerFloor = floors[areaKey] ?? 0;
+
+			if (playerFloor < reqFloor) {
+				const areaName = MINING_AREA_LABELS[areaKey] ?? areaKey;
+				gaps.push({
+					kind: 'miningFloor',
+					area: areaKey,
+					label: areaName,
+					required: reqFloor,
+					have: playerFloor,
+					detail: `Reach Floor ${reqFloor} first`
 				});
 			}
 		}
@@ -214,14 +265,13 @@ export function buildPredReverseIndex(
 	allQuestlines: Map<string, Questline>
 ): Map<string, Set<string>> {
 	const index = new Map<string, Set<string>>();
+	const questlinesByTitle = buildQuestlineTitleIndex(allQuestlines);
 
 	for (const g of questlineOptions) {
 		for (const q of g.quests) {
 			for (const ref of q.pred?.questlines ?? []) {
 				const normalizedTargetTitle = norm(ref.questline.title);
-				const target = [...allQuestlines.entries()].find(
-					([questlineName]) => norm(questlineName) === normalizedTargetTitle
-				)?.[1];
+				const target = questlinesByTitle.get(normalizedTargetTitle);
 				if (!target) continue;
 				let dependents = index.get(target.name);
 				if (!dependents) index.set(target.name, (dependents = new Set()));
@@ -236,17 +286,22 @@ export function buildPredReverseIndex(
 export function evaluateQuestlineEligibility(
 	questline: Questline,
 	stats: PlayerStats | null,
+	floors: Record<string, number> | null = null,
 	completed: Set<string> = new Set(),
 	allQuestlines: Map<string, Questline> = new Map(),
-	now: Date = new Date()
+	now: Date = new Date(),
+	indexes: EligibilityIndexes = {
+		questlinesByTitle: buildQuestlineTitleIndex(allQuestlines),
+		npcLevelsByName: buildNpcLevelIndex(stats)
+	}
 ): QuestlineEligibility {
 	const quests = questline.quests.map((q) => {
 		if (completed.has(questKey(questline.name, q.name))) {
 			return { questName: q.name, seq: q.seq, done: true, eligible: true, gaps: [] };
 		}
 
-		const base = evaluateQuestEligibility(q, stats, now);
-		const pred = predGaps(q, allQuestlines, completed);
+		const base = evaluateQuestEligibility(q, stats, floors, now, indexes.npcLevelsByName);
+		const pred = predGaps(q, allQuestlines, completed, indexes.questlinesByTitle);
 		if (pred.length === 0) return base;
 
 		return { ...base, eligible: false, gaps: [...base.gaps, ...pred] };

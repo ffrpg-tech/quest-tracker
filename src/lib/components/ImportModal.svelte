@@ -3,7 +3,13 @@
 	import { X } from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import ParseSuccessFlash from './ParseSuccessFlash.svelte';
-	import { questKey, type ImportTab, type InventoryEntry, type PlayerStats, type Questline } from '$lib/quest/types';
+	import {
+		questKey,
+		type ImportTab,
+		type InventoryEntry,
+		type PlayerStats,
+		type Questline
+	} from '$lib/quest/types';
 	import {
 		parseInventoryPaste,
 		InventoryParseError,
@@ -14,7 +20,8 @@
 	import { parseCompletedQuestNames, CompletedQuestParseError } from '$lib/quest/parsing/completed';
 	import { parseBankPaste, BankParseError } from '$lib/quest/parsing/bank';
 	import { parsePlayerStatsPaste, StatsParseError } from '$lib/quest/parsing/stats';
-	import { saveInventoryBaseline, savePlayerStats } from '$lib/quest/storage/persistence';
+	import { parseMiningPagePaste } from '$lib/quest/parsing/mining';
+	import { saveInventoryBaseline } from '$lib/quest/storage/persistence';
 	import { getItemsState, retryItems } from '$lib/quest/storage/itemsStore.svelte';
 	import { getNpcNames } from '$lib/quest/storage/npcsStore.svelte';
 	import { trapFocus } from '$lib/ui/trapFocus';
@@ -31,7 +38,9 @@
 		inventoryBaseline,
 		staleKeys,
 		onCompletedChanged,
-		onStorageWriteFailed
+		onStorageWriteFailed,
+		onUpdatePlayerStats,
+		onUpdateMiningFloors
 	}: {
 		open: boolean;
 		tab: ImportTab;
@@ -43,6 +52,8 @@
 		staleKeys: SvelteSet<string>;
 		onCompletedChanged: () => void;
 		onStorageWriteFailed: () => void;
+		onUpdatePlayerStats: (stats: PlayerStats) => void;
+		onUpdateMiningFloors: (floors: Record<string, number>) => void;
 	} = $props();
 
 	/** Unwraps a caught paste-parsing error into a user-facing message: the parser's own message if it's the expected error class, otherwise a generic fallback — the one rule shared by all three paste-parsing handlers below. */
@@ -228,8 +239,7 @@
 			return;
 		}
 
-		playerStats = parsed;
-		if (!savePlayerStats(parsed)) onStorageWriteFailed();
+		onUpdatePlayerStats(parsed);
 		const npcCount = Object.keys(parsed.npcLevels).length;
 		const text = `Parsed player stats (${npcCount} friendship level${npcCount === 1 ? '' : 's'} found).`;
 		statsParseMessage = { text, ok: true };
@@ -315,6 +325,38 @@
 		copyUnmatchedMessage = 'Copied!';
 		setTimeout(() => (copyUnmatchedMessage = ''), 2000);
 	}
+
+	// ---------- Mining tab ----------
+	let miningPasteText = $state('');
+	let miningParseMessage = $state<StatusMessage | null>(null);
+
+	async function handleParseMining() {
+		if (!miningPasteText.trim()) {
+			miningParseMessage = { text: 'Nothing to parse.', ok: false };
+			return;
+		}
+
+		let parsed: Record<string, number>;
+		try {
+			parsed = parseMiningPagePaste(miningPasteText);
+		} catch (err) {
+			miningParseMessage = { text: 'Unexpected error parsing paste.', ok: false };
+			return;
+		}
+
+		if (!playerStats) {
+			miningParseMessage = {
+				text: 'Import your player stats first to unlock mining floors.',
+				ok: false
+			};
+			return;
+		}
+
+		onUpdateMiningFloors(parsed);
+		const text = `Parsed mining floors.`;
+		miningParseMessage = { text, ok: true };
+		flashSuccess(text);
+	}
 </script>
 
 {#if open}
@@ -348,7 +390,15 @@
 					role="tab"
 					aria-selected={tab === 'stats'}
 				>
-					Player stats
+					Player Stats
+				</button>
+				<button
+					onclick={() => (tab = 'mining')}
+					class={buttonClass('pill', tab === 'mining')}
+					role="tab"
+					aria-selected={tab === 'mining'}
+				>
+					Mining Floors
 				</button>
 				<button
 					onclick={() => (tab = 'inventory')}
@@ -364,7 +414,7 @@
 					role="tab"
 					aria-selected={tab === 'bank'}
 				>
-					Bank (Silver)
+					Bank
 				</button>
 				<button
 					onclick={() => (tab = 'completed')}
@@ -372,363 +422,449 @@
 					role="tab"
 					aria-selected={tab === 'completed'}
 				>
-					Completed quests
+					Completed Quests
 				</button>
 			</div>
 
 			<div role="tabpanel">
-			{#if tab === 'inventory'}
-				<details
-					bind:open={showScraperHelp}
-					class="mb-3 rounded border border-gray-200 dark:border-gray-700"
-				>
-					<summary class="cursor-pointer p-2 text-sm font-medium"
-						>How do I get my inventory?</summary
+				{#if tab === 'inventory'}
+					<details
+						bind:open={showScraperHelp}
+						class="mb-3 rounded border border-gray-200 dark:border-gray-700"
 					>
-					<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
-						<ol class="list-decimal space-y-2 pl-5">
-							<li>
-								Open FarmRPG (browser, mobile browser, or the Steam client) and go to your
-								Inventory screen, then select and copy the whole page:
-								<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
-									<li>
-										<strong>Desktop:</strong> select the whole page — <kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd
-										>
-										/
-										<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a browser,
-										or the Steam client's <strong>Edit &gt; Select All</strong> — then copy it (<kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd
-										>
-										/
-										<strong>Edit &gt; Copy</strong>).
-									</li>
-									<li>
-										<strong>Mobile:</strong> long-press the page text, tap
-										<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in some
-										mobile browsers but not all — if it doesn't grab the whole page, try a desktop
-										browser instead.
-									</li>
-								</ol>
-							</li>
-							<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
-						</ol>
-						<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
-							The parser looks for the inventory section within whatever you paste, so surrounding
-							chat/menu text is fine. Items shown as <code
-								class="rounded bg-gray-100 px-1 dark:bg-gray-700">MAX ON HAND</code
-							> are flagged as maxed, which sets that item's storage cap for shortfall calculations.
-						</p>
-					</div>
-				</details>
-
-				<div class="mb-1 flex justify-end">
-					<button
-						onclick={() => pasteFromClipboard((v) => (pasteText = v))}
-						class={buttonClass('default')}
-					>
-						Paste from clipboard
-					</button>
-				</div>
-				<div class="relative">
-					<textarea
-						bind:value={pasteText}
-						rows="6"
-						placeholder="Paste the full inventory page text here"
-						aria-label="Paste inventory text"
-						class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
-					></textarea>
-					{#if pasteText}
-						<button
-							onclick={clearPasteText}
-							aria-label="Clear pasted text"
-							title="Clear pasted text"
-							class="absolute top-2 right-3 {buttonClass('icon-danger')}"
+						<summary class="cursor-pointer p-2 text-sm font-medium"
+							>How do I get my inventory?</summary
 						>
-							<X size={16} />
-						</button>
-					{/if}
-				</div>
-				<div class="mt-2 flex items-center gap-2">
-					<button onclick={handleParsePaste} class={buttonClass('primary')}>Parse paste</button>
-					{#if parseMessage}
-						<span class={statusMessageClass(parseMessage.ok)}>{parseMessage.text}</span>
-						{#if !parseMessage.ok && itemsState.itemsError}
-							<button onclick={() => retryItems()} class={buttonClass('link')}>Retry</button>
-						{/if}
-					{/if}
-				</div>
-				<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
-					This replaces your entire inventory below with what's in the paste.
-				</p>
-			{:else if tab === 'bank'}
-				<details
-					bind:open={showScraperHelp}
-					class="mb-3 rounded border border-gray-200 dark:border-gray-700"
-				>
-					<summary class="cursor-pointer p-2 text-sm font-medium">How do I get my Silver?</summary>
-					<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
-						<ol class="list-decimal space-y-2 pl-5">
-							<li>
-								Open FarmRPG (browser, mobile browser, or the Steam client) and go to the Bank
-								page, then select and copy the whole page:
-								<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
-									<li>
-										<strong>Desktop:</strong> select the whole page — <kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd
-										>
-										/
-										<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a browser,
-										or the Steam client's <strong>Edit &gt; Select All</strong> — then copy it (<kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd
-										>
-										/
-										<strong>Edit &gt; Copy</strong>).
-									</li>
-									<li>
-										<strong>Mobile:</strong> long-press the page text, tap
-										<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in some
-										mobile browsers but not all — if it doesn't grab the whole page, try a desktop
-										browser instead.
-									</li>
-								</ol>
-							</li>
-							<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
-						</ol>
-						<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
-							This reads the <strong>Bulk Options</strong> block. "Deposit All" is Silver sitting in your
-							wallet (spendable right now) — that's what's used by default. "Withdraw All" is Silver already
-							in the bank, not in your wallet yet; check the box below to add it in too if you'd withdraw
-							it to cover a quest.
-						</p>
-					</div>
-				</details>
-
-				<label class="mb-2 flex items-center gap-2 text-sm">
-					<input type="checkbox" bind:checked={includeBankBalance} />
-					Also include bank balance (Withdraw All)
-				</label>
-
-				<div class="mb-1 flex justify-end">
-					<button
-						onclick={() => pasteFromClipboard((v) => (bankPasteText = v))}
-						class={buttonClass('default')}
-					>
-						Paste from clipboard
-					</button>
-				</div>
-				<div class="relative">
-					<textarea
-						bind:value={bankPasteText}
-						rows="6"
-						placeholder="Paste the full Bank page text here"
-						aria-label="Paste Bank page text"
-						class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
-					></textarea>
-					{#if bankPasteText}
-						<button
-							onclick={clearBankPasteText}
-							aria-label="Clear pasted text"
-							title="Clear pasted text"
-							class="absolute top-2 right-3 {buttonClass('icon-danger')}"
-						>
-							<X size={16} />
-						</button>
-					{/if}
-				</div>
-				<div class="mt-2 flex items-center gap-2">
-					<button onclick={handleParseBankPaste} class={buttonClass('primary')}>Parse paste</button>
-					{#if bankParseMessage}
-						<span class={statusMessageClass(bankParseMessage.ok)}>{bankParseMessage.text}</span>
-					{/if}
-				</div>
-			{:else if tab === 'completed'}
-				<details
-					bind:open={showScraperHelp}
-					class="mb-3 rounded border border-gray-200 dark:border-gray-700"
-				>
-					<summary class="cursor-pointer p-2 text-sm font-medium"
-						>How do I get my completed quest list?</summary
-					>
-					<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
-						<ol class="list-decimal space-y-2 pl-5">
-							<li>
-								Open FarmRPG (browser, mobile browser, or the Steam client) and go to Help Needed
-								&gt; Completed, then select and copy the whole page:
-								<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
-									<li>
-										<strong>Desktop:</strong> select the whole page — <kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd
-										>
-										/
-										<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a browser,
-										or the Steam client's <strong>Edit &gt; Select All</strong> — then copy it (<kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd
-										>
-										/
-										<strong>Edit &gt; Copy</strong>).
-									</li>
-									<li>
-										<strong>Mobile:</strong> long-press the page text, tap
-										<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in some
-										mobile browsers but not all — if it doesn't grab the whole page, try a desktop
-										browser instead.
-									</li>
-								</ol>
-							</li>
-							<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
-						</ol>
-						<p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-							The parser looks for the "Completed Requests" section within whatever you paste, so
-							surrounding chat/menu/active-request text is fine. It only recovers quest names, not
-							which questline each one belongs to — matching quest names get marked done across
-							every questline that has one. If the same quest name is reused in more than one chain,
-							all of them get marked, since a bare name can't distinguish which chain it actually
-							came from.
-						</p>
-					</div>
-				</details>
-
-				<div class="mb-1 flex justify-end">
-					<button
-						onclick={() => pasteFromClipboard((v) => (completedPasteText = v))}
-						class={buttonClass('default')}
-					>
-						Paste from clipboard
-					</button>
-				</div>
-				<div class="relative">
-					<textarea
-						bind:value={completedPasteText}
-						rows="6"
-						placeholder="Paste the full Help Needed &gt; Completed page text here"
-						aria-label="Paste completed quests text"
-						class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
-					></textarea>
-					{#if completedPasteText}
-						<button
-							onclick={clearCompletedPasteText}
-							aria-label="Clear pasted text"
-							title="Clear pasted text"
-							class="absolute top-2 right-3 {buttonClass('icon-danger')}"
-						>
-							<X size={16} />
-						</button>
-					{/if}
-				</div>
-				<div class="mt-2 flex items-center gap-2">
-					<button onclick={handleParseCompleted} class={buttonClass('primary')}>Parse paste</button>
-					{#if completedParseMessage}
-						<span class={statusMessageClass(completedParseMessage.ok)}>{completedParseMessage.text}</span>
-					{/if}
-				</div>
-				<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
-					A quest name matching more than one questline gets marked done in all of them.
-				</p>
-				{#if unmatchedQuestNames.length > 0}
-					<div
-						class="mt-3 rounded border border-amber-300 bg-amber-50 p-3 dark:border-amber-700 dark:bg-amber-950"
-					>
-						<div class="mb-1 flex items-center justify-between">
-							<span class="text-xs font-medium text-amber-800 dark:text-amber-300"
-								>{unmatchedQuestNames.length} name{unmatchedQuestNames.length === 1 ? '' : 's'} didn't
-								match a known quest</span
-							>
-							<button onclick={copyUnmatchedQuestNames} class={buttonClass('link')}>
-								{copyUnmatchedMessage || 'Copy list'}
-							</button>
+						<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
+							<ol class="list-decimal space-y-2 pl-5">
+								<li>
+									Open FarmRPG (browser, mobile browser, or the Steam client) and go to your
+									Inventory screen, then select and copy the whole page:
+									<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
+										<li>
+											<strong>Desktop:</strong> select the whole page —
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd>
+											/
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a
+											browser, or the Steam client's <strong>Edit &gt; Select All</strong> — then
+											copy it (<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd>
+											/
+											<strong>Edit &gt; Copy</strong>).
+										</li>
+										<li>
+											<strong>Mobile:</strong> long-press the page text, tap
+											<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in
+											some mobile browsers but not all — if it doesn't grab the whole page, try a
+											desktop browser instead.
+										</li>
+									</ol>
+								</li>
+								<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
+							</ol>
+							<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+								The parser looks for the inventory section within whatever you paste, so surrounding
+								chat/menu text is fine. Items shown as <code
+									class="rounded bg-gray-100 px-1 dark:bg-gray-700">MAX ON HAND</code
+								> are flagged as maxed, which sets that item's storage cap for shortfall calculations.
+							</p>
 						</div>
-						<pre
-							class="max-h-32 overflow-y-auto rounded bg-gray-900 p-2 text-xs text-gray-100"><code
-								>{unmatchedQuestNames.join('\n')}</code
-							></pre>
-						<p class="mt-2 text-xs text-amber-800 dark:text-amber-300">
-							These might be missing from the quest data. Copy the list above and send it to
-							<strong>kodyy</strong> in-game so they can get added.
-						</p>
+					</details>
+
+					<div class="mb-1 flex justify-end">
+						<button
+							onclick={() => pasteFromClipboard((v) => (pasteText = v))}
+							class={buttonClass('default')}
+						>
+							Paste from clipboard
+						</button>
+					</div>
+					<div class="relative">
+						<textarea
+							bind:value={pasteText}
+							rows="6"
+							placeholder="Paste the full inventory page text here"
+							aria-label="Paste inventory text"
+							class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
+						></textarea>
+						{#if pasteText}
+							<button
+								onclick={clearPasteText}
+								aria-label="Clear pasted text"
+								title="Clear pasted text"
+								class="absolute top-2 right-3 {buttonClass('icon-danger')}"
+							>
+								<X size={16} />
+							</button>
+						{/if}
+					</div>
+					<div class="mt-2 flex items-center gap-2">
+						<button onclick={handleParsePaste} class={buttonClass('primary')}>Parse paste</button>
+						{#if parseMessage}
+							<span class={statusMessageClass(parseMessage.ok)}>{parseMessage.text}</span>
+							{#if !parseMessage.ok && itemsState.itemsError}
+								<button onclick={() => retryItems()} class={buttonClass('link')}>Retry</button>
+							{/if}
+						{/if}
+					</div>
+					<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+						This replaces your entire inventory below with what's in the paste.
+					</p>
+				{:else if tab === 'bank'}
+					<details
+						bind:open={showScraperHelp}
+						class="mb-3 rounded border border-gray-200 dark:border-gray-700"
+					>
+						<summary class="cursor-pointer p-2 text-sm font-medium">How do I get my Silver?</summary
+						>
+						<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
+							<ol class="list-decimal space-y-2 pl-5">
+								<li>
+									Open FarmRPG (browser, mobile browser, or the Steam client) and go to the Bank
+									page, then select and copy the whole page:
+									<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
+										<li>
+											<strong>Desktop:</strong> select the whole page —
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd>
+											/
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a
+											browser, or the Steam client's <strong>Edit &gt; Select All</strong> — then
+											copy it (<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd>
+											/
+											<strong>Edit &gt; Copy</strong>).
+										</li>
+										<li>
+											<strong>Mobile:</strong> long-press the page text, tap
+											<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in
+											some mobile browsers but not all — if it doesn't grab the whole page, try a
+											desktop browser instead.
+										</li>
+									</ol>
+								</li>
+								<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
+							</ol>
+							<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+								This reads the <strong>Bulk Options</strong> block. "Deposit All" is Silver sitting in
+								your wallet (spendable right now) — that's what's used by default. "Withdraw All" is Silver
+								already in the bank, not in your wallet yet; check the box below to add it in too if you'd
+								withdraw it to cover a quest.
+							</p>
+						</div>
+					</details>
+
+					<label class="mb-2 flex items-center gap-2 text-sm">
+						<input type="checkbox" bind:checked={includeBankBalance} />
+						Also include bank balance (Withdraw All)
+					</label>
+
+					<div class="mb-1 flex justify-end">
+						<button
+							onclick={() => pasteFromClipboard((v) => (bankPasteText = v))}
+							class={buttonClass('default')}
+						>
+							Paste from clipboard
+						</button>
+					</div>
+					<div class="relative">
+						<textarea
+							bind:value={bankPasteText}
+							rows="6"
+							placeholder="Paste the full Bank page text here"
+							aria-label="Paste Bank page text"
+							class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
+						></textarea>
+						{#if bankPasteText}
+							<button
+								onclick={clearBankPasteText}
+								aria-label="Clear pasted text"
+								title="Clear pasted text"
+								class="absolute top-2 right-3 {buttonClass('icon-danger')}"
+							>
+								<X size={16} />
+							</button>
+						{/if}
+					</div>
+					<div class="mt-2 flex items-center gap-2">
+						<button onclick={handleParseBankPaste} class={buttonClass('primary')}
+							>Parse paste</button
+						>
+						{#if bankParseMessage}
+							<span class={statusMessageClass(bankParseMessage.ok)}>{bankParseMessage.text}</span>
+						{/if}
+					</div>
+				{:else if tab === 'completed'}
+					<details
+						bind:open={showScraperHelp}
+						class="mb-3 rounded border border-gray-200 dark:border-gray-700"
+					>
+						<summary class="cursor-pointer p-2 text-sm font-medium"
+							>How do I get my completed quest list?</summary
+						>
+						<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
+							<ol class="list-decimal space-y-2 pl-5">
+								<li>
+									Open FarmRPG (browser, mobile browser, or the Steam client) and go to Help Needed
+									&gt; Completed, then select and copy the whole page:
+									<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
+										<li>
+											<strong>Desktop:</strong> select the whole page —
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd>
+											/
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a
+											browser, or the Steam client's <strong>Edit &gt; Select All</strong> — then
+											copy it (<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd>
+											/
+											<strong>Edit &gt; Copy</strong>).
+										</li>
+										<li>
+											<strong>Mobile:</strong> long-press the page text, tap
+											<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in
+											some mobile browsers but not all — if it doesn't grab the whole page, try a
+											desktop browser instead.
+										</li>
+									</ol>
+								</li>
+								<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
+							</ol>
+							<p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+								The parser looks for the "Completed Requests" section within whatever you paste, so
+								surrounding chat/menu/active-request text is fine. It only recovers quest names, not
+								which questline each one belongs to — matching quest names get marked done across
+								every questline that has one. If the same quest name is reused in more than one
+								chain, all of them get marked, since a bare name can't distinguish which chain it
+								actually came from.
+							</p>
+						</div>
+					</details>
+
+					<div class="mb-1 flex justify-end">
+						<button
+							onclick={() => pasteFromClipboard((v) => (completedPasteText = v))}
+							class={buttonClass('default')}
+						>
+							Paste from clipboard
+						</button>
+					</div>
+					<div class="relative">
+						<textarea
+							bind:value={completedPasteText}
+							rows="6"
+							placeholder="Paste the full Help Needed &gt; Completed page text here"
+							aria-label="Paste completed quests text"
+							class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
+						></textarea>
+						{#if completedPasteText}
+							<button
+								onclick={clearCompletedPasteText}
+								aria-label="Clear pasted text"
+								title="Clear pasted text"
+								class="absolute top-2 right-3 {buttonClass('icon-danger')}"
+							>
+								<X size={16} />
+							</button>
+						{/if}
+					</div>
+					<div class="mt-2 flex items-center gap-2">
+						<button onclick={handleParseCompleted} class={buttonClass('primary')}
+							>Parse paste</button
+						>
+						{#if completedParseMessage}
+							<span class={statusMessageClass(completedParseMessage.ok)}
+								>{completedParseMessage.text}</span
+							>
+						{/if}
+					</div>
+					<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+						A quest name matching more than one questline gets marked done in all of them.
+					</p>
+					{#if unmatchedQuestNames.length > 0}
+						<div
+							class="mt-3 rounded border border-amber-300 bg-amber-50 p-3 dark:border-amber-700 dark:bg-amber-950"
+						>
+							<div class="mb-1 flex items-center justify-between">
+								<span class="text-xs font-medium text-amber-800 dark:text-amber-300"
+									>{unmatchedQuestNames.length} name{unmatchedQuestNames.length === 1 ? '' : 's'} didn't
+									match a known quest</span
+								>
+								<button onclick={copyUnmatchedQuestNames} class={buttonClass('link')}>
+									{copyUnmatchedMessage || 'Copy list'}
+								</button>
+							</div>
+							<pre
+								class="max-h-32 overflow-y-auto rounded bg-gray-900 p-2 text-xs text-gray-100"><code
+									>{unmatchedQuestNames.join('\n')}</code
+								></pre>
+							<p class="mt-2 text-xs text-amber-800 dark:text-amber-300">
+								These might be missing from the quest data. Copy the list above and send it to
+								<strong>kodyy</strong> in-game so they can get added.
+							</p>
+						</div>
+					{/if}
+				{:else if tab === 'stats'}
+					<details
+						bind:open={showScraperHelp}
+						class="mb-3 rounded border border-gray-200 dark:border-gray-700"
+					>
+						<summary class="cursor-pointer p-2 text-sm font-medium"
+							>How do I get my player stats?</summary
+						>
+						<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
+							<ol class="list-decimal space-y-2 pl-5">
+								<li>
+									Open FarmRPG (browser, mobile browser, or the Steam client) and go to
+									<strong>My Profile</strong>, then select and copy the whole page:
+									<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
+										<li>
+											<strong>Desktop:</strong> select the whole page —
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd>
+											/
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a
+											browser, or the Steam client's <strong>Edit &gt; Select All</strong> — then
+											copy it (<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd>
+											/
+											<strong>Edit &gt; Copy</strong>).
+										</li>
+										<li>
+											<strong>Mobile:</strong> long-press the page text, tap
+											<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in
+											some mobile browsers but not all — if it doesn't grab the whole page, try a
+											desktop browser instead.
+										</li>
+									</ol>
+								</li>
+								<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
+							</ol>
+							<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+								This reads your Farming/Fishing/Crafting/Exploring/Cooking/Tower levels and
+								Friendship Levels with each Townsfolk NPC, and unlocks the eligibility filter and
+								lock badges on the questline list below.
+							</p>
+						</div>
+					</details>
+
+					<div class="mb-1 flex justify-end">
+						<button
+							onclick={() => pasteFromClipboard((v) => (statsPasteText = v))}
+							class={buttonClass('default')}
+						>
+							Paste from clipboard
+						</button>
+					</div>
+					<div class="relative">
+						<textarea
+							bind:value={statsPasteText}
+							rows="6"
+							placeholder="Paste the full My Profile page text here"
+							aria-label="Paste player stats text"
+							class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
+						></textarea>
+						{#if statsPasteText}
+							<button
+								onclick={clearStatsPasteText}
+								aria-label="Clear pasted text"
+								title="Clear pasted text"
+								class="absolute top-2 right-3 {buttonClass('icon-danger')}"
+							>
+								<X size={16} />
+							</button>
+						{/if}
+					</div>
+					<div class="mt-2 flex items-center gap-2">
+						<button onclick={handleParseStats} class={buttonClass('primary')}>Parse paste</button>
+						{#if statsParseMessage}
+							<span class={statusMessageClass(statsParseMessage.ok)}>{statsParseMessage.text}</span>
+						{/if}
+					</div>
+					<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+						This overwrites your previously pasted stats.
+					</p>
+				{:else if tab === 'mining'}
+					<details
+						bind:open={showScraperHelp}
+						class="mb-3 rounded border border-gray-200 dark:border-gray-700"
+					>
+						<summary class="cursor-pointer p-2 text-sm font-medium"
+							>How do I get my mining floor stats?</summary
+						>
+						<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
+							<ol class="list-decimal space-y-2 pl-5">
+								<li>
+									Open FarmRPG (browser, mobile browser, or the Steam client) and go to
+									<strong>Go Mining</strong>, then select and copy the whole page:
+									<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
+										<li>
+											<strong>Desktop:</strong> select the whole page —
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd>
+											/
+											<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a
+											browser, or the Steam client's <strong>Edit &gt; Select All</strong> — then
+											copy it (<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd>
+											/
+											<strong>Edit &gt; Copy</strong>).
+										</li>
+										<li>
+											<strong>Mobile:</strong> long-press the page text, tap
+											<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in
+											some mobile browsers but not all — if it doesn't grab the whole page, try a
+											desktop browser instead.
+										</li>
+									</ol>
+								</li>
+								<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
+							</ol>
+							<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+								This reads your Mining Area floors completed and unlocks the eligibility filter and
+								lock badges on the questline list below.
+							</p>
+						</div>
+					</details>
+					<div class="mb-1 flex justify-end">
+						<button
+							onclick={() => pasteFromClipboard((v) => (miningPasteText = v))}
+							class={buttonClass('default')}
+						>
+							Paste from clipboard
+						</button>
+					</div>
+					<div class="relative">
+						<textarea
+							bind:value={miningPasteText}
+							rows="6"
+							placeholder="Paste the full Mining page text here"
+							aria-label="Paste mining page text"
+							class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
+						></textarea>
+						{#if miningPasteText}
+							<button
+								onclick={() => (miningPasteText = '')}
+								aria-label="Clear pasted text"
+								title="Clear pasted text"
+								class="absolute top-2 right-3 {buttonClass('icon-danger')}"
+							>
+								<X size={16} />
+							</button>
+						{/if}
+					</div>
+					<div class="mt-2 flex items-center gap-2">
+						{#if !playerStats}
+							<div
+								class="w-full rounded border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200"
+							>
+								<p>Import your player stats before importing mining floors.</p>
+								<button onclick={() => (tab = 'stats')} class={buttonClass('link')}
+									>Go to Player Stats</button
+								>
+							</div>
+						{:else}
+							<button onclick={handleParseMining} class={buttonClass('primary')}>Parse paste</button
+							>
+						{/if}
+						{#if miningParseMessage}
+							<span class={statusMessageClass(miningParseMessage.ok)}
+								>{miningParseMessage.text}</span
+							>
+						{/if}
 					</div>
 				{/if}
-			{:else if tab === 'stats'}
-				<details
-					bind:open={showScraperHelp}
-					class="mb-3 rounded border border-gray-200 dark:border-gray-700"
-				>
-					<summary class="cursor-pointer p-2 text-sm font-medium"
-						>How do I get my player stats?</summary
-					>
-					<div class="border-t border-gray-200 p-3 text-sm dark:border-gray-700">
-						<ol class="list-decimal space-y-2 pl-5">
-							<li>
-								Open FarmRPG (browser, mobile browser, or the Steam client) and go to
-								<strong>My Profile</strong>, then select and copy the whole page:
-								<ol class="mt-2 list-[lower-alpha] space-y-2 pl-5">
-									<li>
-										<strong>Desktop:</strong> select the whole page — <kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+A</kbd
-										>
-										/
-										<kbd class="rounded bg-gray-100 px-1 dark:bg-gray-700">Cmd+A</kbd> in a browser,
-										or the Steam client's <strong>Edit &gt; Select All</strong> — then copy it (<kbd
-											class="rounded bg-gray-100 px-1 dark:bg-gray-700">Ctrl+C</kbd
-										>
-										/
-										<strong>Edit &gt; Copy</strong>).
-									</li>
-									<li>
-										<strong>Mobile:</strong> long-press the page text, tap
-										<strong>Select All</strong>, then tap <strong>Copy</strong>. This works in some
-										mobile browsers but not all — if it doesn't grab the whole page, try a desktop
-										browser instead.
-									</li>
-								</ol>
-							</li>
-							<li>Come back here, paste the full copied text below, and click "Parse paste".</li>
-						</ol>
-						<p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
-							This reads your Farming/Fishing/Crafting/Exploring/Cooking/Tower levels and
-							Friendship Levels with each Townsfolk NPC, and unlocks the eligibility filter and lock
-							badges on the questline list below.
-						</p>
-					</div>
-				</details>
-
-				<div class="mb-1 flex justify-end">
-					<button
-						onclick={() => pasteFromClipboard((v) => (statsPasteText = v))}
-						class={buttonClass('default')}
-					>
-						Paste from clipboard
-					</button>
-				</div>
-				<div class="relative">
-					<textarea
-						bind:value={statsPasteText}
-						rows="6"
-						placeholder="Paste the full My Profile page text here"
-						aria-label="Paste player stats text"
-						class="w-full rounded border border-gray-300 p-2 pr-9 font-mono text-xs dark:border-gray-600 dark:bg-gray-800"
-					></textarea>
-					{#if statsPasteText}
-						<button
-							onclick={clearStatsPasteText}
-							aria-label="Clear pasted text"
-							title="Clear pasted text"
-							class="absolute top-2 right-3 {buttonClass('icon-danger')}"
-						>
-							<X size={16} />
-						</button>
-					{/if}
-				</div>
-				<div class="mt-2 flex items-center gap-2">
-					<button onclick={handleParseStats} class={buttonClass('primary')}>Parse paste</button>
-					{#if statsParseMessage}
-						<span class={statusMessageClass(statsParseMessage.ok)}>{statsParseMessage.text}</span>
-					{/if}
-				</div>
-				<p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
-					This overwrites your previously pasted stats.
-				</p>
-			{/if}
 			</div>
 		</div>
 	</div>

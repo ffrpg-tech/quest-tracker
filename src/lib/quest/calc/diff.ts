@@ -1,5 +1,5 @@
 import { questKey, type Questline } from '../types';
-import { createCraftingPlanner, type RecipeMap } from './recipes';
+import { createCraftingPlanner, type CraftTreeNode, type RecipeMap } from './recipes';
 
 export interface ItemShortfall {
 	item: string;
@@ -9,6 +9,8 @@ export interface ItemShortfall {
 	/** True when a single requirement for this item exceeds the player's known storage cap for it (from a "MAX ON HAND" inventory paste) — no amount of farming clears this until the cap is raised or the item is spent down elsewhere, unlike an ordinary shortfall. */
 	capped?: boolean;
 	craftableQty?: number;
+	rawShortfalls?: Map<string, number>;
+	craftTree?: CraftTreeNode;
 }
 
 export interface QuestDiffResult {
@@ -28,6 +30,8 @@ export interface QuestShortfallShare {
 	seq: number;
 	short: number;
 	craftableQty?: number;
+	rawShortfalls?: Map<string, number>;
+	craftTree?: CraftTreeNode;
 }
 
 /** A chain-level aggregated shortfall, broken down by which quest(s) in the chain it came from. */
@@ -41,7 +45,8 @@ function accumulateShortfall(
 	needed: number,
 	short: number,
 	capped = false,
-	craftableQty?: number
+	craftableQty?: number,
+	rawShortfalls?: Map<string, number>
 ): void {
 	target.needed += needed;
 	target.short += short;
@@ -49,6 +54,12 @@ function accumulateShortfall(
 	if (capped) target.capped = true;
 	if (craftableQty !== undefined) {
 		target.craftableQty = (target.craftableQty ?? 0) + craftableQty;
+	}
+	if (rawShortfalls) {
+		if (!target.rawShortfalls) target.rawShortfalls = new Map();
+		for (const [item, quantity] of rawShortfalls) {
+			target.rawShortfalls.set(item, (target.rawShortfalls.get(item) ?? 0) + quantity);
+		}
 	}
 }
 
@@ -104,16 +115,23 @@ function walkQuestline(
 			const cap = caps.get(req.item);
 			const capped = cap !== undefined && req.qty > cap ? true : undefined;
 			let craftableQty: number | undefined;
+			let rawShortfalls: Map<string, number> | undefined;
+			let craftTree: CraftTreeNode | undefined;
 			craftingPlanner.consume(req.item, Math.min(req.qty, have));
 			if (short > 0) {
 				const ingredients = recipes.get(req.item);
 				if (ingredients && ingredients.length > 0) {
-					craftableQty = craftingPlanner.plan(req.item, short).craftableQty;
+					const plan = craftingPlanner.plan(req.item, short);
+					craftableQty = plan.craftTree.craftableQty;
+					if (plan.rawShortfalls.size > 0) rawShortfalls = plan.rawShortfalls;
+					craftTree = plan.craftTree;
 				}
 			}
 			const requirement: ItemShortfall = { item: req.item, needed: req.qty, have, short };
 			if (capped !== undefined) requirement.capped = capped;
 			if (craftableQty !== undefined) requirement.craftableQty = craftableQty;
+			if (rawShortfalls) requirement.rawShortfalls = rawShortfalls;
+			if (craftTree) requirement.craftTree = craftTree;
 			requirements.push(requirement);
 
 			if (have < req.qty) {
@@ -122,28 +140,48 @@ function walkQuestline(
 
 				const existing = totalShortfallMap.get(req.item);
 				if (existing) {
-					accumulateShortfall(existing, req.qty, short, capped, craftableQty);
+					accumulateShortfall(existing, req.qty, short, capped, craftableQty, rawShortfalls);
 
 					// Same quest can hit the same item twice only if it lists the
 					// item as a requirement more than once — fold into the same
 					// share rather than pushing a duplicate row.
 					const share = existing.byQuest.find((b) => b.seq === q.seq);
-					if (share) share.short += short;
-					else existing.byQuest.push({ questName: q.name, seq: q.seq, short, craftableQty });
+					if (share) {
+						share.short += short;
+						if (rawShortfalls) {
+							if (!share.rawShortfalls) share.rawShortfalls = new Map();
+							for (const [item, quantity] of rawShortfalls) {
+								share.rawShortfalls.set(item, (share.rawShortfalls.get(item) ?? 0) + quantity);
+							}
+						}
+					} else {
+						existing.byQuest.push({
+							questName: q.name,
+							seq: q.seq,
+							short,
+							craftableQty,
+							...(rawShortfalls && { rawShortfalls }),
+							...(craftTree && { craftTree })
+						});
+					}
 				} else {
 					const aggregate: AggregatedItemShortfall = {
 						item: req.item,
 						needed: req.qty,
 						have,
 						short,
-						craftableQty,
-						byQuest: [{ questName: q.name, seq: q.seq, short, craftableQty }]
+						byQuest: [{ questName: q.name, seq: q.seq, short }]
 					};
 					if (capped !== undefined) aggregate.capped = capped;
-					if (craftableQty === undefined) {
-						delete aggregate.craftableQty;
-						delete aggregate.byQuest[0].craftableQty;
+					if (craftableQty !== undefined) {
+						aggregate.craftableQty = craftableQty;
+						aggregate.byQuest[0].craftableQty = craftableQty;
 					}
+					if (rawShortfalls) {
+						aggregate.rawShortfalls = rawShortfalls;
+						aggregate.byQuest[0].rawShortfalls = rawShortfalls;
+					}
+					if (craftTree) aggregate.byQuest[0].craftTree = craftTree;
 					totalShortfallMap.set(req.item, aggregate);
 				}
 			}
@@ -215,6 +253,8 @@ export interface QuestlineShortfallShare {
 	short: number;
 	byQuest: QuestShortfallShare[];
 	craftableQty?: number;
+	rawShortfalls?: Map<string, number>;
+	craftTree?: CraftTreeNode;
 }
 
 /** A queue-level aggregated shortfall, broken down by which questline(s) — and, within each, which quest(s) — it came from. */
@@ -243,10 +283,12 @@ export function aggregateQueueShortfalls(results: QuestlineDiffResult[]): QueueI
 				byQuest: [...s.byQuest]
 			};
 			if (s.craftableQty !== undefined) share.craftableQty = s.craftableQty;
+			if (s.rawShortfalls) share.rawShortfalls = new Map(s.rawShortfalls);
+			if (s.craftTree) share.craftTree = s.craftTree;
 
 			const existing = map.get(s.item);
 			if (existing) {
-				accumulateShortfall(existing, s.needed, s.short, s.capped, s.craftableQty);
+				accumulateShortfall(existing, s.needed, s.short, s.capped, s.craftableQty, s.rawShortfalls);
 				existing.byQuestline.push(share);
 			} else {
 				map.set(s.item, {
@@ -256,7 +298,8 @@ export function aggregateQueueShortfalls(results: QuestlineDiffResult[]): QueueI
 					short: s.short,
 					capped: s.capped,
 					byQuestline: [share],
-					craftableQty: s.craftableQty
+					...(s.craftableQty !== undefined && { craftableQty: s.craftableQty }),
+					...(s.rawShortfalls && { rawShortfalls: new Map(s.rawShortfalls) })
 				});
 			}
 		}

@@ -1,11 +1,36 @@
 import { describe, it, expect } from 'vitest';
 import {
 	buildPredReverseIndex,
-	evaluateQuestEligibility,
-	evaluateQuestlineEligibility,
+	evaluateQuestEligibility as evaluateQuestEligibilityWithFloors,
+	evaluateQuestlineEligibility as evaluateQuestlineEligibilityWithFloors,
 	isUnavailable
 } from './eligibility';
 import type { PlayerStats, Quest, Questline } from '../types';
+
+function evaluateQuestEligibility(
+	quest: Quest,
+	stats: PlayerStats | null,
+	now?: Date
+) {
+	return evaluateQuestEligibilityWithFloors(quest, stats, stats?.miningFloors ?? {}, now);
+}
+
+function evaluateQuestlineEligibility(
+	questline: Questline,
+	stats: PlayerStats | null,
+	completed = new Set<string>(),
+	allQuestlines = new Map<string, Questline>(),
+	now?: Date
+) {
+	return evaluateQuestlineEligibilityWithFloors(
+		questline,
+		stats,
+		null,
+		completed,
+		allQuestlines,
+		now
+	);
+}
 
 const baseStats: PlayerStats = {
 	farming: 10,
@@ -14,7 +39,8 @@ const baseStats: PlayerStats = {
 	exploring: 10,
 	tower: 10,
 	cooking: 10,
-	npcLevels: { Rosalie: 5 }
+	mining: 10,
+	npcLevels: { Rosalie: 5 },
 };
 
 const noRequirementQuest: Quest = {
@@ -32,7 +58,7 @@ describe('evaluateQuestEligibility', () => {
 		expect(result.gaps).toEqual([]);
 	});
 
-	it.each(['farming', 'fishing', 'crafting', 'exploring', 'tower', 'cooking'] as const)(
+	it.each(['farming', 'fishing', 'crafting', 'exploring', 'tower', 'cooking', 'mining'] as const)(
 		'reports a skill gap when %s level is short',
 		(skill) => {
 			const quest: Quest = {
@@ -450,7 +476,8 @@ describe('polluted external prerequisite references', () => {
 						questlines: [
 							{
 								questline: {
-									title: 'Pleasantly Arbitrating Misconstrued<br/>Relational Affronts, Troubles Skirted'
+									title:
+										'Pleasantly Arbitrating Misconstrued<br/>Relational Affronts, Troubles Skirted'
 								},
 								order: 0
 							}
@@ -514,4 +541,76 @@ describe('polluted external prerequisite references', () => {
 
 		expect(snapshots).toMatchSnapshot();
 	});
+});
+
+describe('mining floor gates', () => {
+  it('reports a miningFloor gap when current floor is below required', () => {
+    const quest: Quest = {
+      ...noRequirementQuest,
+      name: 'A Whimper I',
+      requiredLevels: { mining: 45 },
+      requiredMiningFloor: { fenrirsDen: 100 }
+    };
+
+    const statsWithFloors: PlayerStats = {
+      ...baseStats,
+      mining: 45,
+      miningFloors: { fenrirsDen: 80 }
+    };
+
+    const result = evaluateQuestEligibility(quest, statsWithFloors);
+
+    expect(result.eligible).toBe(false);
+    expect(result.gaps).toEqual([
+      {
+        kind: 'miningFloor',
+        area: 'fenrirsDen',
+        label: "Fenrir's Den",
+        required: 100,
+        have: 80,
+        detail: 'Reach Floor 100 first'
+      }
+    ]);
+  });
+
+  it('defaults unvisited mining areas to floor 0 without throwing', () => {
+    const quest: Quest = {
+      ...noRequirementQuest,
+      name: 'A Whimper I',
+      requiredMiningFloor: { fenrirsDen: 100 }
+    };
+
+    // stats without any miningFloors defined
+    const result = evaluateQuestEligibility(quest, baseStats);
+
+    expect(result.eligible).toBe(false);
+    expect(result.gaps).toEqual([
+      {
+        kind: 'miningFloor',
+        area: 'fenrirsDen',
+        label: "Fenrir's Den",
+        required: 100,
+        have: 0,
+        detail: 'Reach Floor 100 first'
+      }
+    ]);
+  });
+
+  it('is eligible when player floor meets or exceeds required', () => {
+    const quest: Quest = {
+      ...noRequirementQuest,
+      name: 'A Whimper I',
+      requiredMiningFloor: { fenrirsDen: 100 }
+    };
+
+    const statsWithFloors: PlayerStats = {
+      ...baseStats,
+      miningFloors: { fenrirsDen: 105 }
+    };
+
+    const result = evaluateQuestEligibility(quest, statsWithFloors);
+
+    expect(result.eligible).toBe(true);
+    expect(result.gaps).toEqual([]);
+  });
 });

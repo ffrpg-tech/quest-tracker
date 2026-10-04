@@ -2,7 +2,7 @@
 	import { Save, Upload, X } from '@lucide/svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { buttonClass } from '$lib/ui/buttonClass';
-	import { exportProgress, importProgress, savePlayerStats } from '$lib/quest/storage/persistence';
+	import { exportProgress, importProgress } from '$lib/quest/storage/persistence';
 	import { trapFocus } from '$lib/ui/trapFocus';
 	import type { PlayerStats } from '$lib/quest/types';
 
@@ -14,7 +14,7 @@
 		selectedQuestlineNames = $bindable(),
 		playerStats = $bindable(),
 		onCompletedChanged,
-		onStorageWriteFailed
+		onUpdatePlayerStats
 	}: {
 		open: boolean;
 		completed: SvelteSet<string>;
@@ -23,7 +23,7 @@
 		selectedQuestlineNames: string[];
 		playerStats: PlayerStats | null;
 		onCompletedChanged: () => void;
-		onStorageWriteFailed: () => void;
+		onUpdatePlayerStats: (stats: PlayerStats) => void;
 	} = $props();
 
 	function handleExport() {
@@ -67,8 +67,7 @@
 			onCompletedChanged();
 			if (imported.queue) selectedQuestlineNames = imported.queue;
 			if (imported.playerStats) {
-				playerStats = imported.playerStats;
-				if (!savePlayerStats(imported.playerStats)) onStorageWriteFailed();
+				onUpdatePlayerStats(imported.playerStats);
 			}
 			const queueNote = imported.queue ? ` and a ${imported.queue.length}-questline queue` : '';
 			importMessage = `Imported ${imported.completed.size} completed quests${queueNote}${statsNote}.`;
@@ -98,9 +97,9 @@
 			</div>
 
 			<p class="mb-4 text-sm text-gray-600 dark:text-gray-300">
-				This backs up which quests you've marked done, your questline queue, and your pasted
-				player stats as a JSON file — not your inventory. Export before clearing browser data, or
-				import a file to restore progress on another device.
+				This backs up which quests you've marked done, your questline queue, and your pasted player
+				stats as a JSON file — not your inventory. Export before clearing browser data, or import a
+				file to restore progress on another device.
 			</p>
 
 			<div class="flex gap-2">

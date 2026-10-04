@@ -68,10 +68,10 @@
 </script>
 
 <div
-	class="flex min-h-0 flex-col space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+	class="flex h-full min-h-0 flex-col space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
 >
 	<div class="flex items-center justify-between">
-		<h2 class="font-semibold">Player stats</h2>
+		<h2 class="font-semibold">Player Stats</h2>
 		<div class="flex items-center gap-1">
 			<button
 				onclick={onOpenImport}

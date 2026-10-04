@@ -31,6 +31,7 @@ export interface Quest {
 	requirements: ItemQty[];
 	seq: number;
 	requiredLevels?: SkillLevelRequirement;
+	requiredMiningFloor?: Record<string, number>;
 	/** Confirmed single NPC per quest — not a list. */
 	requiredNpc?: NpcLevelRequirement;
 	/** Consumed by eligibility.ts's `predGaps` — fails open (treated as satisfied) if a
@@ -59,10 +60,12 @@ export interface PlayerStats {
 	cooking: number;
 	mining: number;
 	npcLevels: Record<string, number>;
+	miningFloors?: Record<string, number>;
 }
 
-/** The four paste tabs in ImportModal — hoisted here so it isn't defined twice (ImportModal.svelte and +page.svelte both need it). */
-export type ImportTab = 'inventory' | 'bank' | 'completed' | 'stats';
+
+/** The five paste tabs in ImportModal — hoisted here so it isn't defined twice (ImportModal.svelte and +page.svelte both need it). */
+export type ImportTab = 'inventory' | 'bank' | 'completed' | 'stats' | 'mining';
 
 export interface Questline {
 	name: string;
@@ -126,18 +129,26 @@ function isNpcLevelRequirement(v: unknown): v is NpcLevelRequirement {
 	return typeof n.npc === 'string' && typeof n.level === 'number';
 }
 
+function isMiningFloorRequirement(v: unknown): v is Record<string, number> {
+	if (!v || typeof v !== 'object') return false;
+	return Object.entries(v).every(([area, floor]) => {
+		return typeof area === 'string' && typeof floor === 'number';
+	});
+}
+
 function isQuest(v: unknown): v is Quest {
 	if (!v || typeof v !== 'object') return false;
 	const q = v as Quest;
 	return (
 		(q.id === undefined || typeof q.id === 'number') &&
 		typeof q.name === 'string' &&
-		typeof q.startDate === 'string' &&
-		typeof q.endDate === 'string' &&
+		(q.startDate === undefined || typeof q.startDate === 'string') &&
+        (q.endDate === undefined || typeof q.endDate === 'string') &&
 		Array.isArray(q.requirements) &&
 		q.requirements.every(isItemQty) &&
 		typeof q.seq === 'number' &&
 		(q.requiredLevels === undefined || isSkillLevelRequirement(q.requiredLevels)) &&
+		(q.requiredMiningFloor === undefined || isMiningFloorRequirement(q.requiredMiningFloor)) &&
 		(q.requiredNpc === undefined || isNpcLevelRequirement(q.requiredNpc)) &&
 		(q.isHidden === undefined || typeof q.isHidden === 'boolean') &&
 		(q.mainQuest === undefined || typeof q.mainQuest === 'boolean')

@@ -27,6 +27,9 @@ Thumbs.db
 /static/npc.json
 /src/lib/data/items.json
 /static/recipes.json
+/static/paste-to-questline.mjs
+/static/paste.txt
+/static/mining.json
 
 # Vite
 vite.config.js.timestamp-*

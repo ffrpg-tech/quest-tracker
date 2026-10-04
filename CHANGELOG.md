@@ -7,19 +7,34 @@ are grouped by feature/release, not by individual commit.
 This file is the source of truth for the in-app [changelog page](/changelog) —
 the page parses this file directly, so an entry added here is what users see.
 
-## [Unreleased]
+## [0.4.0] - 2026-10-04T00:00:00+08:00
+
+### Added
+
+- New "Mining Floors" dashboard panel to inspect, manually adjust, or clear floor levels per area (Spring Cave, Fenrir's Den, etc.).
+- Added a dedicated mining floors tab in the "Import Data" modal to paste and parse floors directly from game text.
+- Quests requiring mining progression (e.g. Dig In, A Whimper) now display floor requirements and properly mark steps as LOCKED when requirements aren't met.
+- Added a Craft Tree breakdown for craftable requirements inspired by Lex 26's Craft Tree website (link located at the Credits page!) on both the Shortfall Summary and Results sections to inspect recursive crafting ingredients and remaining shortfalls.
 
 ### Fixed
 
-- Fixed prerequisite checks for two questlines whose upstream reference titles contained HTML line-break tags. Their dependent quests now show the correct prerequisite lock state instead of being treated as available.
+- Fixed prerequisite checks for questlines whose upstream titles contained HTML line breaks, ensuring dependent quests display the correct locked state.
+- Fixed severe input lag and stutter when typing in the Shortfall Summary search bar by debouncing input and optimizing list filtering.
+- Fixed duplicate key collision in the quest eligibility list when multiple prerequisite or mining floor gaps shared identical labels.
+- Optimized eligibility recomputations for mining floors by indexing affected questlines, preventing UI stutter when modifying floor inputs.
 
-## [0.3.1] - September 22, 2026 
+### Changed
+
+- Craftable quantities (purple +N) are now reflected directly within individual Craft Tree sub-nodes in addition to primary requirement rows.
+- Changelog page now reflects your browser's detected timezone.
+
+## [0.3.1] - 2026-09-22T00:00:00+08:00
 
 ### Added
 
 - Craftable amounts now show inline on shortfall items with a known recipe — e.g. "Board: 40 (+60) / 100 (0 left)" tells you 60 more are craftable right now from materials already in your inventory, on top of what you have. Covers a single crafting tier (an item's direct ingredients only, not multi-step chains), and accounts for the same ingredient being shared across multiple items in a queue — crafting one thing first correctly reduces what's left for the next. On by default; toggle "Show craftable amounts" in Results to turn it on.
 
-## [0.3.0] - September 21, 2026
+## [0.3.0] - 2026-09-21T00:00:00+08:00
 
 ### Added
 
@@ -32,14 +47,14 @@ the page parses this file directly, so an entry added here is what users see.
 - Replaced the heavy solid-red row background on the bottleneck quest step with a clean left border indicator and subtle tint, ensuring red "CAN'T MAIL" badges and text remain crisp and readable.
 - Expanded the hit-box padding for quest checkbox inputs on touch screens to prevent accidental mis-taps on nearby titles and carets.
 
-## [0.2.9] - September 8, 2026
+## [0.2.9] - 2026-09-08T00:00:00+08:00
 
 ### Fixed
 
 - Fixed a noticeable freeze — up to a second or two, and longer on phones — every time you checked a quest off as done. Each tick was re-evaluating skill, NPC, and prerequisite eligibility for every questline in the game (500+ chains, ~2,500 quests) instead of just the questline you changed and any that list it as a prerequisite. That work is now roughly 200× faster.
 - Fixed the Results panel stuttering when you expand a questline, or after any change while a long queue is loaded. Every queued questline was building its full quest list twice (a desktop table and a mobile layout) and keeping both in the page even while collapsed. Collapsed questlines now render nothing until you open them, and only the layout for your current screen size is built.
 
-## [0.2.8] - September 1, 2026
+## [0.2.8] - 2026-09-01T00:00:00+08:00
 
 ### Added
 
@@ -50,7 +65,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 - The Feedback / report a bug dialog now points to the feedback form as the primary way to get in touch, with messaging kodyy in-game kept as the alternative.
 
-## [0.2.7] - August 31, 2026
+## [0.2.7] - 2026-08-31T00:00:00+08:00
 
 ### Added
 
@@ -67,14 +82,14 @@ the page parses this file directly, so an entry added here is what users see.
 - Fixed Silver being silently wiped back to 0 after re-pasting the Inventory page. Silver is set separately via the Bank tab and never appears on the Inventory page itself, but a fresh Inventory paste was treating its absence there the same as any other item dropping to zero — overwriting whatever Silver total you'd previously imported.
 - Fixed the questline column overflowing the screen on mobile once the "Locked" filter was enabled — long questline names plus the LOCKED badge were stretching the layout wider than the viewport instead of truncating within the row.
 
-## [0.2.6] - August 15, 2026
+## [0.2.6] - 2026-08-15T00:00:00+08:00
 
 ### Fixed
 
 - Fixed inventory paste parsing failing for players holding an unused single-use active-boost item (e.g. a Heart-shaped Gem) — its "Use a/an ___" promo banner was previously mis-parsed as a bogus inventory item, inflating the parsed count past the page's own reported total and causing the paste to be rejected as truncated.
 - Fixed a re-pasted inventory keeping stale quantities for items you've since used up — FarmRPG's inventory page omits items you have zero of, so those items previously stuck at their last-pasted amount instead of dropping to 0. A new inventory paste now zeroes out any previously-tracked item that's no longer in the paste (kept visible in the table at 0) rather than leaving it at its old count.
 
-## [0.2.5] - August 6, 2026
+## [0.2.5] - 2026-08-06T00:00:00+08:00
 
 ### Added
 
@@ -91,7 +106,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 - Fixed completed-quest paste parsing failing entirely for some browsers, which copy the Completed Requests page without a blank line between entries.
 
-## [0.2.4] - August 4, 2026
+## [0.2.4] - 2026-08-04T00:00:00+08:00
 
 ### Added
 
@@ -105,13 +120,13 @@ the page parses this file directly, so an entry added here is what users see.
 
 - Fixed player stats parsing treating a not-yet-unlocked skill (e.g. Cooking before your first meal, shown as "Not Started" on the profile page) as a parse failure instead of level 0.
 
-## [0.2.3] - August 1, 2026
+## [0.2.3] - 2026-08-01T00:00:00+08:00
 
 ### Added
 
 - Progress backup export/import now also includes your pasted player stats, alongside completed quests and the questline queue, so restoring a backup on another device (or after clearing browser data) no longer requires re-pasting your stats from the "My Profile" page.
 
-## [0.2.2] - July 28, 2026
+## [0.2.2] - 2026-07-28T00:00:00+08:00
 
 ### Added
 
@@ -124,7 +139,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 - Fixed parsing of completed quests whose requester has no name (e.g. Curious Postal Note), which was silently dropped from the Completed paste.
 
-## [0.2.1] - July 25, 2026
+## [0.2.1] - 2026-07-25T00:00:00+08:00
 
 ### Added
 
@@ -136,7 +151,7 @@ the page parses this file directly, so an entry added here is what users see.
 - The questline picker's status, eligibility, and main-quest filters are now compact icons instead of text pills, and the expired-season filter is relabeled Unavailable to match the UNAVAILABLE badge it controls.
 - Completed questlines are now hidden from the picker by default — toggle the Done icon back on to see them.
 
-## [0.2.0] - July 21, 2026
+## [0.2.0] - 2026-07-21T00:00:00+08:00
 
 ### Added
 
@@ -147,7 +162,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Main-story questlines get a star in the picker, plus a "Main quest" filter pill alongside the existing status/eligibility filters, to narrow the list to just the main story.
 - The Shortfall summary can now be filtered to just mailable or just not-mailable items.
 
-## [0.1.5] - July 19, 2026
+## [0.1.5] - 2026-07-19T00:00:00+08:00
 
 ### Changed
 
@@ -158,7 +173,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Each questline's expandable quest list now renders as a stacked card per quest on mobile instead of a 5-column table, so quest names and shortfall numbers no longer wrap awkwardly or overlap.
 - The footer's text is smaller and its paragraphs have more breathing room on mobile.
 
-## [0.1.4] - July 18, 2026
+## [0.1.4] - 2026-07-18T00:00:00+08:00
 
 ### Added
 
@@ -188,7 +203,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Fixed a bug where leftover text after your completed-quests list could get miscounted as an extra completed quest.
 - Fixed the results table's sticky header rendering underneath checked-off (faded) rows instead of on top of them.
 
-## [0.1.3] - July 16, 2026
+## [0.1.3] - 2026-07-16T00:00:00+08:00
 
 ### Added
 
@@ -204,7 +219,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 - A failed questlines fetch no longer wipes your saved questline queue — it's treated the same as still-loading rather than "nothing matched."
 
-## [0.1.2] - July 16, 2026
+## [0.1.2] - 2026-07-16T00:00:00+08:00
 
 ### Changed
 
@@ -215,7 +230,7 @@ the page parses this file directly, so an entry added here is what users see.
 - The small per-quest label badge (e.g. "II", "Part 2") is replaced by its position number in the chain.
 - The "MAX ON HAND" storage-cap indicator is no longer conflated with the separate "Mastered"/"Grand Mastered" crafting indicators.
 
-## [0.1.1] - July 16, 2026
+## [0.1.1] - 2026-07-16T00:00:00+08:00
 
 ### Added
 
@@ -231,7 +246,7 @@ the page parses this file directly, so an entry added here is what users see.
 - Layout: inventory and questline panels now fill the viewport height
   instead of a fixed max height.
 
-## [0.1.0] - July 15, 2026
+## [0.1.0] - 2026-07-15T00:00:00+08:00
 
 ### Added
 

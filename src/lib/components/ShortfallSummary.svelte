@@ -5,14 +5,20 @@
 	import { getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
 	import { formatNumber } from '$lib/ui/formatNumber';
-	import type { ItemRunsDryAt, QuestlineDiffResult, QueueItemShortfall } from '$lib/quest/calc/diff';
+	import type {
+		ItemRunsDryAt,
+		QuestlineDiffResult,
+		QueueItemShortfall
+	} from '$lib/quest/calc/diff';
 	import ItemIcon from './ItemIcon.svelte';
+	import CraftTree from './CraftTree.svelte';
 
 	let {
 		diffResults,
 		shortfallSummary,
 		maxedItems,
-		runsDryAt
+		runsDryAt,
+		showAllItems = $bindable(false),
 	}: {
 		diffResults: QuestlineDiffResult[];
 		shortfallSummary: QueueItemShortfall[];
@@ -20,9 +26,25 @@
 		maxedItems: Set<string>;
 		/** For each currently-maxed item, the exact (questline, quest) where its stockpile first runs out in queue order — surfaced as a RUNS DRY marker on that one entry below. */
 		runsDryAt: Map<string, ItemRunsDryAt>;
+		showAllItems: boolean;
 	} = $props();
 
+	const hideCannotMail = false
+
+	let expanded = $state(false);
+
+	let rawSearchInput = $state('');
 	let shortfallSearch = $state('');
+	let searchTimer: ReturnType<typeof setTimeout> | undefined;
+
+	function handleSearchInput(e: Event) {
+		const val = (e.currentTarget as HTMLInputElement).value;
+		rawSearchInput = val;
+		clearTimeout(searchTimer);
+		searchTimer = setTimeout(() => {
+			shortfallSearch = val;
+		}, 150);
+	}
 
 	type MailFilter = 'mailable' | 'not-mailable';
 	// Checkbox-style multi-select, both checked by default (no filtering).
@@ -37,8 +59,18 @@
 		mailFilters = next;
 	}
 
+	const itemMailStatusMap = $derived.by(() => {
+		const map = new Map();
+		for (const s of shortfallSummary) {
+			if (!map.has(s.item)) {
+				map.set(s.item, getItemCanMail(s.item));
+			}
+		}
+		return map;
+	});
+
 	function matchesMailFilter(item: string): boolean {
-		const canMail = getItemCanMail(item);
+		const canMail = itemMailStatusMap.get(item);
 		if (canMail === undefined) return true;
 		return mailFilters.has(canMail ? 'mailable' : 'not-mailable');
 	}
@@ -60,7 +92,7 @@
 					matchesMailFilter(s.item) &&
 					(!maxedOnly || maxedItems.has(s.item))
 			)
-			.sort((a, b) => (sortDirection === 'desc' ? b.short - a.short : a.short - b.short))
+			.toSorted((a, b) => (sortDirection === 'desc' ? b.short - a.short : a.short - b.short))
 	);
 
 	// CAPPED's `title` tooltip never reaches touch devices — tapping the badge
@@ -76,30 +108,45 @@
 		'A single requirement for this item exceeds your known storage cap — no amount of farming clears this until the cap is raised or spent down elsewhere.';
 
 	const MAXED_EXPLANATION =
-		"Your pasted inventory shows this item at \"MAX ON HAND\" right now — farming more of it won't add anything until some is spent, so focus on a different item instead.";
+		'Your pasted inventory shows this item at "MAX ON HAND" right now — farming more of it won\'t add anything until some is spent, so focus on a different item instead.';
 
 	const RUNS_DRY_EXPLANATION =
 		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
 
+	const runsDryKeySet = $derived.by(() => {
+		const set = new Set();
+		for (const [item, loc] of runsDryAt.entries()) {
+			set.add(`\({item}:\){loc.questlineName}:${loc.questName}`);
+		}
+		return set;
+	});
+
 	function isRunsDryHere(item: string, questlineName: string, questName: string): boolean {
-		const loc = runsDryAt.get(item);
-		return loc !== undefined && loc.questlineName === questlineName && loc.questName === questName;
+		return runsDryKeySet.has(`\({item}:\){questlineName}:${questName}`);
 	}
 </script>
 
 {#if shortfallSummary.length > 0}
 	<section class="rounded-lg border border-gray-200 dark:border-gray-700">
-		<details class="group">
-			<summary
-				class="flex cursor-pointer list-none items-center gap-1 p-4 font-semibold text-gray-900 dark:text-gray-100"
-			>
-				<ChevronRight size={16} class="shrink-0 transition-transform group-open:rotate-90" />
-				{#if diffResults.length > 1}
-					Shortfall summary — combined across {diffResults.length} questlines
-				{:else}
-					Shortfall summary — {diffResults[0].questlineName}
-				{/if}
-			</summary>
+		<button
+			type="button"
+			onclick={() => (expanded = !expanded)}
+			aria-expanded={expanded}
+			class="flex w-full cursor-pointer items-center gap-1 p-4 text-left font-semibold text-gray-900 dark:text-gray-100"
+		>
+			{#if expanded}
+				<ChevronRight size={16} class="shrink-0 rotate-90 transition-transform" />
+			{:else}
+				<ChevronRight size={16} class="shrink-0 transition-transform" />
+			{/if}
+
+			{#if diffResults.length > 1}
+				Shortfall summary — combined across {diffResults.length} questlines
+			{:else}
+				Shortfall summary — {diffResults[0].questlineName}
+			{/if}
+		</button>
+		{#if expanded}
 			<div class="space-y-2 border-t border-gray-200 p-4 dark:border-gray-700">
 				{#if diffResults.length > 1}
 					<p class="text-xs text-gray-500 dark:text-gray-400">
@@ -114,7 +161,8 @@
 					/>
 					<input
 						type="text"
-						bind:value={shortfallSearch}
+						oninput={handleSearchInput}
+						value={rawSearchInput}
 						placeholder="Search items…"
 						aria-label="Search items"
 						class="w-full rounded border border-gray-300 bg-white py-1.5 pl-8 pr-2 text-sm text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500"
@@ -138,7 +186,11 @@
 						{/if}
 					</button>
 				</div>
-				<div class="flex flex-wrap items-center gap-1.5 text-xs" role="group" aria-label="Filter by mailability">
+				<div
+					class="flex flex-wrap items-center gap-1.5 text-xs"
+					role="group"
+					aria-label="Filter by mailability"
+				>
 					{#each [['mailable', 'Mailable'], ['not-mailable', 'Not mailable']] as [value, label] (value)}
 						<button
 							role="checkbox"
@@ -171,8 +223,11 @@
 							<li class="border-b border-gray-100 py-1 dark:border-gray-700">
 								<div class="flex items-center gap-1.5 font-medium text-gray-900 dark:text-gray-100">
 									<ItemIcon name={s.item} />
-									<a href={buddyFarmItemUrl(s.item)} target="_blank" rel="noopener noreferrer" class="hover:underline"
-										>{s.item}</a
+									<a
+										href={buddyFarmItemUrl(s.item)}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="hover:underline">{s.item}</a
 									>
 									{#if s.capped}
 										<button
@@ -195,21 +250,14 @@
 								{#if s.capped && expandedCappedItem === s.item}
 									<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{CAPPED_EXPLANATION}</p>
 								{/if}
-								<div class="mt-1 flex justify-between border-l border-gray-200 pl-2 text-xs font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300">
-								<span>Total</span>
-								{#if s.craftableQty !== undefined && s.craftableQty > 0}
-									<span class="tabular-nums">
-										<button
-											type="button"
-											class="cursor-pointer text-violet-600 underline decoration-dotted hover:decoration-solid dark:text-violet-400"
-											>+{formatNumber(s.craftableQty)}</button
+								<div
+									class="mt-1 flex justify-between border-l border-gray-200 pl-2 text-xs font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
+								>
+									<span>Total</span>
+										<span class="tabular-nums text-red-600 dark:text-red-400"
+											>−{formatNumber(s.short)}</span
 										>
-										<span class="text-red-600 dark:text-red-400">−{formatNumber(s.short - s.craftableQty)}</span>
-									</span>
-								{:else}
-									<span class="tabular-nums text-red-600 dark:text-red-400">−{formatNumber(s.short)}</span>
-								{/if}
-							</div>
+								</div>
 								<ul
 									class="mt-1 space-y-1 border-l border-gray-200 pl-2 text-xs dark:border-gray-700"
 								>
@@ -223,7 +271,10 @@
 													>
 												</div>
 											{/if}
-											<ul class="max-h-36 space-y-0.5 overflow-y-auto pr-1" class:pl-4={s.byQuestline.length > 1}>
+											<ul
+												class="max-h-36 space-y-0.5 overflow-y-auto pr-1"
+												class:pl-4={s.byQuestline.length > 1}
+											>
 												{#each ql.byQuest as bq (bq.seq)}
 													<li class="flex justify-between text-gray-500 dark:text-gray-500">
 														<span class="inline-flex items-center gap-1">
@@ -238,6 +289,9 @@
 														</span>
 														<span class="text-red-300 tabular-nums">−{formatNumber(bq.short)}</span>
 													</li>
+													{#if bq.craftTree}
+														<CraftTree node={bq.craftTree} {showAllItems} {hideCannotMail} />
+													{/if}
 												{/each}
 											</ul>
 										</li>
@@ -248,6 +302,6 @@
 					</ul>
 				{/if}
 			</div>
-		</details>
+		{/if}
 	</section>
 {/if}

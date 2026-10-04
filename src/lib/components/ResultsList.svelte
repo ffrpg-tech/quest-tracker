@@ -17,13 +17,16 @@
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
 	import { buttonClass } from '$lib/ui/buttonClass';
+	import { formatNumber } from '$lib/ui/formatNumber';
 	import ItemIcon from './ItemIcon.svelte';
+	import CraftTree from './CraftTree.svelte';
 
 	let {
 		diffResults,
 		eligibilityByQuestline,
 		maxedItems,
 		runsDryAt,
+		showAllItems = $bindable(false),
 		onToggleCompleted
 	}: {
 		diffResults: QuestlineDiffResult[];
@@ -32,13 +35,13 @@
 		maxedItems: Set<string>;
 		/** For each currently-maxed item, the exact (questline, quest) where its stockpile first runs out in queue order — surfaced as a RUNS DRY badge on that one row. */
 		runsDryAt: Map<string, ItemRunsDryAt>;
+		showAllItems: boolean;
 		onToggleCompleted: (questlineName: string, questName: string) => void;
 	} = $props();
 
 	// Off by default — shortfalls-only is the existing/expected view; showing
 	// every requirement (including already-satisfied ones) is opt-in so a
 	// MAXED item can be spotted even where it isn't blocking anything.
-	let showAllItems = $state(false);
 	let showCraftable = $state(true);
 
 	// Only mount a questline's quest rows while its <details> is actually open. A
@@ -101,21 +104,12 @@
 	// without a mouse hover. Keyed by "questName:item" since the same item can
 	// be capped in more than one quest row.
 	let expandedCapped = $state<string | null>(null);
-	let expandedCraftable = $state<string | null>(null);
-
 	function toggleCappedExplanation(key: string) {
 		expandedCapped = toggleExpanded(expandedCapped, key);
 	}
 
-	function toggleCraftableExplanation(key: string) {
-		expandedCraftable = toggleExpanded(expandedCraftable, key);
-	}
-
 	const CAPPED_EXPLANATION =
 		'This requirement exceeds your known storage cap for this item — no amount of farming clears this until the cap is raised or spent down elsewhere.';
-
-	const CRAFTABLE_EXPLANATION =
-		'Purple text shows how many can be crafted from materials on hand.';
 
 	const MAXED_EXPLANATION =
 		'Your pasted inventory shows this item at "MAX ON HAND" right now — farming more of it won\'t add anything until some is spent, so focus on a different item instead.';
@@ -123,9 +117,16 @@
 	const RUNS_DRY_EXPLANATION =
 		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
 
+	const runsDryKeySet = $derived.by(() => {
+		const set = new Set();
+		for (const [item, loc] of runsDryAt.entries()) {
+			set.add(`\({item}:\){loc.questlineName}:${loc.questName}`);
+		}
+		return set;
+	});
+
 	function isRunsDryHere(item: string, questlineName: string, questName: string): boolean {
-		const loc = runsDryAt.get(item);
-		return loc !== undefined && loc.questlineName === questlineName && loc.questName === questName;
+		return runsDryKeySet.has(`\({item}:\){questlineName}:${questName}`);
 	}
 </script>
 
@@ -163,7 +164,7 @@
 
 {#snippet eligibilityGapList(gaps: EligibilityGap[])}
 	<ul class="space-y-0.5 text-xs">
-		{#each gaps as gap (gap.kind + ':' + gap.label)}
+		{#each gaps as gap, i (gap.kind + ':' + gap.label + ':' + i)}
 			<li class="flex items-center gap-1">
 				{#if gap.kind === 'season'}
 					<span
@@ -172,6 +173,9 @@
 							: 'text-amber-700 dark:text-amber-400'}">{gap.detail}</span
 					>
 				{:else if gap.kind === 'pred'}
+					<span class="font-medium text-amber-700 dark:text-amber-400">{gap.label}</span> —
+					{gap.detail}
+				{:else if gap.kind === 'miningFloor'}
 					<span class="font-medium text-amber-700 dark:text-amber-400">{gap.label}</span> —
 					{gap.detail}
 				{:else}
@@ -212,19 +216,12 @@
 					></span
 				>: <span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
 				{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
-					<button
-						type="button"
-						onclick={() => toggleCraftableExplanation(cappedKey)}
-						title={CRAFTABLE_EXPLANATION}
-						aria-expanded={expandedCraftable === cappedKey}
-						class="cursor-pointer tabular-nums text-violet-600 underline decoration-dotted hover:decoration-solid dark:text-violet-400"
-						>(+{s.craftableQty})</button
-					>
+					<span class="tabular-nums text-violet-600 dark:text-violet-400">(+{s.craftableQty})</span>
 					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400"
 						>{s.short - s.craftableQty}</span
 					> left)
-				{:else if s.short > 0}	
+				{:else if s.short > 0}
 					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
 				{:else}
@@ -260,10 +257,8 @@
 						{CAPPED_EXPLANATION}
 					</div>
 				{/if}
-				{#if showCraftable && s.craftableQty !== undefined && s.craftableQty > 0 && expandedCraftable === cappedKey}
-					<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-						{CRAFTABLE_EXPLANATION}
-					</div>
+				{#if showCraftable && s.craftTree}
+					<CraftTree node={s.craftTree} {showAllItems} />
 				{/if}
 			</li>
 		{/each}
@@ -358,13 +353,13 @@
 											</tr>
 										</thead>
 										<tbody>
-											{#each diffResult.quests as q, qi (q.questName + qi)}
-												{@const gaps = questGaps(diffResult.questlineName, qi)}
+											{#each diffResult.quests as q (q.questName)}
+												{@const gaps = questGaps(diffResult.questlineName, diffResult.quests.indexOf(q))}
 												{@const items = showAllItems ? q.requirements : q.shortfalls}
 												<tr
 													class="border-t border-gray-100 dark:border-gray-700"
-													class:bg-red-50={qi === block?.qi}
-													class:dark:bg-red-950={qi === block?.qi}
+													class:bg-red-50={diffResult.quests.indexOf(q) === block?.qi}
+													class:dark:bg-red-950={diffResult.quests.indexOf(q) === block?.qi}
 													class:opacity-50={q.done}
 												>
 													<td class="p-2 m-2">
@@ -380,7 +375,7 @@
 													<td class="p-2 text-xs text-gray-400">{q.seq}</td>
 													<td class="p-2" class:line-through={q.done}>{q.questName}</td>
 													<td class="p-2">
-														{@render statusLabel(q, qi === block?.qi, false, gaps)}
+														{@render statusLabel(q, diffResult.quests.indexOf(q) === block?.qi, false, gaps)}
 													</td>
 													<td class="p-2">
 														{#if gaps.length > 0}
