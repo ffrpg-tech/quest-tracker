@@ -1,36 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
 	buildPredReverseIndex,
-	evaluateQuestEligibility as evaluateQuestEligibilityWithFloors,
-	evaluateQuestlineEligibility as evaluateQuestlineEligibilityWithFloors,
+	evaluateQuestEligibility,
+	evaluateQuestlineEligibility,
 	isUnavailable
 } from './eligibility';
 import type { PlayerStats, Quest, Questline } from '../types';
-
-function evaluateQuestEligibility(
-	quest: Quest,
-	stats: PlayerStats | null,
-	now?: Date
-) {
-	return evaluateQuestEligibilityWithFloors(quest, stats, stats?.miningFloors ?? {}, now);
-}
-
-function evaluateQuestlineEligibility(
-	questline: Questline,
-	stats: PlayerStats | null,
-	completed = new Set<string>(),
-	allQuestlines = new Map<string, Questline>(),
-	now?: Date
-) {
-	return evaluateQuestlineEligibilityWithFloors(
-		questline,
-		stats,
-		null,
-		completed,
-		allQuestlines,
-		now
-	);
-}
 
 const baseStats: PlayerStats = {
 	farming: 10,
@@ -136,7 +111,7 @@ describe('evaluateQuestEligibility', () => {
 		const now = new Date('2026-07-20T00:00:00Z');
 
 		it('is not a gap when neither startDate nor endDate is set', () => {
-			const result = evaluateQuestEligibility(noRequirementQuest, baseStats, now);
+			const result = evaluateQuestEligibility(noRequirementQuest, baseStats, null, now);
 			expect(result.eligible).toBe(true);
 		});
 
@@ -146,7 +121,7 @@ describe('evaluateQuestEligibility', () => {
 				startDate: '2026-07-01T00:00:00Z',
 				endDate: '2026-07-31T00:00:00Z'
 			};
-			const result = evaluateQuestEligibility(quest, baseStats, now);
+			const result = evaluateQuestEligibility(quest, baseStats, null, now);
 			expect(result.eligible).toBe(true);
 		});
 
@@ -156,7 +131,7 @@ describe('evaluateQuestEligibility', () => {
 				startDate: '2026-08-01T00:00:00Z',
 				endDate: '2026-08-31T00:00:00Z'
 			};
-			const result = evaluateQuestEligibility(quest, baseStats, now);
+			const result = evaluateQuestEligibility(quest, baseStats, null, now);
 			expect(result.eligible).toBe(false);
 			expect(result.gaps).toEqual([
 				{
@@ -175,7 +150,7 @@ describe('evaluateQuestEligibility', () => {
 				startDate: '2026-06-01T00:00:00Z',
 				endDate: '2026-06-30T00:00:00Z'
 			};
-			const result = evaluateQuestEligibility(quest, baseStats, now);
+			const result = evaluateQuestEligibility(quest, baseStats, null, now);
 			expect(result.eligible).toBe(false);
 			expect(result.gaps[0]).toMatchObject({ kind: 'season', expired: true });
 			expect(isUnavailable(result.gaps)).toBe(true);
@@ -187,7 +162,7 @@ describe('evaluateQuestEligibility', () => {
 				startDate: '',
 				endDate: '2026-06-30T00:00:00Z'
 			};
-			const result = evaluateQuestEligibility(quest, baseStats, now);
+			const result = evaluateQuestEligibility(quest, baseStats, null, now);
 			expect(result.eligible).toBe(false);
 			expect(result.gaps[0].expired).toBe(true);
 			expect(isUnavailable(result.gaps)).toBe(true);
@@ -199,7 +174,7 @@ describe('evaluateQuestEligibility', () => {
 				startDate: '2026-08-01T00:00:00Z',
 				endDate: ''
 			};
-			const result = evaluateQuestEligibility(quest, baseStats, now);
+			const result = evaluateQuestEligibility(quest, baseStats, null, now);
 			expect(result.eligible).toBe(false);
 			expect(result.gaps[0].expired).toBe(false);
 			expect(isUnavailable(result.gaps)).toBe(false);
@@ -232,7 +207,7 @@ describe('evaluateQuestlineEligibility', () => {
 
 	it('marks completed quests done without evaluating gaps', () => {
 		const completed = new Set(['Test Chain::Test Chain I']);
-		const result = evaluateQuestlineEligibility(questline, baseStats, completed);
+		const result = evaluateQuestlineEligibility(questline, baseStats, null, completed);
 		expect(result.quests[0]).toEqual({
 			questName: 'Test Chain I',
 			seq: 0,
@@ -268,7 +243,7 @@ describe('evaluateQuestlineEligibility', () => {
 
 	it('can start now when every quest is already done', () => {
 		const completed = new Set(['Test Chain::Test Chain I', 'Test Chain::Test Chain II']);
-		const result = evaluateQuestlineEligibility(questline, baseStats, completed);
+		const result = evaluateQuestlineEligibility(questline, baseStats, null, completed);
 		expect(result.canStartNow).toBe(true);
 	});
 
@@ -306,6 +281,7 @@ describe('evaluateQuestlineEligibility', () => {
 			const result = evaluateQuestlineEligibility(
 				gatedQuestline,
 				baseStats,
+				null,
 				new Set(),
 				allQuestlines
 			);
@@ -320,6 +296,7 @@ describe('evaluateQuestlineEligibility', () => {
 			const result = evaluateQuestlineEligibility(
 				gatedQuestline,
 				baseStats,
+				null,
 				completed,
 				allQuestlines
 			);
@@ -349,7 +326,7 @@ describe('evaluateQuestlineEligibility', () => {
 			};
 			// Only the order-0 predecessor is done; order-1 is still outstanding.
 			const completed = new Set(['Upstream Chain::Upstream I']);
-			const result = evaluateQuestlineEligibility(multiGated, baseStats, completed, allQuestlines);
+			const result = evaluateQuestlineEligibility(multiGated, baseStats, null, completed, allQuestlines);
 			expect(result.quests[0].eligible).toBe(false);
 			expect(result.quests[0].gaps).toEqual([
 				{ kind: 'pred', label: 'Upstream Chain', detail: 'Complete "Upstream II" first' }
@@ -371,7 +348,7 @@ describe('evaluateQuestlineEligibility', () => {
 					}
 				]
 			};
-			const result = evaluateQuestlineEligibility(dangling, baseStats, new Set(), allQuestlines);
+			const result = evaluateQuestlineEligibility(dangling, baseStats, null, new Set(), allQuestlines);
 			expect(result.quests[0].eligible).toBe(true);
 			expect(result.quests[0].gaps).toEqual([]);
 		});
@@ -391,7 +368,7 @@ describe('evaluateQuestlineEligibility', () => {
 					}
 				]
 			};
-			const result = evaluateQuestlineEligibility(dangling, baseStats, new Set(), allQuestlines);
+			const result = evaluateQuestlineEligibility(dangling, baseStats, null, new Set(), allQuestlines);
 			expect(result.quests[0].eligible).toBe(true);
 			expect(result.quests[0].gaps).toEqual([]);
 		});
@@ -524,7 +501,7 @@ describe('polluted external prerequisite references', () => {
 				{
 					chain: chain.name,
 					state: 'prerequisite incomplete',
-					result: evaluateQuestlineEligibility(chain, baseStats, new Set(), allQuestlines)
+					result: evaluateQuestlineEligibility(chain, baseStats, null, new Set(), allQuestlines)
 				},
 				{
 					chain: chain.name,
@@ -532,6 +509,7 @@ describe('polluted external prerequisite references', () => {
 					result: evaluateQuestlineEligibility(
 						chain,
 						baseStats,
+						null,
 						new Set([firstQuestKey]),
 						allQuestlines
 					)

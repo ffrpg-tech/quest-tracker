@@ -181,7 +181,7 @@ function predGaps(
 export function evaluateQuestEligibility(
 	quest: Quest,
 	stats: PlayerStats | null,
-	floors: Record<string, number> | null = null,
+	floors: Record<string, number> | null = stats ? (stats.miningFloors ?? {}) : null,
 	now: Date = new Date(),
 	npcLevelsByName = buildNpcLevelIndex(stats)
 ): QuestEligibility {
@@ -286,7 +286,7 @@ export function buildPredReverseIndex(
 export function evaluateQuestlineEligibility(
 	questline: Questline,
 	stats: PlayerStats | null,
-	floors: Record<string, number> | null = null,
+	floors: Record<string, number> | null = stats ? (stats.miningFloors ?? {}) : null,
 	completed: Set<string> = new Set(),
 	allQuestlines: Map<string, Questline> = new Map(),
 	now: Date = new Date(),
