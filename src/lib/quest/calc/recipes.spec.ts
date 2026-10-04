@@ -182,45 +182,51 @@ describe('createCraftingPlanner', () => {
 		});
 	});
 
-	it('characterizes nested craftable quantity reporting', () => {
-		const planner = createCraftingPlanner(
-			new Map([['Wood', 2]]),
-			new Map([
-				['Board', [{ item: 'Wood', qty: 2 }]],
-				['Crate', [{ item: 'Board', qty: 1 }]]
-			])
-		);
+	it('propagates nested craftable quantity to the root and updates left value', () => {
+		const recipes: RecipeMap = new Map([
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Crate', [{ item: 'Board', qty: 1 }]]
+		]);
+		const planner = createCraftingPlanner(new Map([['Wood', 2]]), recipes);
+		const oracle = createOracleCraftingPlanner(new Map([['Wood', 2]]), recipes);
 
 		const plan = planner.plan('Crate', 1);
+		const oraclePlan = oracle.plan('Crate', 1);
+
 		expect(plan.craftableQty).toBe(1);
+		expect(plan.craftTree.craftableQty).toBe(oraclePlan.craftableQty);
 		expect(plan.craftTree).toMatchObject({
 			item: 'Crate',
-			craftableQty: 0,
-			children: [{ item: 'Board', craftableQty: 1 }]
+			craftableQty: 1,
+			left: 0,
+			children: [{ item: 'Board', craftableQty: 1, left: 0 }]
 		});
 	});
 
-	it('characterizes shared raw materials across sibling ingredients', () => {
-		const planner = createCraftingPlanner(
-			new Map([['Wood', 2]]),
-			new Map([
-				['Board', [{ item: 'Wood', qty: 2 }]],
-				['Handle', [{ item: 'Wood', qty: 2 }]],
-				['Bundle', [
-					{ item: 'Board', qty: 1 },
-					{ item: 'Handle', qty: 1 }
-				]]
-			])
-		);
+	it('accounts for shared raw materials across sibling ingredients', () => {
+		const recipes: RecipeMap = new Map([
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]],
+			['Bundle', [
+				{ item: 'Board', qty: 1 },
+				{ item: 'Handle', qty: 1 }
+			]]
+		]);
+		const planner = createCraftingPlanner(new Map([['Wood', 2]]), recipes);
+		const oracle = createOracleCraftingPlanner(new Map([['Wood', 2]]), recipes);
 
 		const plan = planner.plan('Bundle', 1);
+		const oraclePlan = oracle.plan('Bundle', 1);
+
 		expect(plan.craftableQty).toBe(0);
+		expect(plan.craftTree.craftableQty).toBe(oraclePlan.craftableQty);
 		expect(plan.craftTree).toMatchObject({
 			item: 'Bundle',
-			craftableQty: 1,
+			craftableQty: 0,
+			left: 1,
 			children: [
-				{ item: 'Board', craftableQty: 1 },
-				{ item: 'Handle', craftableQty: 1 }
+				{ item: 'Board', craftableQty: 1, left: 0 },
+				{ item: 'Handle', craftableQty: 0, left: 1 }
 			]
 		});
 	});
@@ -236,6 +242,32 @@ describe('createCraftingPlanner', () => {
 
 		const plan = planner.plan('Crate', 1);
 		expect(plan.craftTree.craftableQty).toBe(plan.craftableQty);
+	});
+
+	it('does not let one sibling hog shared raws that a later sibling needs', () => {
+		// X (Plank) needs 2 Wood, Y (Stick) needs 1 Wood, have 3 Wood, want 2 units of Shelf.
+		// Tree must not let X starve Y: 1 full unit of Shelf is craftable.
+		const recipes: RecipeMap = new Map([
+			['Plank', [{ item: 'Wood', qty: 2 }]],
+			['Stick', [{ item: 'Wood', qty: 1 }]],
+			['Shelf', [
+				{ item: 'Plank', qty: 1 },
+				{ item: 'Stick', qty: 1 }
+			]]
+		]);
+		const planner = createCraftingPlanner(new Map([['Wood', 3]]), recipes);
+		const oracle = createOracleCraftingPlanner(new Map([['Wood', 3]]), recipes);
+
+		const plan = planner.plan('Shelf', 2);
+		const oraclePlan = oracle.plan('Shelf', 2);
+
+		expect(plan.craftableQty).toBe(1);
+		expect(plan.craftTree.craftableQty).toBe(oraclePlan.craftableQty);
+		expect(plan.craftTree).toMatchObject({
+			item: 'Shelf',
+			craftableQty: 1,
+			left: 1
+		});
 	});
 
 	it('produces one output per recipe and leaves empty recipes unresolved', () => {

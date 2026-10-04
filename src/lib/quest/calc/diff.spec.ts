@@ -161,8 +161,8 @@ describe('diffQuestline', () => {
 			needed: 1,
 			have: 0,
 			short: 1,
-			craftableQty: 0,
-			craftTree: expect.objectContaining({ item: 'Crate', needed: 1, left: 1, craftable: true })
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Crate', needed: 1, left: 0, craftable: true })
 		});
 		expect(result.quests[1].shortfalls[0]).toEqual({
 			item: 'Crate',

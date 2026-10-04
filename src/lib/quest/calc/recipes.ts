@@ -47,6 +47,65 @@ function multiplyQuantities(source: Map<string, number>, multiplier: number): Ma
 	return result;
 }
 
+function canCraft(
+	item: string,
+	qty: number,
+	stock: Map<string, number>,
+	recipes: RecipeMap,
+	stack = new Set<string>()
+): boolean {
+	if (qty <= 0) return true;
+	if (stack.has(item)) return false;
+
+	const have = stock.get(item) ?? 0;
+	const fromStock = Math.min(qty, have);
+	stock.set(item, have - fromStock);
+	const remaining = qty - fromStock;
+	if (remaining === 0) return true;
+
+	const ingredients = recipes.get(item);
+	if (!ingredients || ingredients.length === 0) {
+		return false;
+	}
+
+	stack.add(item);
+	for (const ingredient of ingredients) {
+		const needed = ingredient.qty * remaining;
+		if (!canCraft(ingredient.item, needed, stock, recipes, stack)) {
+			stack.delete(item);
+			return false;
+		}
+	}
+	stack.delete(item);
+	return true;
+}
+
+function findMaxCraftableQty(
+	item: string,
+	maxQty: number,
+	resources: Map<string, number>,
+	recipes: RecipeMap
+): number {
+	if (maxQty <= 0) return 0;
+
+	let low = 1;
+	let high = maxQty;
+	let best = 0;
+
+	while (low <= high) {
+		const mid = Math.floor((low + high) / 2);
+		const stock = new Map(resources);
+		if (canCraft(item, mid, stock, recipes)) {
+			best = mid;
+			low = mid + 1;
+		} else {
+			high = mid - 1;
+		}
+	}
+
+	return best;
+}
+
 function buildCraftTree(
 	item: string,
 	needed: number,
@@ -70,6 +129,7 @@ function buildCraftTree(
 		};
 	}
 
+	const initialResources = new Map(resources);
 	stack.add(item);
 	const children: CraftTreeNode[] = [];
 	const missingOutputs = Math.max(0, needed - have);
@@ -85,12 +145,8 @@ function buildCraftTree(
 		consumeTreeResources(child, resources);
 	}
 	stack.delete(item);
-	const craftableQty = Math.min(
-		missingOutputs,
-		...ingredients.map((ingredient, index) =>
-			Math.floor((children[index]?.have ?? 0) / ingredient.qty)
-		)
-	);
+
+	const craftableQty = findMaxCraftableQty(item, missingOutputs, initialResources, recipes);
 	return {
 		item,
 		have,
@@ -104,12 +160,9 @@ function buildCraftTree(
 }
 
 function consumeTreeResources(node: CraftTreeNode, resources: Map<string, number>): void {
-	if (node.children.length === 0) {
-		const available = resources.get(node.item) ?? 0;
-		resources.set(node.item, Math.max(0, available - node.left));
-		return;
-	}
-	for (const child of node.children) consumeTreeResources(child, resources);
+	const available = resources.get(node.item) ?? 0;
+	const used = Math.min(node.needed, available);
+	resources.set(node.item, available - used);
 }
 
 /**
