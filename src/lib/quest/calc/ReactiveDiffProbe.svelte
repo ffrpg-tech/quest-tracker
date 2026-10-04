@@ -12,6 +12,7 @@
 	let questlinesHydrated = $state(false);
 	let hydrated = $state(false);
 	let playerStats = $state<{} | null>(null);
+	let statsHydrated = $state(false);
 	let eligibilityRebuilds = 0;
 	let displayedEligibilityRebuilds = $state(0);
 
@@ -26,8 +27,8 @@
 	});
 
 	$effect(() => {
-		const deps = { questlinesHydrated, hydrated, playerStats };
-		if (deps.questlinesHydrated) {
+		const deps = { questlinesHydrated, hydrated, playerStats, statsHydrated };
+		if (deps.questlinesHydrated && deps.hydrated && deps.statsHydrated) {
 			eligibilityRebuilds++;
 			untrack(() => (displayedEligibilityRebuilds = eligibilityRebuilds));
 		}
@@ -39,6 +40,7 @@
 		hydrated = true;
 		await tick();
 		playerStats = {};
+		statsHydrated = true;
 	}
 
 	function toggleUnselectedQuest() {

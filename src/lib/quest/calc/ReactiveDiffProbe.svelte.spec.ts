@@ -25,6 +25,6 @@ describe('ReactiveDiffProbe', () => {
 
 		await page.getByRole('button', { name: 'Settle startup' }).click();
 
-		await expect.element(page.getByTestId('eligibility-rebuilds')).toHaveTextContent('3');
+		await expect.element(page.getByTestId('eligibility-rebuilds')).toHaveTextContent('1');
 	});
 });

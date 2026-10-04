@@ -293,9 +293,11 @@
 	// still runs with a null `stats` and reports expired-season gaps regardless, so an
 	// UNAVAILABLE quest shows as such even before any stats are pasted.
 	let playerStats = $state<PlayerStats | null>(null);
+	let statsHydrated = $state(false);
 
 	onMount(() => {
 		playerStats = loadPlayerStats();
+		statsHydrated = true;
 	});
 
 	function handleClearPlayerStats() {
@@ -370,17 +372,20 @@
 
 	$effect(() => {
 		// Reactive deps for a *full* rebuild: the questline catalogue, player stats,
-		// and the flag marking `completed` as loaded from storage. `completed`
-		// itself is deliberately read only inside `untrack` — a single quest toggle
-		// patches just the affected questlines via toggleCompleted/onCompletedChanged
+		// and the flags marking `completed` and `playerStats` as loaded from storage.
+		// `completed` itself is deliberately read only inside `untrack` — a single quest
+		// toggle patches just the affected questlines via toggleCompleted/onCompletedChanged
 		// instead of re-walking the whole catalogue here.
 		const deps = {
 			options: questlineOptions,
 			stats: playerStats,
 			completedLoaded: hydrated,
+			statsLoaded: statsHydrated,
 			ready: questlinesHydrated
 		};
-		if (deps.ready) untrack(() => recomputeEligibility());
+		if (deps.ready && deps.completedLoaded && deps.statsLoaded) {
+			untrack(() => recomputeEligibility());
+		}
 	});
 
 	// ---------- Mining ----------
