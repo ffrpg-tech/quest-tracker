@@ -28,6 +28,7 @@ the page parses this file directly, so an entry added here is what users see.
 ### Changed
 
 - Craftable quantities (purple +N) are now reflected directly within individual Craft Tree sub-nodes in addition to primary requirement rows.
+- Items expanded from Craft Trees now displays a "Can't Mail" Icon rather than a badge to maximize compact space.
 - Initial page load now consolidates eligibility evaluation into a single pass once saved quest and player data finish restoring from storage, eliminating over 700ms of blocking script execution on startup.
 - Changelog page now reflects your browser's detected timezone.
 
