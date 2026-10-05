@@ -10,7 +10,7 @@
 		node,
 		showAllItems = false,
 		hideCannotMail
-	}: { node: CraftTreeNodeData; showAllItems?: boolean, hideCannotMail?: boolean } = $props();
+	}: { node: CraftTreeNodeData; showAllItems?: boolean; hideCannotMail?: boolean } = $props();
 	let expanded = $state(false);
 
 	const satisfied = $derived(node.left <= 0);
@@ -19,31 +19,37 @@
 </script>
 
 <div class="border-l-2 border-gray-200 pl-2 dark:border-gray-700">
-	<div class="flex min-w-0 items-center gap-1 text-xs {satisfied ? 'opacity-50' : ''}">
-		<ItemIcon name={node.item} {hideCannotMail} />
-		<a
-			href={buddyFarmItemUrl(node.item)}
-			target="_blank"
-			rel="noopener noreferrer"
-			class="min-w-0 truncate hover:underline">{node.item}</a
-		>
-		<span class="shrink-0 tabular-nums">{formatNumber(node.have)} / {formatNumber(node.needed)}</span>
-		{#if satisfied}
-			<Check
-				size={13}
-				class="shrink-0 text-emerald-600 dark:text-emerald-400"
-				aria-label="Satisfied"
-			/>
-		{:else}
-			<span class="shrink-0 tabular-nums font-semibold text-red-600 dark:text-red-400"
-				>({formatNumber(node.left)} left)</span
+	<div
+		class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs {satisfied ? 'opacity-50' : ''}"
+	>
+		<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
+			<ItemIcon name={node.item} {hideCannotMail} cannotMailFormat="icon" />
+			<a
+				href={buddyFarmItemUrl(node.item)}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="hover:underline">{node.item}</a
 			>
-		{/if}
-		{#if node.craftableQty > 0}
-			<span class="shrink-0 tabular-nums text-violet-600 dark:text-violet-400"
-				>(+{formatNumber(node.craftableQty)})</span
-			>
-		{/if}
+		</span>
+		<span class="inline-flex items-center gap-1 tabular-nums">
+			<span>{formatNumber(node.have)} / {formatNumber(node.needed)}</span>
+			{#if satisfied}
+				<Check
+					size={13}
+					class="shrink-0 text-emerald-600 dark:text-emerald-400"
+					aria-label="Satisfied"
+				/>
+			{:else}
+				<span class="font-semibold text-red-600 dark:text-red-400"
+					>({formatNumber(node.left)} left)</span
+				>
+			{/if}
+			{#if node.craftableQty > 0}
+				<span class="text-violet-600 dark:text-violet-400"
+					>(+{formatNumber(node.craftableQty)})</span
+				>
+			{/if}
+		</span>
 		{#if hasChildren}
 			<button
 				type="button"
@@ -61,8 +67,6 @@
 					</span>
 				{/if}
 			</button>
-		{:else}
-			<span class="w-[68px] shrink-0"></span>
 		{/if}
 	</div>
 

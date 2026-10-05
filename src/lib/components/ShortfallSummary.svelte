@@ -217,7 +217,7 @@
 					</p>
 				{:else}
 					<ul
-						class="grid max-h-[60vh] grid-cols-1 gap-x-6 gap-y-2 overflow-y-auto text-sm sm:grid-cols-3 md:max-h-none md:overflow-visible"
+						class="grid max-h-[60vh] grid-cols-1 gap-x-6 gap-y-2 overflow-y-auto text-sm sm:grid-cols-2 lg:grid-cols-3 md:max-h-none md:overflow-visible"
 					>
 						{#each filteredShortfallSummary as s (s.item)}
 							<li class="border-b border-gray-100 py-1 dark:border-gray-700">
