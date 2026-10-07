@@ -26,8 +26,8 @@ export interface QuestlineOrderRef {
 export interface Quest {
 	id?: number;
 	name: string;
-	startDate: string;
-	endDate: string;
+	startDate?: string;
+	endDate?: string;
 	requirements: ItemQty[];
 	seq: number;
 	requiredLevels?: SkillLevelRequirement;
@@ -63,13 +63,12 @@ export interface PlayerStats {
 	miningFloors?: Record<string, number>;
 }
 
-
 /** The five paste tabs in ImportModal — hoisted here so it isn't defined twice (ImportModal.svelte and +page.svelte both need it). */
 export type ImportTab = 'inventory' | 'bank' | 'completed' | 'stats' | 'mining';
 
 export interface Questline {
 	name: string;
-	questCount: number;
+	questCount?: number;
 	quests: Quest[];
 }
 
@@ -111,7 +110,7 @@ const SKILL_KEYS: (keyof SkillLevelRequirement)[] = [
 	'exploring',
 	'tower',
 	'cooking',
-	'mining',
+	'mining'
 ];
 
 function isSkillLevelRequirement(v: unknown): v is SkillLevelRequirement {
@@ -143,7 +142,7 @@ function isQuest(v: unknown): v is Quest {
 		(q.id === undefined || typeof q.id === 'number') &&
 		typeof q.name === 'string' &&
 		(q.startDate === undefined || typeof q.startDate === 'string') &&
-        (q.endDate === undefined || typeof q.endDate === 'string') &&
+		(q.endDate === undefined || typeof q.endDate === 'string') &&
 		Array.isArray(q.requirements) &&
 		q.requirements.every(isItemQty) &&
 		typeof q.seq === 'number' &&
@@ -160,7 +159,7 @@ function isQuestline(v: unknown): v is Questline {
 	const g = v as Questline;
 	return (
 		typeof g.name === 'string' &&
-		typeof g.questCount === 'number' &&
+		(g.questCount === undefined || typeof g.questCount === 'number') &&
 		Array.isArray(g.quests) &&
 		g.quests.every(isQuest)
 	);
@@ -175,7 +174,9 @@ export function isQuestlinesData(v: unknown): v is QuestlinesData {
 function isNpc(v: unknown): v is Npc {
 	if (!v || typeof v !== 'object') return false;
 	const n = v as Npc;
-	return typeof n.name === 'string' && typeof n.image === 'string' && typeof n.isAvailable === 'boolean';
+	return (
+		typeof n.name === 'string' && typeof n.image === 'string' && typeof n.isAvailable === 'boolean'
+	);
 }
 
 /** Structural check on the fetched `npc.json` payload — same rationale as `isQuestlinesData`. */

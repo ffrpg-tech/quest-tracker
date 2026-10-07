@@ -127,11 +127,11 @@ function seasonGap(quest: Quest, now: Date): EligibilityGap | null {
 	if (inWindow) return null;
 
 	const range =
-		start && end
+		quest.startDate && quest.endDate
 			? `${formatDate(quest.startDate)} – ${formatDate(quest.endDate)}`
-			: start
+			: quest.startDate
 				? `starting ${formatDate(quest.startDate)}`
-				: `until ${formatDate(quest.endDate)}`;
+				: `until ${formatDate(quest.endDate!)}`;
 
 	const expired = !!end && now > end;
 

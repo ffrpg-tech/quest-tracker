@@ -19,7 +19,11 @@
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { statusTextColorClass, type SemanticStatus } from '$lib/ui/statusColor';
 	import type { Questline } from '$lib/quest/types';
-	import { isUnavailable, type EligibilityGap, type QuestlineEligibility } from '$lib/quest/calc/eligibility';
+	import {
+		isUnavailable,
+		type EligibilityGap,
+		type QuestlineEligibility
+	} from '$lib/quest/calc/eligibility';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
 
 	let {
@@ -158,7 +162,7 @@
 
 	function questlineStatus(g: Questline, doneCount: number): 'not-started' | 'ongoing' | 'done' {
 		if (doneCount === 0) return 'not-started';
-		if (doneCount >= g.questCount) return 'done';
+		if (doneCount >= (g.questCount ?? g.quests.length)) return 'done';
 		return 'ongoing';
 	}
 
@@ -291,13 +295,20 @@
 
 	<!-- Every pill below is an independent toggle (checkbox semantics, aria-checked) —
 	     any combination can be active at once, e.g. "Not started" + "Locked" together. -->
-	<div class="flex flex-wrap items-center gap-1.5 text-xs" role="group" aria-label="Filter by status">
+	<div
+		class="flex flex-wrap items-center gap-1.5 text-xs"
+		role="group"
+		aria-label="Filter by status"
+	>
 		{#each [['not-started', 'Not started'], ['ongoing', 'Ongoing'], ['done', 'Done']] as [value, label] (value)}
 			{@const Icon = statusFilterIcon[value as QuestlineStatusFilter]}
 			<button
 				role="checkbox"
 				onclick={() =>
-					(questlineStatusFilters = toggleInSet(questlineStatusFilters, value as QuestlineStatusFilter))}
+					(questlineStatusFilters = toggleInSet(
+						questlineStatusFilters,
+						value as QuestlineStatusFilter
+					))}
 				title={label}
 				aria-label={label}
 				class={buttonClass('icon', questlineStatusFilters.has(value as QuestlineStatusFilter))}
@@ -355,7 +366,9 @@
 				{#each filteredQuestlines as g (g.name)}
 					{@const doneCount = completedCountByQuestline.get(g.name) ?? 0}
 					{@const queued = selectedQuestlineNameSet.has(g.name)}
-					{@const statusColor = statusTextColorClass(questlineSemanticStatus[questlineStatus(g, doneCount)])}
+					{@const statusColor = statusTextColorClass(
+						questlineSemanticStatus[questlineStatus(g, doneCount)]
+					)}
 					{@const locked = lockInfoByQuestline.get(g.name)?.locked ?? false}
 					{@const gaps = lockInfoByQuestline.get(g.name)?.gaps ?? []}
 					{@const unavailable = lockInfoByQuestline.get(g.name)?.unavailable ?? false}
@@ -398,7 +411,7 @@
 											}
 										}}
 										title={unavailable
-											? "A seasonal window has already passed — tap for details"
+											? 'A seasonal window has already passed — tap for details'
 											: 'Eligibility gap — tap for details'}
 										aria-expanded={expandedLock === g.name}
 										class="inline-flex cursor-pointer items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-semibold {unavailable
@@ -412,11 +425,15 @@
 										/>
 									</span>
 								{/if}
-								<span class="text-xs {statusColor}">{doneCount}/{g.questCount}</span>
+								<span class="text-xs {statusColor}"
+									>{doneCount}/{g.questCount ?? g.quests.length}</span
+								>
 							</span>
 						</button>
 						{#if locked && expandedLock === g.name}
-							<div class="border-t border-gray-100 p-2 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400">
+							<div
+								class="border-t border-gray-100 p-2 text-xs text-gray-500 dark:border-gray-700 dark:text-gray-400"
+							>
 								{#each gaps as gap (gap.kind + ':' + gap.label)}
 									<div
 										class="flex items-center gap-1 {gap.kind === 'season' && gap.expired

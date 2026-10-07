@@ -1,90 +1,120 @@
 {
-	"The Sample Orchard": {
-		"name": "The Sample Orchard",
-		"questCount": 3,
-		"quests": [
-			{
-				"id": 1,
-				"name": "The Sample Orchard I",
-				"startDate": "",
-				"endDate": "",
-				"requirements": [
-					{ "item": "Sample Apple", "qty": 20 },
-					{ "item": "Sample Wood", "qty": 5 }
-				],
-				"seq": 0,
-				"requiredLevels": { "farming": 10 }
-			},
-			{
-				"id": 2,
-				"name": "The Sample Orchard II",
-				"startDate": "2026-07-19T05:00:00+00:00",
-				"endDate": "2026-08-19T05:00:00+00:00",
-				"requirements": [
-					{ "item": "Sample Apple", "qty": 50 },
-					{ "item": "Sample Silver Ore", "qty": 10 }
-				],
-				"seq": 1,
-				"requiredNpc": { "npc": "Rosalie", "level": 5 }
-			},
-			{
-				"id": 3,
-				"name": "The Sample Orchard III",
-				"startDate": "",
-				"endDate": "",
-				"requirements": [
-					{ "item": "Sample Apple", "qty": 100 },
-					{ "item": "Silver", "qty": 5000 }
-				],
-				"seq": 2,
-				"requiredLevels": { "farming": 20, "cooking": 5 },
-				"requiredNpc": { "npc": "Rosalie", "level": 10 },
-				"dependentQuests": [
-					{ "questlines": [{ "questline": { "title": "Sample Fishing Trip" }, "order": 0 }] }
-				]
-			}
-		]
-	},
-	"Sample Fishing Trip": {
-		"name": "Sample Fishing Trip",
-		"questCount": 2,
-		"quests": [
-			{
-				"id": 4,
-				"name": "Sample Fishing Trip I",
-				"startDate": "",
-				"endDate": "",
-				"requirements": [{ "item": "Sample Trout", "qty": 15 }],
-				"seq": 0,
-				"pred": {
-					"questlines": [{ "questline": { "title": "The Sample Orchard" }, "order": 2 }]
-				}
-			},
-			{
-				"id": 5,
-				"name": "Sample Fishing Trip II",
-				"startDate": "",
-				"endDate": "",
-				"requirements": [
-					{ "item": "Sample Trout", "qty": 30 },
-					{ "item": "Sample Wood", "qty": 8 }
-				],
-				"seq": 1
-			}
-		]
-	},
-	"A Sample One-Off Request": {
-		"name": "A Sample One-Off Request",
-		"questCount": 1,
-		"quests": [
-			{
-				"id": 6,
-				"name": "A Sample One-Off Request",
-				"startDate": "",
-				"endDate": "",
-				"requirements": [{ "item": "Sample Silver Ore", "qty": 3 }],
-				"seq": 0
-			}
-		]
-	}
+  "The Sample Orchard": {
+    "name": "The Sample Orchard",
+    "quests": [
+      {
+        "name": "The Sample Orchard I",
+        "requirements": [
+          {
+            "item": "Sample Apple",
+            "qty": 20
+          },
+          {
+            "item": "Sample Wood",
+            "qty": 5
+          }
+        ],
+        "seq": 0,
+        "requiredLevels": {
+          "farming": 10
+        }
+      },
+      {
+        "name": "The Sample Orchard II",
+        "requirements": [
+          {
+            "item": "Sample Apple",
+            "qty": 50
+          },
+          {
+            "item": "Sample Silver Ore",
+            "qty": 10
+          }
+        ],
+        "seq": 1,
+        "startDate": "2026-07-19T05:00:00+00:00",
+        "endDate": "2026-08-19T05:00:00+00:00",
+        "requiredNpc": {
+          "npc": "Rosalie",
+          "level": 5
+        }
+      },
+      {
+        "name": "The Sample Orchard III",
+        "requirements": [
+          {
+            "item": "Sample Apple",
+            "qty": 100
+          },
+          {
+            "item": "Silver",
+            "qty": 5000
+          }
+        ],
+        "seq": 2,
+        "requiredLevels": {
+          "farming": 20,
+          "cooking": 5
+        },
+        "requiredNpc": {
+          "npc": "Rosalie",
+          "level": 10
+        }
+      }
+    ]
+  },
+  "Sample Fishing Trip": {
+    "name": "Sample Fishing Trip",
+    "quests": [
+      {
+        "name": "Sample Fishing Trip I",
+        "requirements": [
+          {
+            "item": "Sample Trout",
+            "qty": 15
+          }
+        ],
+        "seq": 0,
+        "pred": {
+          "questlines": [
+            {
+              "questline": {
+                "title": "The Sample Orchard"
+              },
+              "order": 2
+            }
+          ]
+        }
+      },
+      {
+        "name": "Sample Fishing Trip II",
+        "requirements": [
+          {
+            "item": "Sample Trout",
+            "qty": 30
+          },
+          {
+            "item": "Sample Wood",
+            "qty": 8
+          }
+        ],
+        "seq": 1
+      }
+    ]
+  },
+  "A Sample One-Off Request": {
+    "name": "A Sample One-Off Request",
+    "quests": [
+      {
+        "name": "A Sample One-Off Request",
+        "requirements": [
+          {
+            "item": "Sample Silver Ore",
+            "qty": 3
+          }
+        ],
+        "seq": 0
+      }
+    ]
+  }
 }
