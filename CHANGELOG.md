@@ -7,6 +7,29 @@ are grouped by feature/release, not by individual commit.
 This file is the source of truth for the in-app [changelog page](/changelog) —
 the page parses this file directly, so an entry added here is what users see.
 
+## [0.4.1] - 2026-10-07T00:00:00+08:00
+
+### Added
+
+- Support for year-agnostic recurring annual seasonal quests: annual holiday and seasonal event questlines (Halloween, Christmas, Valentine's, Easter, Summer, etc.) now automatically project their availability windows onto the current calendar year. When an active holiday window arrives in FarmRPG, its quests automatically become eligible in the tracker without requiring manual data updates every year.
+- Seamless handling for seasonal event windows that cross the New Year boundary (e.g. December through January, such as *Shoveling Snow*).
+- Added pre-filled 1-click reporting in the Import Data modal: when unmatched quest names are detected during completed quest import, a "1-Click Report (Google Form)" button opens the feedback form with category, problem type, and missing quest names already populated for instant submission.
+- Added a "Copy & Message kodyy in-game" action in the Import Data modal that formats unmatched quest names to the clipboard and opens the in-game message screen.
+
+### Changed
+
+- Off-season recurring seasonal quests now display clean, year-agnostic date ranges in gap explanations (e.g. "Only available Oct 22 – Nov 4") instead of showing outdated historical years.
+- Historical one-off milestone celebration quests (e.g. *10,000 Players!*, *750,000 Farmers*, server downtime compensations) remain permanently retired and unavailable.
+
+### Performance
+
+- Heavily pruned and minified `questlines.json` static database payload, dropping file size from 2.75 MB down to ~896 KB (-67.4% reduction; ~88 KB gzipped). Pruned dead upstream fields (`dependentQuests`, `isHidden`, redundant quest `id`) and omitted empty default dates and falsy flags.
+- Catalogue-wide eligibility recalculation runtime improved by over 70% (from ~1.7s down to ~450ms) due to the lighter JSON payload and streamlined quest object model.
+
+### Fixed
+
+- Fixed profile stats parsing for players who have not unlocked Mining or whose profile displays "Now in Beta", defaulting Mining level safely to 0 instead of throwing an unhandled parse error.
+
 ## [0.4.0] - 2026-10-04T00:00:00+08:00
 
 ### Added
