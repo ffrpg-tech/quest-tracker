@@ -13,10 +13,8 @@ export class StatsParseError extends Error {}
  * matches that shape wherever it's searched for. */
 const LEVEL_LINE = /^Level (\d+)$/i;
 
-/** A skill not yet unlocked (e.g. Cooking before a player's first meal) renders
- * "Not Started" in place of a "Level N" line — treat that as level 0 rather than
- * failing the whole parse. */
-const NOT_STARTED_LINE = /^Not Started$/i;
+/** A skill not yet unlocked renders "Not Started" or "Now in Beta" in place of a "Level N" line — treat that as level 0 rather than failing the whole parse. */
+const NOT_STARTED_LINE = /^(Not Started|Now in Beta)$/i;
 
 const SKILL_LINES: { key: keyof Omit<PlayerStats, 'tower' | 'npcLevels'>; line: string }[] = [
 	{ key: 'farming', line: 'Farming' },
@@ -141,6 +139,10 @@ export function parsePlayerStatsPaste(
 	for (const { key, line } of SKILL_LINES) {
 		const level = findLevelAfter(lines, line);
 		if (level === null) {
+			if (key === 'mining') {
+				stats.mining = 0;
+				continue;
+			}
 			throw new StatsParseError(
 				`Could not find your ${line} level in the pasted content — make sure you copied the full "My Profile" page.`
 			);

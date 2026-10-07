@@ -115,11 +115,45 @@ function formatDate(iso: string): string {
 	});
 }
 
+function formatRecurringDate(d: Date): string {
+	return d.toLocaleDateString(undefined, {
+		month: 'short',
+		day: 'numeric',
+		timeZone: 'UTC'
+	});
+}
+
 /** `Quest.startDate`/`endDate` are '' for non-seasonal quests (see fetch-questlines.mjs) —
  * only treated as a gate when at least one is a real date. `now` is injectable so this
- * stays deterministic in tests instead of depending on the wall clock. */
-function seasonGap(quest: Quest, now: Date): EligibilityGap | null {
+ * stays deterministic in tests instead of depending on the wall clock.
+ * For `isRecurring` quests, the seasonal window repeats annually without requiring year bumps. */
+function seasonGap(
+	quest: Quest,
+	now: Date,
+	isRecurring = quest.recurring ?? false
+): EligibilityGap | null {
 	if (!quest.startDate && !quest.endDate) return null;
+
+	if (isRecurring && quest.startDate && quest.endDate) {
+		const s = new Date(quest.startDate);
+		const e = new Date(quest.endDate);
+		const durationMs = e.getTime() - s.getTime();
+		const currentYear = now.getUTCFullYear();
+
+		// Candidates for current year and adjacent years (handles year rollover like Dec -> Jan)
+		const candidates = [currentYear - 1, currentYear, currentYear + 1].map((y) => {
+			const startCandidate = new Date(s);
+			startCandidate.setUTCFullYear(y);
+			const endCandidate = new Date(startCandidate.getTime() + durationMs);
+			return { start: startCandidate, end: endCandidate };
+		});
+
+		const inWindow = candidates.some((c) => now >= c.start && now <= c.end);
+		if (inWindow) return null;
+
+		const range = `${formatRecurringDate(s)} – ${formatRecurringDate(e)}`;
+		return { kind: 'season', label: 'Seasonal', detail: `Only available ${range}`, expired: true };
+	}
 
 	const start = quest.startDate ? new Date(quest.startDate) : null;
 	const end = quest.endDate ? new Date(quest.endDate) : null;
@@ -183,7 +217,8 @@ export function evaluateQuestEligibility(
 	stats: PlayerStats | null,
 	floors: Record<string, number> | null = stats ? (stats.miningFloors ?? {}) : null,
 	now: Date = new Date(),
-	npcLevelsByName = buildNpcLevelIndex(stats)
+	npcLevelsByName = buildNpcLevelIndex(stats),
+	isRecurring = quest.recurring ?? false
 ): QuestEligibility {
 	const gaps: EligibilityGap[] = [];
 
@@ -234,7 +269,7 @@ export function evaluateQuestEligibility(
 		}
 	}
 
-	const season = seasonGap(quest, now);
+	const season = seasonGap(quest, now, isRecurring);
 	if (season) gaps.push(season);
 
 	return {
@@ -295,12 +330,20 @@ export function evaluateQuestlineEligibility(
 		npcLevelsByName: buildNpcLevelIndex(stats)
 	}
 ): QuestlineEligibility {
+	const isRecurring = questline.recurring ?? false;
 	const quests = questline.quests.map((q) => {
 		if (completed.has(questKey(questline.name, q.name))) {
 			return { questName: q.name, seq: q.seq, done: true, eligible: true, gaps: [] };
 		}
 
-		const base = evaluateQuestEligibility(q, stats, floors, now, indexes.npcLevelsByName);
+		const base = evaluateQuestEligibility(
+			q,
+			stats,
+			floors,
+			now,
+			indexes.npcLevelsByName,
+			q.recurring ?? isRecurring
+		);
 		const pred = predGaps(q, allQuestlines, completed, indexes.questlinesByTitle);
 		if (pred.length === 0) return base;
 

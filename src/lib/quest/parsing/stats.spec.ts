@@ -467,7 +467,7 @@ Cooking
 Level 74
 
 Mining
-Now in Beta
+Level 20
 Merit Badges
 
 Big Backpack

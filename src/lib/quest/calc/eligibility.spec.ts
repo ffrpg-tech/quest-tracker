@@ -179,6 +179,57 @@ describe('evaluateQuestEligibility', () => {
 			expect(result.gaps[0].expired).toBe(false);
 			expect(isUnavailable(result.gaps)).toBe(false);
 		});
+
+		it('evaluates recurring seasonal quest as eligible when now falls in the recurring window regardless of past year', () => {
+			const quest: Quest = {
+				...noRequirementQuest,
+				startDate: '2023-10-22T00:00:00Z',
+				endDate: '2023-11-04T00:00:00Z',
+				recurring: true
+			};
+			const activeNow = new Date('2026-10-25T00:00:00Z');
+			const result = evaluateQuestEligibility(quest, baseStats, null, activeNow);
+			expect(result.eligible).toBe(true);
+			expect(result.gaps).toEqual([]);
+		});
+
+		it('evaluates recurring seasonal quest as unavailable when now is outside the window in a future year', () => {
+			const quest: Quest = {
+				...noRequirementQuest,
+				startDate: '2023-10-22T00:00:00Z',
+				endDate: '2023-11-04T00:00:00Z',
+				recurring: true
+			};
+			const offSeasonNow = new Date('2026-07-15T00:00:00Z');
+			const result = evaluateQuestEligibility(quest, baseStats, null, offSeasonNow);
+			expect(result.eligible).toBe(false);
+			expect(result.gaps[0]).toMatchObject({
+				kind: 'season',
+				expired: true
+			});
+			expect(result.gaps[0].detail).toContain('Oct 22 – Nov 4');
+			expect(isUnavailable(result.gaps)).toBe(true);
+		});
+
+		it('handles recurring seasonal quests that cross the new year boundary (Dec to Jan)', () => {
+			const quest: Quest = {
+				...noRequirementQuest,
+				startDate: '2023-12-05T00:00:00Z',
+				endDate: '2024-01-05T00:00:00Z',
+				recurring: true
+			};
+			const inDec = new Date('2026-12-20T00:00:00Z');
+			expect(evaluateQuestEligibility(quest, baseStats, null, inDec).eligible).toBe(true);
+
+			const inJan = new Date('2027-01-02T00:00:00Z');
+			expect(evaluateQuestEligibility(quest, baseStats, null, inJan).eligible).toBe(true);
+
+			const inMay = new Date('2027-05-10T00:00:00Z');
+			const offResult = evaluateQuestEligibility(quest, baseStats, null, inMay);
+			expect(offResult.eligible).toBe(false);
+			expect(offResult.gaps[0].expired).toBe(true);
+			expect(offResult.gaps[0].detail).toContain('Dec 5 – Jan 5');
+		});
 	});
 });
 
@@ -244,6 +295,27 @@ describe('evaluateQuestlineEligibility', () => {
 	it('can start now when every quest is already done', () => {
 		const completed = new Set(['Test Chain::Test Chain I', 'Test Chain::Test Chain II']);
 		const result = evaluateQuestlineEligibility(questline, baseStats, null, completed);
+		expect(result.canStartNow).toBe(true);
+	});
+
+	it('evaluates recurring questline as eligible when active in current year', () => {
+		const recurringChain: Questline = {
+			name: 'Recurring Holiday',
+			questCount: 1,
+			recurring: true,
+			quests: [
+				{
+					name: 'Holiday I',
+					startDate: '2023-10-22T00:00:00Z',
+					endDate: '2023-11-04T00:00:00Z',
+					requirements: [],
+					seq: 0
+				}
+			]
+		};
+		const activeNow = new Date('2026-10-25T00:00:00Z');
+		const result = evaluateQuestlineEligibility(recurringChain, null, null, new Set(), new Map(), activeNow);
+		expect(result.allEligible).toBe(true);
 		expect(result.canStartNow).toBe(true);
 	});
 

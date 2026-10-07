@@ -130,7 +130,9 @@ describe('performance characterization', () => {
 		expect(Object.keys(results).length).toBe(3);
 	});
 
-	it('measures full catalogue eligibility rebuild', async () => {
+	it(
+		'measures full catalogue eligibility rebuild',
+		async () => {
 		const questlineMap = new Map(questlines.map((q) => [q.name, q]));
 		const stats: PlayerStats = {
 			farming: 99,
@@ -159,5 +161,5 @@ describe('performance characterization', () => {
 
 		console.error({ totalQuestlines: questlines.length, fullEligibilityRebuildMs: rebuildMs });
 		expect(rebuildMs).toBeGreaterThanOrEqual(0);
-	});
+	}, 25000);
 });

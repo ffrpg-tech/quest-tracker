@@ -48,6 +48,8 @@ export interface Quest {
 	isHidden?: boolean;
 	/** Confirmed use: prioritize main-story chains in the (not-yet-built) recommendation ranking. */
 	mainQuest?: boolean;
+	/** True if this seasonal quest repeats annually. */
+	recurring?: boolean;
 }
 
 /** Player stats pasted from FarmRPG's "My Profile" page — see stats.ts. */
@@ -69,6 +71,7 @@ export type ImportTab = 'inventory' | 'bank' | 'completed' | 'stats' | 'mining';
 export interface Questline {
 	name: string;
 	questCount?: number;
+	recurring?: boolean;
 	quests: Quest[];
 }
 

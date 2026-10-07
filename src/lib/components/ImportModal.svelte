@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { SvelteSet } from 'svelte/reactivity';
-	import { X } from '@lucide/svelte';
+	import { X, ExternalLink, Send } from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import ParseSuccessFlash from './ParseSuccessFlash.svelte';
 	import {
@@ -320,8 +320,22 @@
 
 	let copyUnmatchedMessage = $state('');
 
+	const missingQuestReportUrl = $derived.by(() => {
+		if (unmatchedQuestNames.length === 0) return '';
+		const base =
+			'https://docs.google.com/forms/d/e/1FAIpQLSclXRihQ2KnJchUlGiqBGCBHTtce193kbAb-g9XvXz9OEvCAA/viewform?usp=pp_url';
+		const params = new URLSearchParams({
+			'entry.1859873416': 'Missing or wrong quest/item data',
+			'entry.1461965644': unmatchedQuestNames.join('\n'),
+			'entry.119487616': 'Quest missing entirely',
+			'entry.2112241944': `Unmatched during completed quest import on FarmRPG Quest Tracker (${unmatchedQuestNames.length} quest${unmatchedQuestNames.length === 1 ? '' : 's'})`
+		});
+		return `${base}&${params.toString()}`;
+	});
+
 	async function copyUnmatchedQuestNames() {
-		await navigator.clipboard.writeText(unmatchedQuestNames.join('\n'));
+		const text = `[Quest Tracker] Missing quest(s):\n${unmatchedQuestNames.join('\n')}`;
+		await navigator.clipboard.writeText(text);
 		copyUnmatchedMessage = 'Copied!';
 		setTimeout(() => (copyUnmatchedMessage = ''), 2000);
 	}
@@ -694,9 +708,29 @@
 									>{unmatchedQuestNames.join('\n')}</code
 								></pre>
 							<p class="mt-2 text-xs text-amber-800 dark:text-amber-300">
-								These might be missing from the quest data. Copy the list above and send it to
-								<strong>kodyy</strong> in-game so they can get added.
+								These might be newly added or missing from the quest database. Report them so they can be added:
 							</p>
+							<div class="mt-3 flex flex-wrap gap-2">
+								<a
+									href={missingQuestReportUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="{buttonClass('primary')} inline-flex items-center gap-1.5 text-xs"
+								>
+									<ExternalLink size={13} />
+									1-Click Report (Google Form)
+								</a>
+								<a
+									href="https://farmrpg.com/#!/sendmessage.php?to=kodyy"
+									target="_blank"
+									rel="noopener noreferrer"
+									onclick={copyUnmatchedQuestNames}
+									class="{buttonClass('default')} inline-flex items-center gap-1.5 text-xs"
+								>
+									<Send size={13} />
+									Copy & Message kodyy in-game
+								</a>
+							</div>
 						</div>
 					{/if}
 				{:else if tab === 'stats'}
