@@ -174,7 +174,465 @@ describe('diffQuestline', () => {
 			rawShortfalls: new Map([['Wood', 2]])
 		});
 	});
+
+	it('does not double spend shared raws between two different intermediate items in the same queue', () => {
+		const questlineA: Questline = {
+			name: 'Chain A',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain A I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const questlineB: Questline = {
+			name: 'Chain B',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain B I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Tool', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Tool', [{ item: 'Handle', qty: 1 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]]
+		]);
+
+		const [resultA, resultB] = diffQuestlineQueue(
+			[questlineA, questlineB],
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		// Chain A gets the 2 Wood to craft 1 Crate (via 1 Board)
+		expect(resultA.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 1, left: 0 })
+		});
+
+		// Chain B cannot double-spend the 2 Wood: Tool (via Handle) cannot be crafted
+		expect(resultB.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Tool',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 2]])
+		});
+	});
+
+	it('transfers priority when queue order of different intermediate items is reversed', () => {
+		const questlineA: Questline = {
+			name: 'Chain A',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain A I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const questlineB: Questline = {
+			name: 'Chain B',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain B I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Tool', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Tool', [{ item: 'Handle', qty: 1 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]]
+		]);
+
+		// Reverse queue order: Chain B comes first
+		const [resultB, resultA] = diffQuestlineQueue(
+			[questlineB, questlineA],
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		// Chain B now gets the 2 Wood
+		expect(resultB.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Tool',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 1, left: 0 })
+		});
+
+		// Chain A now has 0 craftable
+		expect(resultA.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 2]])
+		});
+	});
+
+	it('does not double spend shared raws between two different intermediate items in the same questline', () => {
+		const questline: Questline = {
+			name: 'Multi-Craft Chain',
+			questCount: 2,
+			quests: [
+				{
+					name: 'Step 1',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 1 }],
+					seq: 1
+				},
+				{
+					name: 'Step 2',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Tool', qty: 1 }],
+					seq: 2
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Tool', [{ item: 'Handle', qty: 1 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]]
+		]);
+
+		const result = diffQuestline(
+			questline,
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		expect(result.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 1, left: 0 })
+		});
+
+		expect(result.quests[1].shortfalls[0]).toMatchObject({
+			item: 'Tool',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 2]])
+		});
+	});
+
+	it('does not double spend shared raws between two different intermediate items in the same quest', () => {
+		const questline: Questline = {
+			name: 'Single Quest Multi-Item',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Step 1',
+					startDate: '',
+					endDate: '',
+					requirements: [
+						{ item: 'Crate', qty: 1 },
+						{ item: 'Tool', qty: 1 }
+					],
+					seq: 1
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Tool', [{ item: 'Handle', qty: 1 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]]
+		]);
+
+		const result = diffQuestline(
+			questline,
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		expect(result.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 1, left: 0 })
+		});
+
+		expect(result.quests[0].shortfalls[1]).toMatchObject({
+			item: 'Tool',
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 2]])
+		});
+	});
+
+	it('handles asymmetric tier depths sharing a raw material with stock for one', () => {
+		// Grand Crate: 3 tiers (Grand Crate -> Crate -> Board -> Wood: 2)
+		// Tool: 2 tiers (Tool -> Handle -> Wood: 2)
+		const questline: Questline = {
+			name: 'Asymmetric Chain',
+			questCount: 2,
+			quests: [
+				{
+					name: 'Step 1',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Grand Crate', qty: 1 }],
+					seq: 1
+				},
+				{
+					name: 'Step 2',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Tool', qty: 1 }],
+					seq: 2
+				}
+			]
+		};
+		const recipes = new Map([
+			['Grand Crate', [{ item: 'Crate', qty: 1 }]],
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Tool', [{ item: 'Handle', qty: 1 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]]
+		]);
+
+		const result = diffQuestline(
+			questline,
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		expect(result.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Grand Crate',
+			craftableQty: 1,
+			craftTree: expect.objectContaining({
+				item: 'Grand Crate',
+				craftableQty: 1,
+				left: 0,
+				children: [
+					expect.objectContaining({
+						item: 'Crate',
+						craftableQty: 1,
+						left: 0,
+						children: [
+							expect.objectContaining({
+								item: 'Board',
+								craftableQty: 1,
+								left: 0,
+								children: [
+									expect.objectContaining({
+										item: 'Wood',
+										have: 2,
+										needed: 2,
+										left: 0
+									})
+								]
+							})
+						]
+					})
+				]
+			})
+		});
+
+		expect(result.quests[1].shortfalls[0]).toMatchObject({
+			item: 'Tool',
+			craftableQty: 0,
+			craftTree: expect.objectContaining({
+				item: 'Tool',
+				craftableQty: 0,
+				left: 1,
+				children: [
+					expect.objectContaining({
+						item: 'Handle',
+						craftableQty: 0,
+						left: 1,
+						children: [
+							expect.objectContaining({
+								item: 'Wood',
+								have: 0,
+								needed: 2,
+								left: 2
+							})
+						]
+					})
+				]
+			}),
+			rawShortfalls: new Map([['Wood', 2]])
+		});
+	});
+
+	it('does not starve a later intermediate item if an earlier intermediate item cannot be crafted', () => {
+		// Chain A needs Crate (needs 4 Wood), stock only has 2 Wood -> Crate craftableQty: 0
+		// Chain B needs Tool (needs 2 Wood) -> should be able to craft 1 Tool using the 2 Wood!
+		const questlineA: Questline = {
+			name: 'Chain A',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain A I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const questlineB: Questline = {
+			name: 'Chain B',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain B I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Tool', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 4 }]],
+			['Tool', [{ item: 'Handle', qty: 1 }]],
+			['Handle', [{ item: 'Wood', qty: 2 }]]
+		]);
+
+		const [resultA, resultB] = diffQuestlineQueue(
+			[questlineA, questlineB],
+			new Map([['Wood', 2]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		// Chain A cannot craft Crate (needs 4 Wood, only have 2)
+		expect(resultA.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Crate',
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 2]])
+		});
+
+		// Chain B gets the 2 Wood because Chain A did not consume it
+		expect(resultB.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Tool',
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 1, left: 0 })
+		});
+	});
+
+	it('splits shared raw stock correctly across partial craft quantities in queue', () => {
+		// Have 3 Wood.
+		// Chain A needs 2 Crates (each Crate needs 1 Board = 2 Wood, so 4 Wood for both).
+		// Chain A can only craft 1 Crate (consumes 2 Wood), leaving 1 Wood.
+		// Chain B needs 1 Stick (needs 1 Wood).
+		// Chain B can craft 1 Stick using the remaining 1 Wood!
+		const questlineA: Questline = {
+			name: 'Chain A',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain A I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Crate', qty: 2 }],
+					seq: 1
+				}
+			]
+		};
+		const questlineB: Questline = {
+			name: 'Chain B',
+			questCount: 1,
+			quests: [
+				{
+					name: 'Chain B I',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Stick', qty: 1 }],
+					seq: 1
+				}
+			]
+		};
+		const recipes = new Map([
+			['Crate', [{ item: 'Board', qty: 1 }]],
+			['Board', [{ item: 'Wood', qty: 2 }]],
+			['Stick', [{ item: 'Wood', qty: 1 }]]
+		]);
+
+		const [resultA, resultB] = diffQuestlineQueue(
+			[questlineA, questlineB],
+			new Map([['Wood', 3]]),
+			new Set(),
+			new Map(),
+			recipes
+		);
+
+		expect(resultA.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Crate',
+			needed: 2,
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 1, left: 1 }),
+			rawShortfalls: new Map([['Wood', 1]])
+		});
+
+		expect(resultB.quests[0].shortfalls[0]).toMatchObject({
+			item: 'Stick',
+			needed: 1,
+			craftableQty: 1,
+			craftTree: expect.objectContaining({ item: 'Stick', craftableQty: 1, left: 0 })
+		});
+	});
 });
+
 
 describe('diffQuestlineQueue', () => {
 	const scarceItemQuestline = (name: string): Questline => ({
