@@ -18,7 +18,7 @@
 		shortfallSummary,
 		maxedItems,
 		runsDryAt,
-		showAllItems = $bindable(false),
+		showAllItems = $bindable(false)
 	}: {
 		diffResults: QuestlineDiffResult[];
 		shortfallSummary: QueueItemShortfall[];
@@ -29,7 +29,7 @@
 		showAllItems: boolean;
 	} = $props();
 
-	const hideCannotMail = false
+	const hideCannotMail = false;
 
 	let expanded = $state(false);
 
@@ -239,6 +239,13 @@
 											>CAPPED</button
 										>
 									{/if}
+									{#if s.exceedsCapacity}
+										<span
+											title="Total requirement ({s.needed.toLocaleString()}) exceeds max capacity of {s.storageCap?.toLocaleString()} — multiple turn-ins or inventory upgrades required"
+											class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+											>EXCEEDS CAP</span
+										>
+									{/if}
 									{#if maxedItems.has(s.item)}
 										<span
 											title={MAXED_EXPLANATION}
@@ -254,9 +261,9 @@
 									class="mt-1 flex justify-between border-l border-gray-200 pl-2 text-xs font-medium text-gray-700 dark:border-gray-700 dark:text-gray-300"
 								>
 									<span>Total</span>
-										<span class="tabular-nums text-red-600 dark:text-red-400"
-											>−{formatNumber(s.short)}</span
-										>
+									<span class="tabular-nums text-red-600 dark:text-red-400"
+										>−{formatNumber(s.short)}</span
+									>
 								</div>
 								<ul
 									class="mt-1 space-y-1 border-l border-gray-200 pl-2 text-xs dark:border-gray-700"

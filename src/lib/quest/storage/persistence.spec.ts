@@ -1,11 +1,17 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import {
 	exportProgress,
 	importProgress,
 	loadCompleted,
 	loadInventory,
 	loadPlayerStats,
-	savePlayerStats
+	savePlayerStats,
+	loadMaxCapacity,
+	saveMaxCapacity,
+	loadShowAllItems,
+	saveShowAllItems,
+	loadShowCraftable,
+	saveShowCraftable
 } from './persistence';
 import type { PlayerStats } from '../types';
 
@@ -72,7 +78,8 @@ function stubLocalStorage(initial: Record<string, string> = {}) {
 	(globalThis as { window?: unknown }).window = {
 		localStorage: {
 			getItem: (key: string) => store.get(key) ?? null,
-			setItem: (key: string, value: string) => void store.set(key, value)
+			setItem: (key: string, value: string) => void store.set(key, value),
+			removeItem: (key: string) => void store.delete(key)
 		}
 	};
 }
@@ -126,5 +133,31 @@ describe('player stats persistence', () => {
 			})
 		});
 		expect(loadPlayerStats()).toBeNull();
+	});
+});
+
+describe('preferences and capacity persistence', () => {
+	afterEach(() => {
+		delete (globalThis as { window?: unknown }).window;
+	});
+
+	it('round-trips max capacity', () => {
+		stubLocalStorage();
+		expect(loadMaxCapacity()).toBeNull();
+		saveMaxCapacity(1500);
+		expect(loadMaxCapacity()).toBe(1500);
+		saveMaxCapacity(null);
+		expect(loadMaxCapacity()).toBeNull();
+	});
+
+	it('round-trips showAllItems and showCraftable', () => {
+		stubLocalStorage();
+		expect(loadShowAllItems()).toBe(false);
+		saveShowAllItems(true);
+		expect(loadShowAllItems()).toBe(true);
+
+		expect(loadShowCraftable()).toBe(true); // default true
+		saveShowCraftable(false);
+		expect(loadShowCraftable()).toBe(false);
 	});
 });

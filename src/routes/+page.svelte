@@ -41,7 +41,13 @@
 		loadInventoryBaseline,
 		loadPlayerStats,
 		savePlayerStats,
-		clearPlayerStats
+		clearPlayerStats,
+		loadMaxCapacity,
+		saveMaxCapacity,
+		loadShowAllItems,
+		saveShowAllItems,
+		loadShowCraftable,
+		saveShowCraftable
 	} from '$lib/quest/storage/persistence';
 	import LoadingOverlay from '$lib/components/LoadingOverlay.svelte';
 	import AppHeader from '$lib/components/AppHeader.svelte';
@@ -54,6 +60,8 @@
 	import ProgressBackupModal from '$lib/components/ProgressBackupModal.svelte';
 	import ImportModal from '$lib/components/ImportModal.svelte';
 	import FeedbackModal from '$lib/components/FeedbackModal.svelte';
+	import SettingsModal from '$lib/components/SettingsModal.svelte';
+	import UpdateBanner from '$lib/components/UpdateBanner.svelte';
 	import { getRecipesState, loadRecipes } from '$lib/quest/storage/recipesStore.svelte';
 	import MiningFloorsPanel from '$lib/components/MiningFloorsPanel.svelte';
 
@@ -264,10 +272,49 @@
 		recomputeEligibility(eligibilityDependents(questlineName));
 	}
 
-	// ---------- Diff ----------
+	// ---------- Diff & Preferences ----------
+
+	let showAllItems = $state(false);
+	let showAllItemsHydrated = $state(false);
+
+	let showCraftable = $state(true);
+	let showCraftableHydrated = $state(false);
+
+	let maxCapacity = $state<number | null>(null);
+	let maxCapacityHydrated = $state(false);
+
+	let settingsModalOpen = $state(false);
+
+	onMount(() => {
+		showAllItems = loadShowAllItems();
+		showAllItemsHydrated = true;
+		showCraftable = loadShowCraftable();
+		showCraftableHydrated = true;
+		maxCapacity = loadMaxCapacity();
+		maxCapacityHydrated = true;
+	});
+
+	$effect(() => {
+		if (showAllItemsHydrated) trackSave(saveShowAllItems(showAllItems));
+	});
+
+	$effect(() => {
+		if (showCraftableHydrated) trackSave(saveShowCraftable(showCraftable));
+	});
+
+	$effect(() => {
+		if (maxCapacityHydrated) trackSave(saveMaxCapacity(maxCapacity));
+	});
 
 	const diffResults = $derived<QuestlineDiffResult[]>(
-		diffQuestlineQueue(selectedQuestlines, inventoryMap, completed, inventoryCaps, recipesMap)
+		diffQuestlineQueue(
+			selectedQuestlines,
+			inventoryMap,
+			completed,
+			inventoryCaps,
+			recipesMap,
+			maxCapacity
+		)
 	);
 
 	// The single item-level shortfall view, regardless of queue length — this
@@ -277,8 +324,6 @@
 	const shortfallSummary = $derived(
 		diffResults.length > 0 ? aggregateQueueShortfalls(diffResults) : []
 	);
-
-	let showAllItems = $state(false);
 
 	// Where each currently-maxed item's stockpile first actually runs out, in
 	// queue order — only computed for maxed items, since a non-maxed item's
@@ -444,7 +489,10 @@
 	 * doesn't leave the overlay stuck; it just means that stage still needed
 	 * to be accounted for before the rest of the UI claims to be ready. */
 	const loadingStages = $derived([
-		{ label: 'Preferences', done: darkModeHydrated },
+		{
+			label: 'Preferences',
+			done: darkModeHydrated && showAllItemsHydrated && showCraftableHydrated && maxCapacityHydrated
+		},
 		{ label: 'Inventory', done: inventoryHydrated },
 		{ label: 'Completed quests', done: hydrated },
 		{ label: 'Questline queue', done: queueHydrated },
@@ -493,6 +541,8 @@
 	<LoadingOverlay stages={loadingStages} />
 {/if}
 
+<UpdateBanner />
+
 <div class="mx-auto max-w-6xl space-y-8 p-6 dark:text-gray-100">
 	<AppHeader
 		{darkMode}
@@ -500,6 +550,7 @@
 		onOpenImport={() => openImportModal('inventory')}
 		onOpenBackup={() => (progressModalOpen = true)}
 		onOpenFeedback={() => (feedbackModalOpen = true)}
+		onOpenSettings={() => (settingsModalOpen = true)}
 	/>
 
 	{#if storageUnavailable}
@@ -544,9 +595,7 @@
 			<div class="flex flex-col lg:col-span-1">
 				<MiningFloorsPanel
 					miningFloorsStats={miningFloors}
-					hasPlayerStats={playerStats !== null}
 					onOpenImport={() => openImportModal('mining')}
-					onOpenStatsImport={() => openImportModal('stats')}
 					onClear={handleClearMiningFloors}
 					onUpdate={handleUpdateMiningFloors}
 				/>
@@ -580,12 +629,13 @@
 			{eligibilityByQuestline}
 			{maxedItems}
 			{runsDryAt}
-			bind:showAllItems
+			{showAllItems}
+			{showCraftable}
 			onToggleCompleted={toggleCompleted}
 		/>
 	</main>
 
-	<SiteFooter />
+	<SiteFooter onOpenSettings={() => (settingsModalOpen = true)} />
 </div>
 
 <ProgressBackupModal
@@ -603,7 +653,6 @@
 	bind:open={importModalOpen}
 	bind:tab={importTab}
 	bind:inventory
-	bind:playerStats
 	{questlineOptions}
 	{completed}
 	{inventoryBaseline}
@@ -612,6 +661,16 @@
 	onStorageWriteFailed={() => (storageUnavailable = true)}
 	onUpdatePlayerStats={handleUpdatePlayerStats}
 	onUpdateMiningFloors={handleUpdateMiningFloors}
+	onMaxCapacityDetected={(cap) => (maxCapacity = cap)}
 />
 
 <FeedbackModal bind:open={feedbackModalOpen} />
+
+<SettingsModal
+	bind:open={settingsModalOpen}
+	bind:showAllItems
+	bind:showCraftable
+	bind:maxCapacity
+	bind:darkMode
+	onToggleDarkMode={() => (darkMode = !darkMode)}
+/>

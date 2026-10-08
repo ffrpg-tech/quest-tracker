@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Sun, Moon, MessageSquarePlus, Upload, Save, CircleHelp } from '@lucide/svelte';
-	import { resolve } from '$app/paths';
+	import { Sun, Moon, MessageSquarePlus, Upload, Save, Settings } from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 
 	let {
@@ -8,13 +7,15 @@
 		onToggleDarkMode,
 		onOpenImport,
 		onOpenBackup,
-		onOpenFeedback
+		onOpenFeedback,
+		onOpenSettings
 	}: {
 		darkMode: boolean;
 		onToggleDarkMode: () => void;
 		onOpenImport: () => void;
 		onOpenBackup: () => void;
 		onOpenFeedback: () => void;
+		onOpenSettings?: () => void;
 	} = $props();
 </script>
 
@@ -48,14 +49,16 @@
 			<Save size={16} class="text-sky-600 dark:text-sky-400" />
 			<span class="hidden sm:inline">Progress backup</span>
 		</button>
-		<a
-			href="{resolve('/about')}#tutorial"
-			title="Help / Getting started"
-			aria-label="Help / Getting started"
-			class={buttonClass('icon')}
-		>
-			<CircleHelp size={16} />
-		</a>
+		{#if onOpenSettings}
+			<button
+				onclick={onOpenSettings}
+				title="Settings & Info"
+				aria-label="Settings & Info"
+				class={buttonClass('icon')}
+			>
+				<Settings size={16} class="text-sky-600 dark:text-sky-400" />
+			</button>
+		{/if}
 		<button
 			onclick={onToggleDarkMode}
 			aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}

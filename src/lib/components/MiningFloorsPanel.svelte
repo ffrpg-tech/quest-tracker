@@ -1,22 +1,17 @@
 <script lang="ts">
-	import { Upload, Trash2, X } from '@lucide/svelte';
+	import { Upload, Trash2, ChevronDown } from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
-	import { matchesQuery } from '$lib/ui/matchesQuery';
 	import type { PlayerStats } from '$lib/quest/types';
 	import { getMiningImagePath } from '$lib/quest/storage/miningStore.svelte';
 
 	let {
 		miningFloorsStats,
-		hasPlayerStats,
 		onOpenImport,
-		onOpenStatsImport,
 		onClear,
 		onUpdate
 	}: {
 		miningFloorsStats: PlayerStats['miningFloors'] | null;
-		hasPlayerStats: boolean;
 		onOpenImport: () => void;
-		onOpenStatsImport: () => void;
 		onClear: () => void;
 		onUpdate: (floors: Record<string, number>) => void;
 	} = $props();
@@ -30,12 +25,10 @@
 		{ key: 'mossrockMine', label: 'Mossrock Mine' }
 	];
 
+	let isMiningOpen = $state(true);
+
 	function clearStats() {
-		if (
-			confirm(
-				'Clear your pasted mining floor stats? This also hides the eligibility filter and lock badges.'
-			)
-		) {
+		if (confirm('Clear your mining floor stats? This also resets mining requirement checks.')) {
 			onClear();
 		}
 	}
@@ -46,13 +39,18 @@
 	}
 
 	function updateMiningFloor(key: string, raw: string) {
-		if (!miningFloorsStats) return;
-
-		const n = Number(raw);
-		const value = Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
+		const value = parseLevel(raw);
+		const base = miningFloorsStats ?? {
+			springCave: 0,
+			highlandHollow: 0,
+			solGrotto: 0,
+			emberCaverns: 0,
+			fenrirsDen: 0,
+			mossrockMine: 0
+		};
 
 		onUpdate({
-			...miningFloorsStats,
+			...base,
 			[key]: value
 		});
 	}
@@ -85,38 +83,44 @@
 		</div>
 	</div>
 
-	{#if miningFloorsStats}
-		<div class="flex flex-1 flex-col justify-between space-y-1">
-			{#each MINING_FLOORS as { key, label }}
-				<div class="flex items-center gap-2 text-sm">
-					<img
-						src={getMiningImagePath(label)}
-						alt={label}
-						class="h-6 w-6 shrink-0 rounded object-contain"
-					/>
-					<label for={key} class="w-[120px] shrink-0 font-semibold">{label}</label>
-					<input
-						id={key}
-						type="number"
-						min="0"
-						value={miningFloorsStats?.[key] ?? 0}
-						onchange={(e) => updateMiningFloor(key, e.currentTarget.value)}
-						class="w-full rounded border border-gray-300 px-2 py-1 text-sm focus:border-sky-500 focus:ring-sky-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-sky-400 dark:focus:ring-sky-400"
-					/>
-				</div>
-			{/each}
-		</div>
-	{:else}
-		{#if hasPlayerStats}
-			<p class="text-sm text-gray-500">
-				No mining floor stats available. Import or paste your mining floor stats to view and edit
-				them.
-			</p>
-		{:else}
-			<p class="text-sm text-gray-500">
-				Import your player stats first, then add your mining floor stats.
-			</p>
-			<button onclick={onOpenStatsImport} class={buttonClass('link')}>Go to Player Stats</button>
+	<!-- Mining Floors Accordion -->
+	<div class="rounded border border-gray-100 dark:border-gray-700">
+		<button
+			type="button"
+			onclick={() => (isMiningOpen = !isMiningOpen)}
+			aria-expanded={isMiningOpen}
+			class="flex w-full items-center justify-between bg-gray-50/80 px-3 py-1.5 text-left text-xs font-medium hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-800"
+		>
+			<span>Floors ({MINING_FLOORS.length})</span>
+			<ChevronDown
+				size={14}
+				class="transition-transform duration-200 {isMiningOpen ? 'rotate-180' : ''}"
+			/>
+		</button>
+
+		{#if isMiningOpen}
+			<div class="flex flex-1 flex-col justify-between space-y-1.5 p-2">
+				{#each MINING_FLOORS as { key, label } (key)}
+					<div class="flex items-center gap-2 text-xs">
+						<img
+							src={getMiningImagePath(label)}
+							alt={label}
+							class="h-5 w-5 shrink-0 rounded object-contain"
+						/>
+						<label for={key} class="w-[100px] shrink-0 font-medium truncate sm:w-[110px]"
+							>{label}</label
+						>
+						<input
+							id={key}
+							type="number"
+							min="0"
+							value={miningFloorsStats?.[key] ?? 0}
+							onchange={(e) => updateMiningFloor(key, e.currentTarget.value)}
+							class="w-full rounded border border-gray-300 px-2 py-1 text-xs focus:border-sky-500 focus:ring-sky-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100 dark:focus:border-sky-400 dark:focus:ring-sky-400"
+						/>
+					</div>
+				{/each}
+			</div>
 		{/if}
-	{/if}
+	</div>
 </div>

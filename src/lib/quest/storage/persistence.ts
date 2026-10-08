@@ -217,3 +217,56 @@ export function importProgress(text: string): ImportedProgress | null {
 		return null;
 	}
 }
+
+const MAX_CAPACITY_KEY = 'farmrpg-quest-tracker:max-capacity-v1';
+const SHOW_ALL_ITEMS_KEY = 'farmrpg-quest-tracker:show-all-items';
+const SHOW_CRAFTABLE_KEY = 'farmrpg-quest-tracker:show-craftable';
+const APP_VERSION_KEY = 'farmrpg-quest-tracker:app-version';
+
+export function loadMaxCapacity(): number | null {
+	if (!hasLocalStorage()) return null;
+	const raw = window.localStorage.getItem(MAX_CAPACITY_KEY);
+	if (!raw) return null;
+	const num = Number(raw);
+	return Number.isFinite(num) && num > 0 ? num : null;
+}
+
+export function saveMaxCapacity(capacity: number | null): boolean {
+	if (!hasLocalStorage()) return true;
+	if (capacity === null || capacity <= 0) {
+		window.localStorage.removeItem(MAX_CAPACITY_KEY);
+		return true;
+	}
+	return saveJSON(MAX_CAPACITY_KEY, capacity);
+}
+
+export function loadShowAllItems(): boolean {
+	if (!hasLocalStorage()) return false;
+	return window.localStorage.getItem(SHOW_ALL_ITEMS_KEY) === 'true';
+}
+
+export function saveShowAllItems(enabled: boolean): boolean {
+	return saveJSON(SHOW_ALL_ITEMS_KEY, enabled);
+}
+
+export function loadShowCraftable(): boolean {
+	if (!hasLocalStorage()) return true;
+	const raw = window.localStorage.getItem(SHOW_CRAFTABLE_KEY);
+	if (raw === null) return true; // Default true
+	return raw === 'true';
+}
+
+export function saveShowCraftable(enabled: boolean): boolean {
+	return saveJSON(SHOW_CRAFTABLE_KEY, enabled);
+}
+
+export function loadCachedAppVersion(): string | null {
+	if (!hasLocalStorage()) return null;
+	return window.localStorage.getItem(APP_VERSION_KEY);
+}
+
+export function saveCachedAppVersion(version: string): boolean {
+	if (!hasLocalStorage()) return true;
+	window.localStorage.setItem(APP_VERSION_KEY, version);
+	return true;
+}

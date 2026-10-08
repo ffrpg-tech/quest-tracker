@@ -7,12 +7,26 @@ are grouped by feature/release, not by individual commit.
 This file is the source of truth for the in-app [changelog page](/changelog) —
 the page parses this file directly, so an entry added here is what users see.
 
+## [0.4.2] - 2026-10-08T00:00:00+08:00
+
+### Added
+
+- **Unified Smart Import Parser**: Replaced multiple fragmented import textareas with a single intelligent ingestion box with heuristic schema auto-detection. Paste Inventory dumps, Player Stats, Mining Floors, Bank balances, or Completed Quests into one box—the tracker automatically detects the content format, extracts capacities, applies data non-destructively, and surfaces visual feedback pills. An explicit mode selector toggle remains available when needed.
+- **Inventory Capacity Forecasting & Bottleneck Indicator**: Added cumulative single-batch requirement tracking against your configured max inventory capacity (`maxCapacity`). Highlights the exact quest where cumulative required items exceed your inventory cap with a prominent badge (`EXCEEDS CAP`), warning when multiple turn-ins or inventory upgrades will be required independently of your current bag stock.
+- **Settings Modal & Footer Restructure**: Consolidated utility settings and site documentation into a centralized modal dialog accessible from the top navigation and footer. Relocated `Show all items` and `Show craftable amounts` toggles with persistent `localStorage` storage, along with _About_, _Tutorial_, _Credits_, and _Changelog_ tabs. Cleaned the persistent footer to focus solely on the legal/fan-project disclaimer.
+- **Client-Side Version Checking & Update Banner**: Added automated build version tracking and mismatch detection against `version.json`. When a new deployment is detected, a non-intrusive sticky update notification appears with a 1-click update action that purges service worker / asset caches and hard-reloads the application.
+
+### Changed
+
+- **Unconditional Stats & Requirement Sections**: Player Stats, NPC friendship levels, and Mining Floors panels are now unconditionally exposed regardless of whether prior data was imported, defaulting gracefully to `0` or blank states.
+- **DOM Overhead Optimization**: Collapsible accordions for Player Skills, NPC Friendship, and Mining Floors now physically unmount their inner DOM nodes when collapsed, reducing memory footprint and DOM overhead.
+
 ## [0.4.1] - 2026-10-07T00:00:00+08:00
 
 ### Added
 
 - Support for year-agnostic recurring annual seasonal quests: annual holiday and seasonal event questlines (Halloween, Christmas, Valentine's, Easter, Summer, etc.) now automatically project their availability windows onto the current calendar year. When an active holiday window arrives in FarmRPG, its quests automatically become eligible in the tracker without requiring manual data updates every year.
-- Seamless handling for seasonal event windows that cross the New Year boundary (e.g. December through January, such as *Shoveling Snow*).
+- Seamless handling for seasonal event windows that cross the New Year boundary (e.g. December through January, such as _Shoveling Snow_).
 - Added pre-filled 1-click reporting in the Import Data modal: when unmatched quest names are detected during completed quest import, a "1-Click Report (Google Form)" button opens the feedback form with category, problem type, and missing quest names already populated for instant submission.
 - Added a "Copy & Message kodyy in-game" action in the Import Data modal that formats unmatched quest names to the clipboard and opens the in-game message screen.
 
@@ -23,10 +37,9 @@ the page parses this file directly, so an entry added here is what users see.
 ### Changed
 
 - Off-season recurring seasonal quests now display clean, year-agnostic date ranges in gap explanations (e.g. "Only available Oct 22 – Nov 4") instead of showing outdated historical years.
-- Historical one-off milestone celebration quests (e.g. *10,000 Players!*, *750,000 Farmers*, server downtime compensations) remain permanently retired and unavailable.
+- Historical one-off milestone celebration quests (e.g. _10,000 Players!_, _750,000 Farmers_, server downtime compensations) remain permanently retired and unavailable.
 - Heavily pruned and minified `questlines.json` static database payload, dropping file size from 2.75 MB down to ~896 KB (-67.4% reduction; ~88 KB gzipped). Pruned dead upstream fields (`dependentQuests`, `isHidden`, redundant quest `id`) and omitted empty default dates and falsy flags.
 - Catalogue-wide eligibility recalculation runtime improved by over 70% (from ~1.7s down to ~450ms) due to the lighter JSON payload and streamlined quest object model.
-
 
 ## [0.4.0] - 2026-10-04T00:00:00+08:00
 
@@ -63,7 +76,7 @@ the page parses this file directly, so an entry added here is what users see.
 
 ### Added
 
-- Added Mining level in the Player stats. 
+- Added Mining level in the Player stats.
 - Added height capping with smooth vertical scrolling to the quest breakdown list in the Shortfall summary, preventing long repetitive quest chains (like Corn of Interest) from stretching the card.
 
 ### Changed

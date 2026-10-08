@@ -332,13 +332,7 @@ describe('diffQuestline', () => {
 			['Handle', [{ item: 'Wood', qty: 2 }]]
 		]);
 
-		const result = diffQuestline(
-			questline,
-			new Map([['Wood', 2]]),
-			new Set(),
-			new Map(),
-			recipes
-		);
+		const result = diffQuestline(questline, new Map([['Wood', 2]]), new Set(), new Map(), recipes);
 
 		expect(result.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Crate',
@@ -384,13 +378,7 @@ describe('diffQuestline', () => {
 			['Handle', [{ item: 'Wood', qty: 2 }]]
 		]);
 
-		const result = diffQuestline(
-			questline,
-			new Map([['Wood', 2]]),
-			new Set(),
-			new Map(),
-			recipes
-		);
+		const result = diffQuestline(questline, new Map([['Wood', 2]]), new Set(), new Map(), recipes);
 
 		expect(result.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Crate',
@@ -443,13 +431,7 @@ describe('diffQuestline', () => {
 			['Handle', [{ item: 'Wood', qty: 2 }]]
 		]);
 
-		const result = diffQuestline(
-			questline,
-			new Map([['Wood', 2]]),
-			new Set(),
-			new Map(),
-			recipes
-		);
+		const result = diffQuestline(questline, new Map([['Wood', 2]]), new Set(), new Map(), recipes);
 
 		expect(result.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Grand Crate',
@@ -633,7 +615,6 @@ describe('diffQuestline', () => {
 	});
 });
 
-
 describe('diffQuestlineQueue', () => {
 	const scarceItemQuestline = (name: string): Questline => ({
 		name,
@@ -765,6 +746,150 @@ describe('aggregateQueueShortfalls', () => {
 			const results = diffQuestlineQueue([questline], new Map([['Wood', 12]]));
 
 			expect(findRunsDryPoints(results, ['Iron']).has('Wood')).toBe(false);
+		});
+	});
+
+	describe('inventory capacity forecasting & bottleneck indicators', () => {
+		const capacityQuestline: Questline = {
+			name: 'Capacity Test',
+			questCount: 3,
+			quests: [
+				{
+					name: 'Step 1',
+					startDate: '',
+					endDate: '',
+					requirements: [
+						{ item: 'Wood', qty: 50 },
+						{ item: 'Silver', qty: 500 }
+					],
+					seq: 1
+				},
+				{
+					name: 'Step 2',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Wood', qty: 50 }],
+					seq: 2
+				},
+				{
+					name: 'Step 3',
+					startDate: '',
+					endDate: '',
+					requirements: [{ item: 'Wood', qty: 50 }],
+					seq: 3
+				}
+			]
+		};
+
+		it('flags the exact quest where cumulative requirements exceed maxCapacity', () => {
+			// maxCapacity = 100. Step 1 (50) <= 100, Step 2 (100) <= 100, Step 3 (150) > 100.
+			const result = diffQuestline(
+				capacityQuestline,
+				new Map(), // empty inventory
+				new Set(),
+				new Map(),
+				new Map(),
+				100 // maxCapacity
+			);
+
+			// Step 1
+			expect(result.quests[0].requirements[0].cumulativeNeeded).toBe(50);
+			expect(result.quests[0].requirements[0].exceedsCapacity).toBeUndefined();
+			expect(result.quests[0].capacityBottlenecks).toBeUndefined();
+
+			// Step 2
+			expect(result.quests[1].requirements[0].cumulativeNeeded).toBe(100);
+			expect(result.quests[1].requirements[0].exceedsCapacity).toBeUndefined();
+			expect(result.quests[1].capacityBottlenecks).toBeUndefined();
+
+			// Step 3 (Breaks threshold)
+			expect(result.quests[2].requirements[0].cumulativeNeeded).toBe(150);
+			expect(result.quests[2].requirements[0].exceedsCapacity).toBe(true);
+			expect(result.quests[2].requirements[0].isThresholdBreaker).toBe(true);
+			expect(result.quests[2].capacityBottlenecks).toEqual([
+				{
+					item: 'Wood',
+					cumulativeNeeded: 150,
+					maxCapacity: 100,
+					questName: 'Step 3'
+				}
+			]);
+
+			// Silver has no capacity bottleneck
+			expect(result.quests[0].requirements[1].item).toBe('Silver');
+			expect(result.quests[0].requirements[1].exceedsCapacity).toBeUndefined();
+		});
+
+		it('works identically whether inventory is empty or full (distinct from currentInInventory)', () => {
+			const fullInvResult = diffQuestline(
+				capacityQuestline,
+				new Map([['Wood', 1000]]), // player already has tons of Wood
+				new Set(),
+				new Map(),
+				new Map(),
+				100 // maxCapacity
+			);
+
+			// Step 3 still flags threshold break because cumulative required batch exceeds cap!
+			expect(fullInvResult.quests[2].capacityBottlenecks).toEqual([
+				{
+					item: 'Wood',
+					cumulativeNeeded: 150,
+					maxCapacity: 100,
+					questName: 'Step 3'
+				}
+			]);
+		});
+
+		it('threads cumulative capacity across multiple queued questlines', () => {
+			const chainA: Questline = {
+				name: 'Chain A',
+				questCount: 1,
+				quests: [
+					{
+						name: 'A1',
+						startDate: '',
+						endDate: '',
+						requirements: [{ item: 'Stone', qty: 80 }],
+						seq: 1
+					}
+				]
+			};
+			const chainB: Questline = {
+				name: 'Chain B',
+				questCount: 1,
+				quests: [
+					{
+						name: 'B1',
+						startDate: '',
+						endDate: '',
+						requirements: [{ item: 'Stone', qty: 50 }],
+						seq: 1
+					}
+				]
+			};
+
+			const [resA, resB] = diffQuestlineQueue(
+				[chainA, chainB],
+				new Map(),
+				new Set(),
+				new Map(),
+				new Map(),
+				100 // maxCapacity
+			);
+
+			// Chain A needs 80 <= 100
+			expect(resA.quests[0].capacityBottlenecks).toBeUndefined();
+
+			// Chain B needs 80 + 50 = 130 > 100, breaches threshold on B1!
+			expect(resB.quests[0].capacityBottlenecks).toEqual([
+				{
+					item: 'Stone',
+					cumulativeNeeded: 130,
+					maxCapacity: 100,
+					questName: 'B1'
+				}
+			]);
 		});
 	});
 });

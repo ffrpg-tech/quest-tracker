@@ -16,8 +16,6 @@
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
-	import { buttonClass } from '$lib/ui/buttonClass';
-	import { formatNumber } from '$lib/ui/formatNumber';
 	import ItemIcon from './ItemIcon.svelte';
 	import CraftTree from './CraftTree.svelte';
 
@@ -26,7 +24,8 @@
 		eligibilityByQuestline,
 		maxedItems,
 		runsDryAt,
-		showAllItems = $bindable(false),
+		showAllItems = false,
+		showCraftable = true,
 		onToggleCompleted
 	}: {
 		diffResults: QuestlineDiffResult[];
@@ -36,13 +35,9 @@
 		/** For each currently-maxed item, the exact (questline, quest) where its stockpile first runs out in queue order — surfaced as a RUNS DRY badge on that one row. */
 		runsDryAt: Map<string, ItemRunsDryAt>;
 		showAllItems: boolean;
+		showCraftable?: boolean;
 		onToggleCompleted: (questlineName: string, questName: string) => void;
 	} = $props();
-
-	// Off by default — shortfalls-only is the existing/expected view; showing
-	// every requirement (including already-satisfied ones) is opt-in so a
-	// MAXED item can be spotted even where it isn't blocking anything.
-	let showCraftable = $state(true);
 
 	// Only mount a questline's quest rows while its <details> is actually open. A
 	// closed questline otherwise still rendered its whole row list (up to ~99
@@ -238,6 +233,13 @@
 						>CAPPED</button
 					>
 				{/if}
+				{#if s.exceedsCapacity}
+					<span
+						title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()} — multiple turn-ins or inventory upgrades required"
+						class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+						>EXCEEDS CAP</span
+					>
+				{/if}
 				{#if maxed}
 					<span
 						title={MAXED_EXPLANATION}
@@ -269,24 +271,6 @@
 	<section class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
 		<div class="mb-2 flex items-center justify-between gap-2">
 			<h2 class="font-semibold">Results</h2>
-			<div>
-				<button
-					type="button"
-					onclick={() => (showAllItems = !showAllItems)}
-					aria-pressed={showAllItems}
-					class={buttonClass('pill', showAllItems)}
-				>
-					Show all items
-				</button>
-				<button
-					type="button"
-					onclick={() => (showCraftable = !showCraftable)}
-					aria-pressed={showCraftable}
-					class={buttonClass('pill', showCraftable)}
-				>
-					Show craftable amounts
-				</button>
-			</div>
 		</div>
 		<ul class="divide-y divide-gray-100 dark:divide-gray-700">
 			{#each diffResults as diffResult, i (diffResult.questlineName)}
@@ -354,7 +338,10 @@
 										</thead>
 										<tbody>
 											{#each diffResult.quests as q (q.questName)}
-												{@const gaps = questGaps(diffResult.questlineName, diffResult.quests.indexOf(q))}
+												{@const gaps = questGaps(
+													diffResult.questlineName,
+													diffResult.quests.indexOf(q)
+												)}
 												{@const items = showAllItems ? q.requirements : q.shortfalls}
 												<tr
 													class="border-t border-gray-100 dark:border-gray-700"
@@ -373,9 +360,35 @@
 														/>
 													</td>
 													<td class="p-2 text-xs text-gray-400">{q.seq}</td>
-													<td class="p-2" class:line-through={q.done}>{q.questName}</td>
 													<td class="p-2">
-														{@render statusLabel(q, diffResult.quests.indexOf(q) === block?.qi, false, gaps)}
+														<span class:line-through={q.done}>{q.questName}</span>
+														{#if q.capacityBottlenecks && q.capacityBottlenecks.length > 0}
+															<div class="mt-1 space-y-1">
+																{#each q.capacityBottlenecks as b (b.item)}
+																	<div
+																		class="flex items-center gap-1.5 rounded bg-amber-50 px-2 py-0.5 text-[11px] text-amber-900 border border-amber-200 dark:border-amber-800 dark:bg-amber-950/70 dark:text-amber-200"
+																	>
+																		<span
+																			class="rounded bg-amber-200 px-1 text-[9px] font-bold dark:bg-amber-900"
+																			>EXCEEDS MAX CAPACITY</span
+																		>
+																		<span
+																			>Exceeds max capacity of {b.maxCapacity.toLocaleString()} ({b.item}:
+																			{b.cumulativeNeeded.toLocaleString()} needed) — multiple turn-ins
+																			or inventory upgrades required</span
+																		>
+																	</div>
+																{/each}
+															</div>
+														{/if}
+													</td>
+													<td class="p-2">
+														{@render statusLabel(
+															q,
+															diffResult.quests.indexOf(q) === block?.qi,
+															false,
+															gaps
+														)}
 													</td>
 													<td class="p-2">
 														{#if gaps.length > 0}
@@ -418,6 +431,24 @@
 												</div>
 												{@render statusLabel(q, qi === block?.qi, true, gaps)}
 											</div>
+											{#if q.capacityBottlenecks && q.capacityBottlenecks.length > 0}
+												<div class="pl-6 space-y-1">
+													{#each q.capacityBottlenecks as b (b.item)}
+														<div
+															class="flex items-center gap-1.5 rounded bg-amber-50 px-2 py-0.5 text-[11px] text-amber-900 border border-amber-200 dark:border-amber-800 dark:bg-amber-950/70 dark:text-amber-200"
+														>
+															<span
+																class="rounded bg-amber-200 px-1 text-[9px] font-bold dark:bg-amber-900"
+																>EXCEEDS MAX CAPACITY</span
+															>
+															<span
+																>Exceeds max capacity of {b.maxCapacity.toLocaleString()} ({b.item}: {b.cumulativeNeeded.toLocaleString()}
+																needed) — multiple turn-ins or upgrades required</span
+															>
+														</div>
+													{/each}
+												</div>
+											{/if}
 											{#if gaps.length > 0}
 												<div class="pl-6">
 													{@render eligibilityGapList(gaps)}
