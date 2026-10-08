@@ -22,6 +22,22 @@ export interface EligibilityGap {
 	 * open on its own), but an already-ended one is UNAVAILABLE — there's no known guarantee
 	 * it ever comes back, unlike a skill/NPC gap the player can always close by leveling up. */
 	expired?: boolean;
+	/** Set when this gap was evaluated with unimported/default stats so the UI can distinguish
+	 * unimported state from an entered Level 0/1. */
+	unimported?: boolean;
+}
+
+/** One requirement item (evaluated met or unmet) for a quest. */
+export interface RequirementItem {
+	kind: 'skill' | 'npc' | 'season' | 'pred' | 'miningFloor';
+	label: string;
+	area?: string;
+	required?: number;
+	have?: number;
+	detail?: string;
+	met: boolean;
+	expired?: boolean;
+	unimported?: boolean;
 }
 
 /** True when any gap is a permanently-uncertain block (an expired seasonal window) rather
@@ -38,6 +54,7 @@ export interface QuestEligibility {
 	done: boolean;
 	eligible: boolean;
 	gaps: EligibilityGap[];
+	requirements?: RequirementItem[];
 }
 
 export interface QuestlineEligibility {
@@ -206,12 +223,9 @@ function predGaps(
 	return gaps;
 }
 
-/** `stats` is nullable: skill/NPC gaps require knowing the player's actual levels, so
- * they're skipped entirely (not reported as met, not reported as a gap — just unknown)
- * until stats have been pasted, matching the "unknown isn't locked" rule the picker/results
- * badges rely on. The seasonal gap is date-only and has nothing to do with player stats, so
- * it's always evaluated regardless — this is what lets an expired-season quest show as
- * UNAVAILABLE even before any stats paste. */
+/** Evaluates a single quest's eligibility against player stats, mining floors, and dates.
+ * Requirements are evaluated unconditionally (defaulting unimported stats/floors to 0 with
+ * an `unimported: true` flag for UI guidance). */
 export function evaluateQuestEligibility(
 	quest: Quest,
 	stats: PlayerStats | null,
@@ -221,63 +235,125 @@ export function evaluateQuestEligibility(
 	isRecurring = quest.recurring ?? false
 ): QuestEligibility {
 	const gaps: EligibilityGap[] = [];
+	const requirements: RequirementItem[] = [];
 
-	if (stats) {
-		if (quest.requiredLevels) {
-			for (const [skill, required] of Object.entries(quest.requiredLevels) as [
-				keyof SkillLevelRequirement,
-				number | undefined
-			][]) {
-				if (required === undefined) continue;
-				const have = stats[skill];
-				if (have < required) {
-					gaps.push({ kind: 'skill', label: SKILL_LABELS[skill], required, have });
-				}
-			}
-		}
+	// 1. Season availability
+	const season = seasonGap(quest, now, isRecurring);
+	if (season) {
+		gaps.push(season);
+		requirements.push({ ...season, met: false });
+	} else if (quest.startDate || quest.endDate) {
+		const s = quest.startDate ? new Date(quest.startDate) : null;
+		const e = quest.endDate ? new Date(quest.endDate) : null;
+		const range =
+			s && e
+				? `${formatDate(quest.startDate!)} – ${formatDate(quest.endDate!)}`
+				: s
+					? `starting ${formatDate(quest.startDate!)}`
+					: `until ${formatDate(quest.endDate!)}`;
+		requirements.push({
+			kind: 'season',
+			label: 'Seasonal',
+			detail: `In season (${range})`,
+			met: true
+		});
+	}
 
-		if (quest.requiredNpc) {
-			const normalizedTarget = normalizeNpcName(quest.requiredNpc.npc);
-			const have = npcLevelsByName.get(normalizedTarget) ?? 0;
-			if (have < quest.requiredNpc.level) {
+	// 2. Skill levels (unconditionally evaluated; fallback to 0 if stats unimported)
+	if (quest.requiredLevels) {
+		const isUnimported = stats === null;
+		for (const [skill, required] of Object.entries(quest.requiredLevels) as [
+			keyof SkillLevelRequirement,
+			number | undefined
+		][]) {
+			if (required === undefined) continue;
+			const have = stats ? stats[skill] : 0;
+			const met = have >= required;
+			requirements.push({
+				kind: 'skill',
+				label: SKILL_LABELS[skill],
+				required,
+				have,
+				met,
+				...(isUnimported ? { unimported: true } : {})
+			});
+			if (!met) {
 				gaps.push({
-					kind: 'npc',
-					label: quest.requiredNpc.npc,
-					required: quest.requiredNpc.level,
-					have
+					kind: 'skill',
+					label: SKILL_LABELS[skill],
+					required,
+					have,
+					...(isUnimported ? { unimported: true } : {})
 				});
 			}
 		}
 	}
 
-	if (floors && quest.requiredMiningFloor) {
+	// 3. NPC Friendship (unconditionally evaluated; fallback to 0 if stats unimported)
+	if (quest.requiredNpc) {
+		const isUnimported = stats === null;
+		const normalizedTarget = normalizeNpcName(quest.requiredNpc.npc);
+		const have = npcLevelsByName.get(normalizedTarget) ?? 0;
+		const met = have >= quest.requiredNpc.level;
+		requirements.push({
+			kind: 'npc',
+			label: quest.requiredNpc.npc,
+			required: quest.requiredNpc.level,
+			have,
+			met,
+			...(isUnimported ? { unimported: true } : {})
+		});
+		if (!met) {
+			gaps.push({
+				kind: 'npc',
+				label: quest.requiredNpc.npc,
+				required: quest.requiredNpc.level,
+				have,
+				...(isUnimported ? { unimported: true } : {})
+			});
+		}
+	}
+
+	// 4. Mining Floors (unconditionally evaluated; fallback to 0 if floors unimported)
+	if (quest.requiredMiningFloor) {
+		const isUnimported = floors === null;
 		for (const [rawArea, reqFloor] of Object.entries(quest.requiredMiningFloor)) {
 			const areaKey = rawArea.trim();
-			const playerFloor = floors[areaKey] ?? 0;
-
-			if (playerFloor < reqFloor) {
-				const areaName = MINING_AREA_LABELS[areaKey] ?? areaKey;
+			const playerFloor = floors ? (floors[areaKey] ?? 0) : 0;
+			const areaName = MINING_AREA_LABELS[areaKey] ?? areaKey;
+			const met = playerFloor >= reqFloor;
+			const detail = `Reach Floor ${reqFloor} first`;
+			requirements.push({
+				kind: 'miningFloor',
+				area: areaKey,
+				label: areaName,
+				required: reqFloor,
+				have: playerFloor,
+				detail,
+				met,
+				...(isUnimported ? { unimported: true } : {})
+			});
+			if (!met) {
 				gaps.push({
 					kind: 'miningFloor',
 					area: areaKey,
 					label: areaName,
 					required: reqFloor,
 					have: playerFloor,
-					detail: `Reach Floor ${reqFloor} first`
+					detail,
+					...(isUnimported ? { unimported: true } : {})
 				});
 			}
 		}
 	}
-
-	const season = seasonGap(quest, now, isRecurring);
-	if (season) gaps.push(season);
 
 	return {
 		questName: quest.name,
 		seq: quest.seq,
 		done: false,
 		eligible: gaps.length === 0,
-		gaps
+		gaps,
+		...(requirements.length > 0 ? { requirements } : {})
 	};
 }
 
@@ -345,9 +421,33 @@ export function evaluateQuestlineEligibility(
 			q.recurring ?? isRecurring
 		);
 		const pred = predGaps(q, allQuestlines, completed, indexes.questlinesByTitle);
-		if (pred.length === 0) return base;
+		const predReqs: RequirementItem[] = (q.pred?.questlines ?? []).map((ref) => {
+			const normalizedTargetTitle = norm(ref.questline.title);
+			const target = indexes.questlinesByTitle.get(normalizedTargetTitle);
+			const targetQuest = target?.quests.find((tq) => tq.seq === ref.order);
+			const met = target && targetQuest ? completed.has(questKey(target.name, targetQuest.name)) : true;
+			return {
+				kind: 'pred',
+				label: target ? target.name : ref.questline.title,
+				detail: targetQuest ? `Complete "${targetQuest.name}" first` : `Complete step ${ref.order}`,
+				met
+			};
+		});
 
-		return { ...base, eligible: false, gaps: [...base.gaps, ...pred] };
+		const allReqs = [...(base.requirements ?? []), ...predReqs];
+		if (pred.length === 0) {
+			return {
+				...base,
+				...(allReqs.length > 0 ? { requirements: allReqs } : {})
+			};
+		}
+
+		return {
+			...base,
+			eligible: false,
+			gaps: [...base.gaps, ...pred],
+			...(allReqs.length > 0 ? { requirements: allReqs } : {})
+		};
 	});
 
 	const nextQuest = quests.find((q) => !q.done);

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { detectInputType, detectAndParseInput, extractMaxCapacityFromText } from './smartParser';
+import { parseInventoryPaste } from './inventory';
 
 const INVENTORY_SAMPLE = `
 Currently, you cannot have more than 1,000 of most items.
@@ -175,6 +176,23 @@ describe('detectAndParseInput', () => {
 		expect(res.ok).toBe(true);
 		if (res.ok) {
 			expect(res.type).toBe('mining');
+		}
+	});
+
+	it('handles stacked SPA paste with both Home skills and Inventory via auto parse', () => {
+		const fs = require('fs');
+		const edgeText = fs.readFileSync('api/paste-edgecase-autodetect.txt', 'utf-8');
+		const res = detectAndParseInput(edgeText, 'auto');
+		expect(res.ok).toBe(true);
+		if (res.ok) {
+			expect(res.type).toBe('composite');
+			expect(res.detectedTypes).toContain('inventory');
+			expect(res.detectedTypes).toContain('stats');
+			expect(res.inventory?.rawLines.length).toBeGreaterThan(500);
+			expect(res.inventory?.maxCapacityDetected).toBe(2270);
+			expect(res.playerStats?.farming).toBe(99);
+			expect(res.playerStats?.cooking).toBe(6);
+			expect(res.playerStats?.mining).toBe(54);
 		}
 	});
 

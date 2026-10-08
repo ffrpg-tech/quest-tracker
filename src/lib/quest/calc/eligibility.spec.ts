@@ -682,3 +682,68 @@ describe('mining floor gates', () => {
 		expect(result.gaps).toEqual([]);
 	});
 });
+
+describe('unconditional evaluation and unimported indicators', () => {
+	it('evaluates skill and NPC requirements when stats is null, flagging unimported: true', () => {
+		const quest: Quest = {
+			...noRequirementQuest,
+			name: 'Skill & NPC Gated',
+			requiredLevels: { farming: 50 },
+			requiredNpc: { npc: 'Rosalie', level: 10 }
+		};
+
+		const result = evaluateQuestEligibility(quest, null, null);
+
+		expect(result.eligible).toBe(false);
+		expect(result.gaps).toEqual([
+			{ kind: 'skill', label: 'Farming', required: 50, have: 0, unimported: true },
+			{ kind: 'npc', label: 'Rosalie', required: 10, have: 0, unimported: true }
+		]);
+		expect(result.requirements).toEqual([
+			{ kind: 'skill', label: 'Farming', required: 50, have: 0, met: false, unimported: true },
+			{ kind: 'npc', label: 'Rosalie', required: 10, have: 0, met: false, unimported: true }
+		]);
+	});
+
+	it('evaluates mining floors when floors is null, flagging unimported: true', () => {
+		const quest: Quest = {
+			...noRequirementQuest,
+			name: 'Mining Floor Gated',
+			requiredMiningFloor: { fenrirsDen: 50 }
+		};
+
+		const result = evaluateQuestEligibility(quest, null, null);
+
+		expect(result.eligible).toBe(false);
+		expect(result.gaps).toEqual([
+			{
+				kind: 'miningFloor',
+				area: 'fenrirsDen',
+				label: "Fenrir's Den",
+				required: 50,
+				have: 0,
+				detail: 'Reach Floor 50 first',
+				unimported: true
+			}
+		]);
+	});
+
+	it('populates requirements with met: true for satisfied requirements', () => {
+		const quest: Quest = {
+			...noRequirementQuest,
+			name: 'Satisfied Requirements',
+			requiredLevels: { farming: 5 },
+			requiredNpc: { npc: 'Rosalie', level: 5 }
+		};
+
+		const result = evaluateQuestEligibility(quest, baseStats);
+
+		expect(result.eligible).toBe(true);
+		expect(result.gaps).toEqual([]);
+		expect(result.requirements).toEqual([
+			{ kind: 'skill', label: 'Farming', required: 5, have: 10, met: true },
+			{ kind: 'npc', label: 'Rosalie', required: 5, have: 5, met: true }
+		]);
+	});
+});
+

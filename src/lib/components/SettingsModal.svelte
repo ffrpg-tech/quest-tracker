@@ -3,7 +3,7 @@
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { trapFocus } from '$lib/ui/trapFocus';
 	import { tutorialSteps } from '$lib/tutorial';
-	import { parseChangelog } from '$lib/changelog';
+	import { parseChangelog, releasedEntries, groupByMinor } from '$lib/changelog';
 	import changelogRaw from '../../../CHANGELOG.md?raw';
 	import { APP_VERSION } from '$lib/version';
 
@@ -26,7 +26,29 @@
 	type SettingsTab = 'preferences' | 'about' | 'tutorial' | 'credits' | 'changelog';
 	let activeTab = $state<SettingsTab>('preferences');
 
-	const changelogEntries = $derived(parseChangelog(changelogRaw));
+	const changelogEntries = $derived(releasedEntries(parseChangelog(changelogRaw)));
+	const changelogGroups = $derived(groupByMinor(changelogEntries));
+	let openChangelogGroups = $state<{ [key: string]: boolean }>({});
+
+	$effect(() => {
+		if (changelogGroups.length > 0 && Object.keys(openChangelogGroups).length === 0) {
+			openChangelogGroups[changelogGroups[0].minor] = true;
+		}
+	});
+
+	function toggleChangelogGroup(minor: string, event: Event) {
+		openChangelogGroups[minor] = (event.currentTarget as HTMLDetailsElement).open;
+	}
+
+	function formatToUserDate(rawDate: string): string {
+		const parsed = new Date(rawDate);
+		if (isNaN(parsed.getTime())) return rawDate;
+		return new Intl.DateTimeFormat(undefined, {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		}).format(parsed);
+	}
 
 	function handleMaxCapacityInput(e: Event) {
 		const raw = (e.currentTarget as HTMLInputElement).value.trim();
@@ -46,7 +68,7 @@
 		role="presentation"
 	>
 		<div
-			class="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-lg bg-white shadow-xl dark:bg-gray-800 dark:text-gray-100"
+			class="relative flex h-[85vh] max-h-[700px] w-full max-w-3xl flex-col overflow-hidden rounded-lg bg-white shadow-xl dark:bg-gray-800 dark:text-gray-100"
 			role="dialog"
 			aria-modal="true"
 			aria-labelledby="settings-modal-title"
@@ -54,7 +76,7 @@
 		>
 			<!-- Modal Header -->
 			<div
-				class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700"
+				class="flex shrink-0 items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700"
 			>
 				<div class="flex items-center gap-2">
 					<Settings size={20} class="text-sky-600 dark:text-sky-400" />
@@ -72,7 +94,7 @@
 
 			<!-- Tab Navigation -->
 			<div
-				class="flex flex-wrap gap-1 border-b border-gray-200 bg-gray-50/80 px-6 py-2 text-xs font-medium dark:border-gray-700 dark:bg-gray-900/50"
+				class="flex shrink-0 flex-wrap gap-1 border-b border-gray-200 bg-gray-50/80 px-6 py-2 text-xs font-medium dark:border-gray-700 dark:bg-gray-900/50"
 			>
 				<button
 					type="button"
@@ -112,7 +134,7 @@
 			</div>
 
 			<!-- Modal Body (Scrollable) -->
-			<div class="flex-1 overflow-y-auto p-6 text-sm">
+			<div class="flex-1 overflow-y-auto p-6 text-sm min-h-0">
 				{#if activeTab === 'preferences'}
 					<div class="space-y-6">
 						<div>
@@ -301,103 +323,163 @@
 						</ol>
 					</div>
 				{:else if activeTab === 'credits'}
-					<div class="space-y-4 leading-relaxed text-gray-700 dark:text-gray-300">
-						<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
-							Credits & Acknowledgments
-						</h3>
+					<div class="space-y-5 leading-relaxed text-gray-700 dark:text-gray-300">
+						<header>
+							<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Credits</h3>
+						</header>
+
 						<div>
-							<h4 class="font-semibold text-gray-900 dark:text-gray-100">
-								FarmRPG and its community
-							</h4>
+							<h4 class="font-semibold text-gray-900 dark:text-gray-100">FarmRPG and its community</h4>
 							<p class="mt-1 text-xs">
-								FarmRPG and all related marks and materials are trademarks of <strong
-									>Magic and Wires, LLC</strong
-								> (farmrpg.com). This is an unofficial fan project and is not affiliated with Magic and
-								Wires, LLC.
+								FarmRPG and all related names, marks, and materials are trademarks of
+								<strong>Magic and Wires, LLC</strong> —
+								<a
+									href="https://farmrpg.com"
+									target="_blank"
+									rel="noopener noreferrer"
+									class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">farmrpg.com</a
+								>. This is an unofficial, non-commercial fan project and is not affiliated with, endorsed
+								by, or sponsored by Magic and Wires, LLC.
 							</p>
-							<ul class="mt-2 list-disc pl-5 space-y-1 text-xs">
+							<p class="mt-2 text-xs">
+								<strong>Special thanks</strong> to these folks for providing me insights and contributions to
+								create this project:
+							</p>
+							<ol class="mt-1 list-decimal space-y-1 pl-5 text-xs">
 								<li>
-									<strong class="text-emerald-600 dark:text-emerald-400">Erisere</strong> — shared initial
-									quest data CSV.
+									<span class="font-medium text-emerald-600 dark:text-emerald-400">Erisere</span> — shared their
+									stored quest data via CSV to initialize the data.
 								</li>
 								<li>
-									<strong class="text-emerald-600 dark:text-emerald-400">Natsulus</strong> — early insights
-									on client-side inventory collection.
+									<span class="font-medium text-emerald-600 dark:text-emerald-400">Natsulus</span> — offered early
+									insights on client-side inventory collection that helped shape the direction of the inventory
+									parser.
 								</li>
 								<li>
-									FarmRPG Staff <strong class="text-emerald-600 dark:text-emerald-400"
-										>coderanger</strong
-									> — technical assistance and data pipeline guidance.
+									FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400"
+										>coderanger</span
+									> — provided technical assistance and guidance for the data pipeline and several clarifications.
 								</li>
 								<li>
-									<strong class="text-emerald-600 dark:text-emerald-400">Lex 26</strong> — testing feedback
-									& inspiration from their CraftTree website.
+									<span class="font-medium text-emerald-600 dark:text-emerald-400">Lex 26</span> —
+									contributed in testing and provided feedback, gained inspiration from their
+									<a
+										href="https://crafttree.pages.dev"
+										target="_blank"
+										rel="noopener noreferrer"
+										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">CraftTree</a
+									> website.
 								</li>
 								<li>
-									FarmRPG Staff <strong class="text-emerald-600 dark:text-emerald-400">Rkm13</strong
-									> — clarifications and adding this tool to Community Guides!
+									FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400">Rkm13</span
+									>
+									— for providing suggestions and clarifications, and for adding this tool to the game's
+									official
+									<a
+										href="https://farmrpg.com/index.php#!/wiki.php?page=Community%20Guides"
+										target="_blank"
+										rel="noopener noreferrer"
+										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+										>Community Guides</a
+									> page!
 								</li>
 								<li>
-									<strong class="text-emerald-600 dark:text-emerald-400">You</strong> — for using the
-									application!
+									and <span class="font-medium text-emerald-600 dark:text-emerald-400">you!</span> — for using
+									the application itself!
 								</li>
-							</ul>
+							</ol>
 						</div>
 
 						<div class="border-t border-gray-100 pt-3 dark:border-gray-700">
-							<h4 class="font-semibold text-gray-900 dark:text-gray-100">
-								Sheet creators & maintainers
-							</h4>
+							<h4 class="font-semibold text-gray-900 dark:text-gray-100">Sheet creators & maintainers</h4>
 							<p class="mt-1 text-xs">
-								Special thanks to the authors of <em>A Towering Investment Checklist & Strategy</em>
-								and <em>Compare Completed Quests</em> spreadsheets whose groundwork made this calculator
-								possible.
+								This project wouldn't exist without the community members who <em>created and maintained existing Quest Wall spreadsheets</em>. Working through their filtering math and understanding how each questline's requirements were structured is what made it possible to centralize all of it into one calculator.
 							</p>
+							<p class="mt-2 text-xs">
+								<strong>Special thanks</strong> to the following sheets I've used to plan, design and build the
+								calculator:
+							</p>
+							<ol class="mt-1 list-decimal space-y-1 pl-5 text-xs">
+								<li>
+									<a
+										href="https://docs.google.com/spreadsheets/d/1PzawdSXTFVhy6Ro6j-m3wTPSJG0m3-AP4K6heH5T8Gk"
+										target="_blank"
+										rel="noopener noreferrer"
+										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+										>A Towering Investment Checklist & Strategy</a
+									>
+									— where I originated my idea.
+								</li>
+								<li>
+									<a
+										href="https://docs.google.com/spreadsheets/d/1RMPxMBkcK7rqapG7I8nPjF7Kop1i0oV26kV75QZ2VAw"
+										target="_blank"
+										rel="noopener noreferrer"
+										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+										>Compare Completed Quests</a
+									>
+									— whose approach to identifying completed quests informed the early direction of this project's
+									data handling.
+								</li>
+							</ol>
 						</div>
 					</div>
 				{:else if activeTab === 'changelog'}
 					<div class="space-y-4">
-						<div class="flex items-center justify-between">
+						<div class="flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
 							<div>
 								<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Changelog</h3>
 								<p class="text-xs text-gray-500 dark:text-gray-400">
-									Current Active Version: <strong>v{APP_VERSION}</strong>
+									What changed release by release &middot; Active: <strong>v{APP_VERSION}</strong>
 								</p>
 							</div>
 						</div>
 
-						<div class="space-y-6">
-							{#each changelogEntries as release (release.version)}
-								<div class="border-l-2 border-sky-500 pl-3">
-									<div class="flex items-center gap-2">
-										<span class="font-bold text-gray-900 dark:text-gray-100"
-											>v{release.version}</span
-										>
-										{#if release.date}
-											<span class="text-xs text-gray-400">{release.date}</span>
-										{/if}
-									</div>
-									<div class="mt-2 space-y-2 text-xs">
-										{#each release.sections as section (section.heading)}
-											<div>
-												<span
-													class="font-semibold uppercase tracking-wider text-[10px] text-gray-500 dark:text-gray-400"
-												>
-													{section.heading}
-												</span>
-												<ul
-													class="mt-1 list-disc pl-4 space-y-0.5 text-gray-600 dark:text-gray-300"
-												>
-													{#each section.items as item (item)}
-														<li>{item}</li>
+						<section class="space-y-4">
+							{#each changelogGroups as group (group.minor)}
+								<details
+									open={openChangelogGroups[group.minor]}
+									ontoggle={(e) => toggleChangelogGroup(group.minor, e)}
+									class="rounded border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50"
+								>
+									<summary
+										class="cursor-pointer text-sm font-semibold text-gray-900 select-none dark:text-gray-100"
+									>
+										{group.minor}.x
+									</summary>
+									{#if openChangelogGroups[group.minor]}
+										<div class="mt-4 space-y-6 pl-1">
+											{#each group.entries as entry (entry.version)}
+												<div>
+													<h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+														{entry.version}
+														{#if entry.date}
+															<span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
+																{formatToUserDate(entry.date)}
+															</span>
+														{/if}
+													</h4>
+													{#each entry.sections as section (section.heading)}
+														<div class="mt-2">
+															<h5 class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+																{section.heading}
+															</h5>
+															<ul
+																class="mt-1 list-disc space-y-1 pl-5 text-xs text-gray-700 dark:text-gray-300"
+															>
+																{#each section.items as item (item)}
+																	<li>{item}</li>
+																{/each}
+															</ul>
+														</div>
 													{/each}
-												</ul>
-											</div>
-										{/each}
-									</div>
-								</div>
+												</div>
+											{/each}
+										</div>
+									{/if}
+								</details>
 							{/each}
-						</div>
+						</section>
 					</div>
 				{/if}
 			</div>

@@ -10,6 +10,7 @@
 	import {
 		isUnavailable,
 		type EligibilityGap,
+		type RequirementItem,
 		type QuestlineEligibility
 	} from '$lib/quest/calc/eligibility';
 	import { statusTextColorClass } from '$lib/ui/statusColor';
@@ -26,6 +27,7 @@
 		runsDryAt,
 		showAllItems = false,
 		showCraftable = true,
+		onOpenImport,
 		onToggleCompleted
 	}: {
 		diffResults: QuestlineDiffResult[];
@@ -36,6 +38,7 @@
 		runsDryAt: Map<string, ItemRunsDryAt>;
 		showAllItems: boolean;
 		showCraftable?: boolean;
+		onOpenImport?: (tab: 'stats' | 'mining') => void;
 		onToggleCompleted: (questlineName: string, questName: string) => void;
 	} = $props();
 
@@ -64,6 +67,10 @@
 	// order), so indexing by position is safe.
 	function questGaps(questlineName: string, qi: number): EligibilityGap[] {
 		return eligibilityByQuestline.get(questlineName)?.quests[qi]?.gaps ?? [];
+	}
+
+	function questRequirements(questlineName: string, qi: number): RequirementItem[] {
+		return eligibilityByQuestline.get(questlineName)?.quests[qi]?.requirements ?? [];
 	}
 
 	/** The header badge's "first blocker" — walked independently of
@@ -160,7 +167,7 @@
 {#snippet eligibilityGapList(gaps: EligibilityGap[])}
 	<ul class="space-y-0.5 text-xs">
 		{#each gaps as gap, i (gap.kind + ':' + gap.label + ':' + i)}
-			<li class="flex items-center gap-1">
+			<li class="flex flex-wrap items-center gap-1">
 				{#if gap.kind === 'season'}
 					<span
 						class="font-medium {gap.expired
@@ -173,6 +180,21 @@
 				{:else if gap.kind === 'miningFloor'}
 					<span class="font-medium text-amber-700 dark:text-amber-400">{gap.label}</span> —
 					{gap.detail}
+					{#if gap.unimported}
+						{#if onOpenImport}
+							<button
+								type="button"
+								onclick={() => onOpenImport?.('mining')}
+								class="cursor-pointer text-[10px] text-amber-600 underline hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
+							>
+								(mining unimported — click to set)
+							</button>
+						{:else}
+							<span class="text-[10px] text-amber-600 italic dark:text-amber-400">
+								(mining unimported)
+							</span>
+						{/if}
+					{/if}
 				{:else}
 					{#if gap.kind === 'npc' && getNpcImagePath(gap.label)}
 						<img
@@ -188,6 +210,113 @@
 					level
 					<span class="tabular-nums text-gray-500 dark:text-gray-400">{gap.required}</span>, have
 					<span class="tabular-nums text-sky-600 dark:text-sky-400">{gap.have}</span>
+					{#if gap.unimported}
+						{#if onOpenImport}
+							<button
+								type="button"
+								onclick={() => onOpenImport?.('stats')}
+								class="cursor-pointer text-[10px] text-amber-600 underline hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
+							>
+								(stats unimported — click to set)
+							</button>
+						{:else}
+							<span class="text-[10px] text-amber-600 italic dark:text-amber-400">
+								(stats unimported)
+							</span>
+						{/if}
+					{/if}
+				{/if}
+			</li>
+		{/each}
+	</ul>
+{/snippet}
+
+{#snippet eligibilityRequirementList(reqs: RequirementItem[])}
+	<ul class="space-y-0.5 text-xs">
+		{#each reqs as req, i (req.kind + ':' + req.label + ':' + i)}
+			<li class="flex flex-wrap items-center gap-1">
+				{#if req.met}
+					<span class="font-bold text-emerald-600 dark:text-emerald-400">✓</span>
+					{#if req.kind === 'season'}
+						<span class="text-emerald-700 dark:text-emerald-400">{req.detail}</span>
+					{:else if req.kind === 'pred'}
+						<span class="text-emerald-700 dark:text-emerald-400">{req.label} — {req.detail}</span>
+					{:else if req.kind === 'miningFloor'}
+						<span class="text-emerald-700 dark:text-emerald-400">{req.label} — {req.detail}</span>
+						<span class="text-[11px] text-gray-500 dark:text-gray-400">(have {req.have})</span>
+					{:else}
+						{#if req.kind === 'npc' && getNpcImagePath(req.label)}
+							<img
+								src={getNpcImagePath(req.label)}
+								alt=""
+								width="14"
+								height="14"
+								class="inline-block shrink-0"
+								loading="lazy"
+							/>
+						{/if}
+						<span class="text-emerald-700 dark:text-emerald-400">{req.label} {req.required}</span>
+						<span class="text-[11px] text-gray-500 dark:text-gray-400">(have {req.have})</span>
+					{/if}
+				{:else}
+					{#if req.kind === 'season'}
+						<span
+							class="font-medium {req.expired
+								? 'text-red-700 dark:text-red-400'
+								: 'text-amber-700 dark:text-amber-400'}">{req.detail}</span
+						>
+					{:else if req.kind === 'pred'}
+						<span class="font-medium text-amber-700 dark:text-amber-400">{req.label}</span> —
+						{req.detail}
+					{:else if req.kind === 'miningFloor'}
+						<span class="font-medium text-amber-700 dark:text-amber-400">{req.label}</span> —
+						{req.detail}
+						{#if req.unimported}
+							{#if onOpenImport}
+								<button
+									type="button"
+									onclick={() => onOpenImport?.('mining')}
+									class="cursor-pointer text-[10px] text-amber-600 underline hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
+								>
+									(mining unimported — click to set)
+								</button>
+							{:else}
+								<span class="text-[10px] text-amber-600 italic dark:text-amber-400">
+									(mining unimported)
+								</span>
+							{/if}
+						{/if}
+					{:else}
+						{#if req.kind === 'npc' && getNpcImagePath(req.label)}
+							<img
+								src={getNpcImagePath(req.label)}
+								alt=""
+								width="14"
+								height="14"
+								class="inline-block shrink-0"
+								loading="lazy"
+							/>
+						{/if}
+						<span class="font-medium text-amber-700 dark:text-amber-400">{req.label}</span>: need
+						level
+						<span class="tabular-nums text-gray-500 dark:text-gray-400">{req.required}</span>, have
+						<span class="tabular-nums text-sky-600 dark:text-sky-400">{req.have}</span>
+						{#if req.unimported}
+							{#if onOpenImport}
+								<button
+									type="button"
+									onclick={() => onOpenImport?.('stats')}
+									class="cursor-pointer text-[10px] text-amber-600 underline hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-200"
+								>
+									(stats unimported — click to set)
+								</button>
+							{:else}
+								<span class="text-[10px] text-amber-600 italic dark:text-amber-400">
+									(stats unimported)
+								</span>
+							{/if}
+						{/if}
+					{/if}
 				{/if}
 			</li>
 		{/each}
@@ -391,7 +520,12 @@
 														)}
 													</td>
 													<td class="p-2">
-														{#if gaps.length > 0}
+														{#if showAllItems}
+															{@const reqs = questRequirements(diffResult.questlineName, diffResult.quests.indexOf(q))}
+															{#if reqs.length > 0}
+																{@render eligibilityRequirementList(reqs)}
+															{/if}
+														{:else if gaps.length > 0}
 															{@render eligibilityGapList(gaps)}
 														{/if}
 														{#if items.length > 0}
@@ -449,7 +583,14 @@
 													{/each}
 												</div>
 											{/if}
-											{#if gaps.length > 0}
+											{#if showAllItems}
+												{@const reqs = questRequirements(diffResult.questlineName, qi)}
+												{#if reqs.length > 0}
+													<div class="pl-6">
+														{@render eligibilityRequirementList(reqs)}
+													</div>
+												{/if}
+											{:else if gaps.length > 0}
 												<div class="pl-6">
 													{@render eligibilityGapList(gaps)}
 												</div>

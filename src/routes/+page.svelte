@@ -351,8 +351,13 @@
 	}
 
 	function handleUpdatePlayerStats(stats: PlayerStats) {
+		const mergedNpcLevels =
+			Object.keys(stats.npcLevels).length > 0
+				? stats.npcLevels
+				: (playerStats?.npcLevels ?? stats.npcLevels);
 		playerStats = {
 			...stats,
+			npcLevels: mergedNpcLevels,
 			miningFloors: playerStats?.miningFloors ?? stats.miningFloors
 		};
 		trackSave(savePlayerStats(playerStats));
@@ -445,8 +450,17 @@
 	}
 
 	function handleUpdateMiningFloors(floors: Record<string, number>) {
-		if (!playerStats) return;
-		playerStats = { ...playerStats, miningFloors: floors };
+		playerStats = {
+			farming: playerStats?.farming ?? 0,
+			fishing: playerStats?.fishing ?? 0,
+			crafting: playerStats?.crafting ?? 0,
+			exploring: playerStats?.exploring ?? 0,
+			tower: playerStats?.tower ?? 0,
+			cooking: playerStats?.cooking ?? 0,
+			mining: playerStats?.mining ?? 0,
+			npcLevels: playerStats?.npcLevels ?? {},
+			miningFloors: floors
+		};
 		trackSave(savePlayerStats(playerStats));
 		recomputeEligibility(miningQuestlineNames);
 	}
@@ -631,6 +645,7 @@
 			{runsDryAt}
 			{showAllItems}
 			{showCraftable}
+			onOpenImport={openImportModal}
 			onToggleCompleted={toggleCompleted}
 		/>
 	</main>

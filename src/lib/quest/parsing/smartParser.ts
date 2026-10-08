@@ -16,7 +16,8 @@ export type ImportMode = 'auto' | ImportTargetType;
 
 export interface SmartParseSuccess {
 	ok: true;
-	type: ImportTargetType;
+	type: ImportTargetType | 'composite';
+	detectedTypes?: ImportTargetType[];
 	confidence: 'high' | 'medium' | 'low';
 	summary: string;
 	inventory?: {
@@ -89,7 +90,17 @@ export function detectInputType(rawText: string): {
 		return { type: 'completed', confidence: 'high' };
 	}
 
-	// 4. Player Stats: "Tower Level" or profile skill names with "Level \d+" / "Not Started"
+	// 4. Inventory Dump: anchor text, "Inventory Stats", or category headers + quantity lines
+	if (
+		lower.includes('currently, you cannot have more than') ||
+		lower.includes('inventory stats') ||
+		lower.includes('chevron_down') ||
+		lower.includes('max on hand')
+	) {
+		return { type: 'inventory', confidence: 'high' };
+	}
+
+	// 5. Player Stats: "Tower Level" or profile skill names with "Level \d+" / "Not Started"
 	const skillKeywords = ['farming', 'fishing', 'crafting', 'exploring', 'cooking'];
 	const matchedSkills = skillKeywords.filter((sk) => {
 		const reg = new RegExp(`(?:^|\\n)\\s*${sk}\\s*(?:\\n|$)`, 'i');
@@ -103,16 +114,6 @@ export function detectInputType(rawText: string): {
 				/now in beta/i.test(trimmed)))
 	) {
 		return { type: 'stats', confidence: 'high' };
-	}
-
-	// 5. Inventory Dump: anchor text, "Inventory Stats", or category headers + quantity lines
-	if (
-		lower.includes('currently, you cannot have more than') ||
-		lower.includes('inventory stats') ||
-		lower.includes('chevron_down') ||
-		lower.includes('max on hand')
-	) {
-		return { type: 'inventory', confidence: 'high' };
 	}
 
 	// Secondary heuristics
@@ -145,7 +146,9 @@ export function detectInputType(rawText: string): {
  */
 export function extractMaxCapacityFromText(rawText: string): number | null {
 	const match =
-		/Currently,\s*you\s*cannot\s*have\s*more\s*than\s*([\d,]+)\s*of\s*most\s*items/i.exec(rawText);
+		/Currently,\s*you\s*cannot\s*have\s*more\s*than\s*([\d,]+)\s*of\s*(?:most\s*items|any\s*single\s*thing)/i.exec(
+			rawText
+		);
 	if (match) {
 		const cap = parseCommaNumber(match[1]);
 		if (Number.isFinite(cap) && cap > 0) {
@@ -161,8 +164,9 @@ export interface ParseOptions {
 }
 
 /**
- * Dispatches raw text to the appropriate parser, either by auto-detecting the schema
- * or by using the user-specified override mode.
+ * Dispatches raw text to the appropriate parser(s).
+ * In 'auto' mode, detects and extracts all valid entities present in the paste,
+ * safely handling stacked SPA views (e.g. Home skills + My Inventory dump).
  */
 export function detectAndParseInput(
 	rawText: string,
@@ -178,10 +182,181 @@ export function detectAndParseInput(
 		};
 	}
 
+	const lower = trimmed.toLowerCase();
+
+	if (mode === 'auto') {
+		const miningLocations = [
+			'spring cave',
+			'highland hollow',
+			'sol grotto',
+			'ember caverns',
+			"fenrir's den",
+			'mossrock mine'
+		];
+		const matchedMiningLocations = miningLocations.filter((loc) => lower.includes(loc));
+		const requestFromMatches = trimmed.match(/request from/gi);
+
+		const skillKeywords = ['farming', 'fishing', 'crafting', 'exploring', 'cooking', 'mining'];
+		const matchedSkills = skillKeywords.filter((sk) => {
+			const reg = new RegExp(`(?:^|\\n)\\s*${sk}\\s*(?:\\n|$)`, 'i');
+			return reg.test(trimmed);
+		});
+
+		let parsedInventory: SmartParseSuccess['inventory'] | undefined;
+		let parsedStats: PlayerStats | undefined;
+		let parsedMining: Record<string, number> | undefined;
+		let parsedBank: SmartParseSuccess['bank'] | undefined;
+		let parsedCompleted: string[] | undefined;
+
+		// 1. Inventory candidate check
+		if (
+			lower.includes('currently, you cannot have more than') ||
+			lower.includes('inventory stats') ||
+			lower.includes('chevron_down') ||
+			lower.includes('max on hand')
+		) {
+			try {
+				const rawLines = parseInventoryPaste(rawText);
+				if (rawLines.length > 0) {
+					const maxCapacityDetected = extractMaxCapacityFromText(rawText) ?? undefined;
+					const entries = options.knownItemNames
+						? toInventoryEntries(rawLines, options.knownItemNames)
+						: undefined;
+					parsedInventory = { rawLines, entries, maxCapacityDetected };
+				}
+			} catch {
+				// Not a valid inventory block
+			}
+		}
+
+		// 2. Player Stats candidate check
+		if (
+			lower.includes('tower level') ||
+			lower.includes('my skills') ||
+			(matchedSkills.length >= 2 &&
+				(/level\s+\d+/i.test(trimmed) ||
+					/not started/i.test(trimmed) ||
+					/now in beta/i.test(trimmed)))
+		) {
+			try {
+				const stats =
+					options.npcNames && options.npcNames.length > 0
+						? parsePlayerStatsPaste(rawText, options.npcNames)
+						: parsePlayerStatsPaste(rawText);
+				const hasSkills = Object.values(stats).some((v) => typeof v === 'number' && v > 0);
+				const hasNpcs = Object.keys(stats.npcLevels).length > 0;
+				if (hasSkills || hasNpcs) {
+					parsedStats = stats;
+				}
+			} catch {
+				// Not a valid stats block
+			}
+		}
+
+		// 3. Mining Floors candidate check
+		if (
+			lower.includes('mining locations') ||
+			(matchedMiningLocations.length >= 2 && /floor\s+\d+/i.test(trimmed))
+		) {
+			try {
+				const floors = parseMiningPagePaste(rawText);
+				if (Object.keys(floors).length > 0) {
+					parsedMining = floors;
+				}
+			} catch {
+				// Not a valid mining block
+			}
+		}
+
+		// 4. Bank candidate check
+		if (
+			lower.includes('bulk options') ||
+			(lower.includes('deposit all') &&
+				lower.includes('withdraw all') &&
+				lower.includes('silver'))
+		) {
+			try {
+				const b = parseBankPaste(rawText);
+				parsedBank = b;
+			} catch {
+				// Not a valid bank block
+			}
+		}
+
+		// 5. Completed Quests candidate check
+		if (
+			lower.includes('completed requests') ||
+			(requestFromMatches && requestFromMatches.length >= 2)
+		) {
+			try {
+				const q = parseCompletedQuestNames(rawText);
+				if (q.length > 0) {
+					parsedCompleted = q;
+				}
+			} catch {
+				// Not a valid completed quests block
+			}
+		}
+
+		const detectedTypes: ImportTargetType[] = [];
+		const summaryParts: string[] = [];
+
+		if (parsedInventory) {
+			detectedTypes.push('inventory');
+			const count = parsedInventory.entries
+				? parsedInventory.entries.size
+				: parsedInventory.rawLines.length;
+			const capStr = parsedInventory.maxCapacityDetected
+				? ` (max cap: ${parsedInventory.maxCapacityDetected.toLocaleString()})`
+				: '';
+			summaryParts.push(`${count} inventory item${count === 1 ? '' : 's'}${capStr}`);
+		}
+
+		if (parsedStats) {
+			detectedTypes.push('stats');
+			const npcCount = Object.keys(parsedStats.npcLevels).length;
+			const npcPart = npcCount > 0 ? `, ${npcCount} NPC${npcCount === 1 ? '' : 's'}` : '';
+			summaryParts.push(`7 player skills${npcPart}`);
+		}
+
+		if (parsedMining) {
+			detectedTypes.push('mining');
+			const count = Object.values(parsedMining).filter((v) => v > 0).length;
+			summaryParts.push(`${count} mining floor${count === 1 ? '' : 's'}`);
+		}
+
+		if (parsedBank) {
+			detectedTypes.push('bank');
+			summaryParts.push(`Bank silver`);
+		}
+
+		if (parsedCompleted) {
+			detectedTypes.push('completed');
+			summaryParts.push(
+				`${parsedCompleted.length} completed quest${parsedCompleted.length === 1 ? '' : 's'}`
+			);
+		}
+
+		if (detectedTypes.length > 0) {
+			return {
+				ok: true,
+				type: detectedTypes.length > 1 ? 'composite' : detectedTypes[0],
+				detectedTypes,
+				confidence: 'high',
+				summary: `Parsed ${summaryParts.join(' and ')}.`,
+				inventory: parsedInventory,
+				playerStats: parsedStats,
+				miningFloors: parsedMining,
+				bank: parsedBank,
+				completedQuestNames: parsedCompleted
+			};
+		}
+	}
+
+	// Single-mode parser fallback (explicit mode or fallback detection)
 	const detection = detectInputType(rawText);
 	const targetType: ImportTargetType =
 		mode === 'auto' ? (detection.type === 'unknown' ? 'inventory' : detection.type) : mode;
-
 	const confidence = mode === 'auto' ? detection.confidence : 'high';
 
 	try {
@@ -191,6 +366,7 @@ export function detectAndParseInput(
 				return {
 					ok: true,
 					type: 'bank',
+					detectedTypes: ['bank'],
 					confidence,
 					summary: `Parsed Bank: ${bank.walletSilver.toLocaleString()} wallet silver, ${bank.bankSilver.toLocaleString()} bank silver.`,
 					bank
@@ -203,6 +379,7 @@ export function detectAndParseInput(
 				return {
 					ok: true,
 					type: 'mining',
+					detectedTypes: ['mining'],
 					confidence,
 					summary: `Parsed Mining Floors (${nonZeroCount} unlocked location${nonZeroCount === 1 ? '' : 's'}).`,
 					miningFloors
@@ -218,6 +395,7 @@ export function detectAndParseInput(
 				return {
 					ok: true,
 					type: 'stats',
+					detectedTypes: ['stats'],
 					confidence,
 					summary: `Parsed Player Stats (7 skills, ${npcCount} NPC friendship${npcCount === 1 ? '' : 's'}).`,
 					playerStats
@@ -229,6 +407,7 @@ export function detectAndParseInput(
 				return {
 					ok: true,
 					type: 'completed',
+					detectedTypes: ['completed'],
 					confidence,
 					summary: `Parsed Completed Quests (${completedQuestNames.length} quest name${completedQuestNames.length === 1 ? '' : 's'}).`,
 					completedQuestNames
@@ -249,6 +428,7 @@ export function detectAndParseInput(
 				return {
 					ok: true,
 					type: 'inventory',
+					detectedTypes: ['inventory'],
 					confidence,
 					summary: `Parsed ${count} inventory item${count === 1 ? '' : 's'}${capInfo}.`,
 					inventory: {

@@ -27,6 +27,14 @@ exports[`polluted external prerequisite references > captures unresolved and res
             },
           ],
           "questName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted II",
+          "requirements": [
+            {
+              "detail": "Complete "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted I" first",
+              "kind": "pred",
+              "label": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+              "met": false,
+            },
+          ],
           "seq": 1,
         },
       ],
@@ -52,6 +60,14 @@ exports[`polluted external prerequisite references > captures unresolved and res
           "eligible": true,
           "gaps": [],
           "questName": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted II",
+          "requirements": [
+            {
+              "detail": "Complete "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted I" first",
+              "kind": "pred",
+              "label": "Pleasantly Arbitrating Misconstrued Relational Affronts, Troubles Skirted",
+              "met": true,
+            },
+          ],
           "seq": 1,
         },
       ],
@@ -83,6 +99,14 @@ exports[`polluted external prerequisite references > captures unresolved and res
             },
           ],
           "questName": "Starting To Actually Realize Magic Ain't Pretty II",
+          "requirements": [
+            {
+              "detail": "Complete "Starting To Actually Realize Magic Ain't Pretty I" first",
+              "kind": "pred",
+              "label": "Starting To Actually Realize Magic Ain't Pretty",
+              "met": false,
+            },
+          ],
           "seq": 1,
         },
       ],
@@ -108,6 +132,14 @@ exports[`polluted external prerequisite references > captures unresolved and res
           "eligible": true,
           "gaps": [],
           "questName": "Starting To Actually Realize Magic Ain't Pretty II",
+          "requirements": [
+            {
+              "detail": "Complete "Starting To Actually Realize Magic Ain't Pretty I" first",
+              "kind": "pred",
+              "label": "Starting To Actually Realize Magic Ain't Pretty",
+              "met": true,
+            },
+          ],
           "seq": 1,
         },
       ],

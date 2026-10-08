@@ -58,7 +58,7 @@
 	let activeGuideTab = $state<ImportTargetType>('inventory');
 
 	interface FeedbackStatus {
-		type: ImportTargetType | 'unknown';
+		type: ImportTargetType | 'composite' | 'unknown';
 		summary: string;
 		ok: boolean;
 	}
@@ -181,109 +181,63 @@
 			return;
 		}
 
-		// Apply parsed output based on detected type
-		switch (result.type) {
-			case 'inventory': {
-				if (result.inventory?.entries) {
-					inventory = replaceInventory(inventory, result.inventory.entries);
-				}
-				if (result.inventory?.maxCapacityDetected) {
-					onMaxCapacityDetected?.(result.inventory.maxCapacityDetected);
-				}
-				inventoryBaseline.clear();
-				for (const key of completed) inventoryBaseline.add(key);
-				staleKeys.clear();
-				if (!saveInventoryBaseline(completed)) onStorageWriteFailed();
-
-				flashSuccess(result.summary);
-				feedbackStatus = {
-					type: 'inventory',
-					summary: result.summary,
-					ok: true
-				};
-				break;
+		// Apply parsed output across all detected sections (singular or composite)
+		if (result.inventory) {
+			if (result.inventory.entries) {
+				inventory = replaceInventory(inventory, result.inventory.entries);
 			}
-
-			case 'stats': {
-				if (result.playerStats) {
-					onUpdatePlayerStats(result.playerStats);
-				}
-				flashSuccess(result.summary);
-				feedbackStatus = {
-					type: 'stats',
-					summary: result.summary,
-					ok: true
-				};
-				break;
+			if (result.inventory.maxCapacityDetected) {
+				onMaxCapacityDetected?.(result.inventory.maxCapacityDetected);
 			}
-
-			case 'mining': {
-				if (result.miningFloors) {
-					onUpdateMiningFloors(result.miningFloors);
-				}
-				flashSuccess(result.summary);
-				feedbackStatus = {
-					type: 'mining',
-					summary: result.summary,
-					ok: true
-				};
-				break;
-			}
-
-			case 'bank': {
-				if (result.bank) {
-					const silver =
-						result.bank.walletSilver + (includeBankBalance ? result.bank.bankSilver : 0);
-					inventory = mergeInventory(
-						inventory,
-						new Map([['Silver', { item: 'Silver', qty: silver, maxed: false }]])
-					);
-					const bankSummary = includeBankBalance
-						? `Set Silver to ${silver.toLocaleString()} (wallet + bank).`
-						: `Set Silver to ${silver.toLocaleString()} (wallet only).`;
-					flashSuccess(bankSummary);
-					feedbackStatus = {
-						type: 'bank',
-						summary: bankSummary,
-						ok: true
-					};
-				}
-				break;
-			}
-
-			case 'completed': {
-				if (result.completedQuestNames) {
-					let matchedNames = 0;
-					const unmatched: string[] = [];
-					for (const name of result.completedQuestNames) {
-						const matches = questNameIndex.get(name);
-						if (!matches) {
-							unmatched.push(name);
-							continue;
-						}
-						matchedNames++;
-						for (const m of matches) {
-							const key = questKey(m.questlineName, m.questName);
-							completed.add(key);
-							if (!inventoryBaseline.has(key)) staleKeys.add(key);
-						}
-					}
-					onCompletedChanged();
-					unmatchedQuestNames = [...new Set(unmatched)];
-					const completedSummary =
-						unmatched.length > 0
-							? `Marked ${matchedNames} quest name${matchedNames === 1 ? '' : 's'} done (${unmatched.length} name${unmatched.length === 1 ? '' : 's'} didn't match a known quest).`
-							: `Marked ${matchedNames} quest${matchedNames === 1 ? '' : 's'} done.`;
-					flashSuccess(completedSummary);
-					feedbackStatus = {
-						type: 'completed',
-						summary: completedSummary,
-						ok: true
-					};
-				}
-				break;
-			}
+			inventoryBaseline.clear();
+			for (const key of completed) inventoryBaseline.add(key);
+			staleKeys.clear();
+			if (!saveInventoryBaseline(completed)) onStorageWriteFailed();
 		}
+
+		if (result.playerStats) {
+			onUpdatePlayerStats(result.playerStats);
+		}
+
+		if (result.miningFloors) {
+			onUpdateMiningFloors(result.miningFloors);
+		}
+
+		if (result.bank) {
+			const silver =
+				result.bank.walletSilver + (includeBankBalance ? result.bank.bankSilver : 0);
+			inventory = mergeInventory(
+				inventory,
+				new Map([['Silver', { item: 'Silver', qty: silver, maxed: false }]])
+			);
+		}
+
+		if (result.completedQuestNames) {
+			let matchedNames = 0;
+			const unmatched: string[] = [];
+			for (const name of result.completedQuestNames) {
+				const matches = questNameIndex.get(name);
+				if (!matches) {
+					unmatched.push(name);
+					continue;
+				}
+				matchedNames++;
+				for (const m of matches) {
+					const key = questKey(m.questlineName, m.questName);
+					completed.add(key);
+					if (!inventoryBaseline.has(key)) staleKeys.add(key);
+				}
+			}
+			onCompletedChanged();
+			unmatchedQuestNames = [...new Set(unmatched)];
+		}
+
+		flashSuccess(result.summary);
+		feedbackStatus = {
+			type: result.type,
+			summary: result.summary,
+			ok: true
+		};
 	}
 </script>
 
@@ -430,7 +384,11 @@
 						{/if}
 						<div class="flex-1">
 							<span class="font-semibold uppercase tracking-wider text-[10px]">
-								{feedbackStatus.ok ? `Parsed ${feedbackStatus.type}` : 'Parse Error'}
+								{feedbackStatus.ok
+									? feedbackStatus.type === 'composite'
+										? 'Parsed Multiple Sections'
+										: `Parsed ${feedbackStatus.type}`
+									: 'Parse Error'}
 							</span>
 							<p class="mt-0.5">{feedbackStatus.summary}</p>
 						</div>

@@ -34,8 +34,7 @@
 		{ key: 'tower', label: 'Tower' }
 	];
 
-	let isSkillsOpen = $state(true);
-	let isNpcsOpen = $state(false);
+	let isPanelOpen = $state(true);
 	let npcQuery = $state('');
 
 	const allNpcNames = $derived.by(() => {
@@ -94,7 +93,18 @@
 	class="flex h-full min-h-0 flex-col space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
 >
 	<div class="flex items-center justify-between">
-		<h2 class="font-semibold">Player Stats</h2>
+		<button
+			type="button"
+			onclick={() => (isPanelOpen = !isPanelOpen)}
+			class="flex items-center gap-1.5 font-semibold text-left cursor-pointer hover:text-sky-600 dark:hover:text-sky-400"
+			aria-expanded={isPanelOpen}
+		>
+			<ChevronDown
+				size={16}
+				class="transition-transform duration-200 {isPanelOpen ? 'rotate-180' : ''}"
+			/>
+			<span>Player Stats</span>
+		</button>
 		<div class="flex items-center gap-1">
 			<button
 				onclick={onOpenImport}
@@ -117,32 +127,22 @@
 		</div>
 	</div>
 
-	{#if npcsState.npcsError}
-		<p
-			class="flex items-center justify-center gap-2 text-center text-xs text-red-600 dark:text-red-400"
-		>
-			NPC data failed to load — friendship names/images may be missing or incomplete.
-			<button onclick={() => retryNpcs()} class={buttonClass('link')}>Retry</button>
-		</p>
-	{/if}
+	{#if isPanelOpen}
+		<div class="flex flex-1 flex-col space-y-3 min-h-0">
+			{#if npcsState.npcsError}
+				<p
+					class="flex items-center justify-center gap-2 text-center text-xs text-red-600 dark:text-red-400"
+				>
+					NPC data failed to load — friendship names/images may be missing or incomplete.
+					<button onclick={() => retryNpcs()} class={buttonClass('link')}>Retry</button>
+				</p>
+			{/if}
 
-	<!-- Section 1: Skills Accordion -->
-	<div class="rounded border border-gray-100 dark:border-gray-700">
-		<button
-			type="button"
-			onclick={() => (isSkillsOpen = !isSkillsOpen)}
-			aria-expanded={isSkillsOpen}
-			class="flex w-full items-center justify-between bg-gray-50/80 px-3 py-1.5 text-left text-xs font-medium hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-800"
-		>
-			<span>Skills & Tower ({SKILLS.length})</span>
-			<ChevronDown
-				size={14}
-				class="transition-transform duration-200 {isSkillsOpen ? 'rotate-180' : ''}"
-			/>
-		</button>
-
-		{#if isSkillsOpen}
-			<div class="p-2">
+			<!-- Skills & Tower Grid -->
+			<div>
+				<h3 class="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
+					Skills & Tower ({SKILLS.length})
+				</h3>
 				<div class="grid grid-cols-4 gap-2 text-center text-xs sm:grid-cols-7">
 					{#each SKILLS as skill (skill.key)}
 						<div class="rounded border border-gray-100 p-1.5 dark:border-gray-700">
@@ -162,26 +162,12 @@
 					{/each}
 				</div>
 			</div>
-		{/if}
-	</div>
 
-	<!-- Section 2: NPC Friendship Levels Accordion -->
-	<div class="rounded border border-gray-100 dark:border-gray-700">
-		<button
-			type="button"
-			onclick={() => (isNpcsOpen = !isNpcsOpen)}
-			aria-expanded={isNpcsOpen}
-			class="flex w-full items-center justify-between bg-gray-50/80 px-3 py-1.5 text-left text-xs font-medium hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-800"
-		>
-			<span>NPC Friendships ({allNpcNames.length})</span>
-			<ChevronDown
-				size={14}
-				class="transition-transform duration-200 {isNpcsOpen ? 'rotate-180' : ''}"
-			/>
-		</button>
-
-		{#if isNpcsOpen}
-			<div class="space-y-2 p-2">
+			<!-- NPC Friendships Search & List -->
+			<div class="flex flex-1 flex-col space-y-2 min-h-0">
+				<h3 class="text-xs font-medium text-gray-500 dark:text-gray-400">
+					NPC Friendships ({allNpcNames.length})
+				</h3>
 				<div class="relative">
 					<input
 						bind:value={npcQuery}
@@ -244,6 +230,6 @@
 					{/if}
 				</div>
 			</div>
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
