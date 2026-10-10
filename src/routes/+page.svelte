@@ -13,6 +13,7 @@
 	} from '$lib/quest/types';
 	import { loadQuestlines, getQuestlinesState } from '$lib/quest/storage/questlinesStore.svelte';
 	import { loadItems, getItemsState } from '$lib/quest/storage/itemsStore.svelte';
+	import { loadSources } from '$lib/quest/storage/sourcesStore.svelte';
 	import { loadNpcs, getNpcsState } from '$lib/quest/storage/npcsStore.svelte';
 	import { loadMining, getMiningState } from '$lib/quest/storage/miningStore.svelte';
 	import { inventoryToMap } from '$lib/quest/parsing/inventory';
@@ -47,7 +48,12 @@
 		loadShowAllItems,
 		saveShowAllItems,
 		loadShowCraftable,
-		saveShowCraftable
+		saveShowCraftable,
+		loadShowLocationSources,
+		saveShowLocationSources,
+		loadShowAlternativeSources,
+		saveShowAlternativeSources,
+		hasUnreadChangelog
 	} from '$lib/quest/storage/persistence';
 	import LoadingOverlay from '$lib/components/LoadingOverlay.svelte';
 	import AppHeader from '$lib/components/AppHeader.svelte';
@@ -60,10 +66,11 @@
 	import ProgressBackupModal from '$lib/components/ProgressBackupModal.svelte';
 	import ImportModal from '$lib/components/ImportModal.svelte';
 	import FeedbackModal from '$lib/components/FeedbackModal.svelte';
-	import SettingsModal from '$lib/components/SettingsModal.svelte';
+	import SettingsModal, { type SettingsTab } from '$lib/components/SettingsModal.svelte';
 	import UpdateBanner from '$lib/components/UpdateBanner.svelte';
 	import { getRecipesState, loadRecipes } from '$lib/quest/storage/recipesStore.svelte';
 	import MiningFloorsPanel from '$lib/components/MiningFloorsPanel.svelte';
+	import { APP_VERSION } from '$lib/version';
 
 	const webApplicationJsonLd = {
 		'@context': 'https://schema.org',
@@ -103,6 +110,7 @@
 	onMount(() => {
 		void loadQuestlines();
 		void loadItems();
+		void loadSources();
 		void loadNpcs();
 		void loadRecipes();
 		void loadMining();
@@ -148,7 +156,11 @@
 	// than that. Only covers items that happen to be maxed right now; anything
 	// else has an unknown cap and is treated as uncapped.
 	const inventoryCaps = $derived(
-		new Map(inventory.filter((e) => e.maxed).map((e) => [e.item, e.qty]))
+		new Map(
+			inventory
+				.filter((e) => e.maxed || (maxCapacity !== null && e.qty >= maxCapacity))
+				.map((e) => [e.item, e.qty])
+		)
 	);
 
 	// Same underlying "MAX ON HAND" flag as inventoryCaps, just as a Set for
@@ -280,18 +292,39 @@
 	let showCraftable = $state(true);
 	let showCraftableHydrated = $state(false);
 
+	let showLocationSources = $state(true);
+	let showLocationSourcesHydrated = $state(false);
+
+	let showAlternativeSources = $state(true);
+	let showAlternativeSourcesHydrated = $state(false);
+
 	let maxCapacity = $state<number | null>(null);
 	let maxCapacityHydrated = $state(false);
 
 	let settingsModalOpen = $state(false);
+	let settingsActiveTab = $state<SettingsTab>('preferences');
+	let unreadChangelog = $state(false);
+
+	function handleOpenSettings(tab: SettingsTab = 'preferences') {
+		settingsActiveTab = tab;
+		settingsModalOpen = true;
+		if (tab === 'changelog') {
+			unreadChangelog = false;
+		}
+	}
 
 	onMount(() => {
 		showAllItems = loadShowAllItems();
 		showAllItemsHydrated = true;
 		showCraftable = loadShowCraftable();
 		showCraftableHydrated = true;
+		showLocationSources = loadShowLocationSources();
+		showLocationSourcesHydrated = true;
+		showAlternativeSources = loadShowAlternativeSources();
+		showAlternativeSourcesHydrated = true;
 		maxCapacity = loadMaxCapacity();
 		maxCapacityHydrated = true;
+		unreadChangelog = hasUnreadChangelog(APP_VERSION);
 	});
 
 	$effect(() => {
@@ -300,6 +333,14 @@
 
 	$effect(() => {
 		if (showCraftableHydrated) trackSave(saveShowCraftable(showCraftable));
+	});
+
+	$effect(() => {
+		if (showLocationSourcesHydrated) trackSave(saveShowLocationSources(showLocationSources));
+	});
+
+	$effect(() => {
+		if (showAlternativeSourcesHydrated) trackSave(saveShowAlternativeSources(showAlternativeSources));
 	});
 
 	$effect(() => {
@@ -355,8 +396,10 @@
 			Object.keys(stats.npcLevels).length > 0
 				? stats.npcLevels
 				: (playerStats?.npcLevels ?? stats.npcLevels);
+		const mergedTower = stats.tower > 0 ? stats.tower : (playerStats?.tower ?? stats.tower);
 		playerStats = {
 			...stats,
+			tower: mergedTower,
 			npcLevels: mergedNpcLevels,
 			miningFloors: playerStats?.miningFloors ?? stats.miningFloors
 		};
@@ -542,6 +585,8 @@
 	<link rel="preload" href={asset('/npc.json')} as="fetch" crossorigin="anonymous" />
 	<link rel="preload" href={asset('/recipes.json')} as="fetch" crossorigin="anonymous" />
 	<link rel="preload" href={asset('/mining.json')} as="fetch" crossorigin="anonymous" />
+	<link rel="preload" href={asset('/locations.json')} as="fetch" crossorigin="anonymous" />
+	<link rel="preload" href={asset('/item-sources.json')} as="fetch" crossorigin="anonymous" />
 
 	<!-- eslint-disable svelte/no-at-html-tags -- JSON-LD script tags: content is
 	     JSON.stringify of static, developer-authored objects above, not user
@@ -552,7 +597,7 @@
 </svelte:head>
 
 {#if !appReady}
-	<LoadingOverlay stages={loadingStages} />
+	<LoadingOverlay />
 {/if}
 
 <UpdateBanner />
@@ -560,11 +605,12 @@
 <div class="mx-auto max-w-6xl space-y-8 p-6 dark:text-gray-100">
 	<AppHeader
 		{darkMode}
+		hasUnreadChangelog={unreadChangelog}
 		onToggleDarkMode={() => (darkMode = !darkMode)}
 		onOpenImport={() => openImportModal('inventory')}
 		onOpenBackup={() => (progressModalOpen = true)}
 		onOpenFeedback={() => (feedbackModalOpen = true)}
-		onOpenSettings={() => (settingsModalOpen = true)}
+		onOpenSettings={handleOpenSettings}
 	/>
 
 	{#if storageUnavailable}
@@ -632,19 +678,35 @@
 			<InventoryPanel
 				bind:inventory
 				{inventoryStale}
+				{playerStats}
+				{showLocationSources}
+				{showAlternativeSources}
 				onOpenImport={() => openImportModal('inventory')}
 			/>
 		</section>
 
-		<ShortfallSummary {diffResults} {shortfallSummary} {maxedItems} {runsDryAt} bind:showAllItems />
+		<ShortfallSummary
+			{diffResults}
+			{shortfallSummary}
+			{maxedItems}
+			{runsDryAt}
+			{playerStats}
+			{showCraftable}
+			{showLocationSources}
+			{showAlternativeSources}
+			bind:showAllItems
+		/>
 
 		<ResultsList
 			{diffResults}
 			{eligibilityByQuestline}
 			{maxedItems}
 			{runsDryAt}
+			{playerStats}
 			{showAllItems}
 			{showCraftable}
+			{showLocationSources}
+			{showAlternativeSources}
 			onOpenImport={openImportModal}
 			onToggleCompleted={toggleCompleted}
 		/>
@@ -683,8 +745,11 @@
 
 <SettingsModal
 	bind:open={settingsModalOpen}
+	bind:activeTab={settingsActiveTab}
 	bind:showAllItems
 	bind:showCraftable
+	bind:showLocationSources
+	bind:showAlternativeSources
 	bind:maxCapacity
 	bind:darkMode
 	onToggleDarkMode={() => (darkMode = !darkMode)}

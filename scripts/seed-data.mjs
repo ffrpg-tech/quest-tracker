@@ -11,7 +11,9 @@ const staticDir = fileURLToPath(new URL('../static', import.meta.url));
 const targets = [
 	['questlines.sample.json', 'questlines.json'],
 	['items.sample.json', 'items.json'],
-	['npc.sample.json', 'npc.json']
+	['npc.sample.json', 'npc.json'],
+	['locations.sample.json', 'locations.json'],
+	['item-sources.sample.json', 'item-sources.json']
 ];
 
 for (const [sample, target] of targets) {

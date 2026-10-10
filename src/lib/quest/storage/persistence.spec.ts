@@ -11,7 +11,17 @@ import {
 	loadShowAllItems,
 	saveShowAllItems,
 	loadShowCraftable,
-	saveShowCraftable
+	saveShowCraftable,
+	loadShowLocationSources,
+	saveShowLocationSources,
+	loadShowAlternativeSources,
+	saveShowAlternativeSources,
+	loadQuestlineFilters,
+	saveQuestlineFilters,
+	loadShortfallFilters,
+	saveShortfallFilters,
+	hasUnreadChangelog,
+	saveLastSeenChangelogVersion
 } from './persistence';
 import type { PlayerStats } from '../types';
 
@@ -159,5 +169,75 @@ describe('preferences and capacity persistence', () => {
 		expect(loadShowCraftable()).toBe(true); // default true
 		saveShowCraftable(false);
 		expect(loadShowCraftable()).toBe(false);
+	});
+
+	it('round-trips questline filters and falls back to defaults', () => {
+		stubLocalStorage();
+		const defaults = loadQuestlineFilters();
+		expect(defaults.status).toEqual(['not-started', 'ongoing']);
+		expect(defaults.eligibility).toEqual(['eligible']);
+		expect(defaults.showUnavailable).toBe(false);
+		expect(defaults.mainQuestOnly).toBe(false);
+
+		saveQuestlineFilters({
+			status: ['done'],
+			eligibility: ['locked'],
+			showUnavailable: true,
+			mainQuestOnly: true
+		});
+
+		const loaded = loadQuestlineFilters();
+		expect(loaded.status).toEqual(['done']);
+		expect(loaded.eligibility).toEqual(['locked']);
+		expect(loaded.showUnavailable).toBe(true);
+		expect(loaded.mainQuestOnly).toBe(true);
+	});
+
+	it('round-trips shortfall filters and falls back to defaults', () => {
+		stubLocalStorage();
+		const defaults = loadShortfallFilters();
+		expect(defaults.sortDirection).toBe('desc');
+		expect(defaults.mailFilters).toEqual(['mailable', 'not-mailable']);
+		expect(defaults.maxedOnly).toBe(false);
+		expect(defaults.exceedsCapOnly).toBe(false);
+		expect(defaults.sourceFilters).toEqual([]);
+		expect(defaults.categoryFilters).toEqual([]);
+
+		saveShortfallFilters({
+			sortDirection: 'asc',
+			mailFilters: ['mailable'],
+			maxedOnly: true,
+			exceedsCapOnly: true,
+			sourceFilters: ['workshop', 'small-cave'],
+			categoryFilters: ['pet', 'explore']
+		});
+
+		const loaded = loadShortfallFilters();
+		expect(loaded.sortDirection).toBe('asc');
+		expect(loaded.mailFilters).toEqual(['mailable']);
+		expect(loaded.maxedOnly).toBe(true);
+		expect(loaded.exceedsCapOnly).toBe(true);
+		expect(loaded.sourceFilters).toEqual(['workshop', 'small-cave']);
+		expect(loaded.categoryFilters).toEqual(['pet', 'explore']);
+	});
+
+	it('round-trips showLocationSources and showAlternativeSources with default true', () => {
+		stubLocalStorage();
+		expect(loadShowLocationSources()).toBe(true);
+		expect(loadShowAlternativeSources()).toBe(true);
+
+		saveShowLocationSources(false);
+		expect(loadShowLocationSources()).toBe(false);
+
+		saveShowAlternativeSources(false);
+		expect(loadShowAlternativeSources()).toBe(false);
+	});
+
+	it('correctly reports unread changelog status', () => {
+		stubLocalStorage();
+		expect(hasUnreadChangelog('0.4.2')).toBe(true);
+		saveLastSeenChangelogVersion('0.4.2');
+		expect(hasUnreadChangelog('0.4.2')).toBe(false);
+		expect(hasUnreadChangelog('0.4.3')).toBe(true);
 	});
 });

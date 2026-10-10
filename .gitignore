@@ -30,6 +30,9 @@ Thumbs.db
 /static/paste-to-questline.mjs
 /static/paste.txt
 /static/mining.json
+/static/locations.json
+/static/item-sources.json
+/static/item-sources-meta.json
 
 # Vite
 vite.config.js.timestamp-*

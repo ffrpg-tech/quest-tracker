@@ -407,7 +407,7 @@ export function evaluateQuestlineEligibility(
 	}
 ): QuestlineEligibility {
 	const isRecurring = questline.recurring ?? false;
-	const quests = questline.quests.map((q) => {
+	const quests = questline.quests.map((q, qi) => {
 		if (completed.has(questKey(questline.name, q.name))) {
 			return { questName: q.name, seq: q.seq, done: true, eligible: true, gaps: [] };
 		}
@@ -421,6 +421,25 @@ export function evaluateQuestlineEligibility(
 			q.recurring ?? isRecurring
 		);
 		const pred = predGaps(q, allQuestlines, completed, indexes.questlinesByTitle);
+
+		// Ensure sequential chain integrity within the same questline
+		if (qi > 0) {
+			const prevQuest = questline.quests[qi - 1];
+			const prevKey = questKey(questline.name, prevQuest.name);
+			if (!completed.has(prevKey)) {
+				const hasSameQlPred = pred.some(
+					(g) => g.kind === 'pred' && g.label === questline.name && g.detail?.includes(prevQuest.name)
+				);
+				if (!hasSameQlPred) {
+					pred.unshift({
+						kind: 'pred',
+						label: questline.name,
+						detail: `Complete "${prevQuest.name}" first`
+					});
+				}
+			}
+		}
+
 		const predReqs: RequirementItem[] = (q.pred?.questlines ?? []).map((ref) => {
 			const normalizedTargetTitle = norm(ref.questline.title);
 			const target = indexes.questlinesByTitle.get(normalizedTargetTitle);
@@ -433,6 +452,22 @@ export function evaluateQuestlineEligibility(
 				met
 			};
 		});
+
+		if (qi > 0) {
+			const prevQuest = questline.quests[qi - 1];
+			const prevKey = questKey(questline.name, prevQuest.name);
+			const hasSameReq = predReqs.some(
+				(r) => r.kind === 'pred' && r.label === questline.name && r.detail?.includes(prevQuest.name)
+			);
+			if (!hasSameReq) {
+				predReqs.unshift({
+					kind: 'pred',
+					label: questline.name,
+					detail: `Complete "${prevQuest.name}" first`,
+					met: completed.has(prevKey)
+				});
+			}
+		}
 
 		const allReqs = [...(base.requirements ?? []), ...predReqs];
 		if (pred.length === 0) {

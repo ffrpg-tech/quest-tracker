@@ -1,0 +1,438 @@
+{
+  "small-cave": {
+    "name": "Small Cave",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 1,
+    "image": "/img/items/cave.png"
+  },
+  "small-spring": {
+    "name": "Small Spring",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 10
+  },
+  "highland-hills": {
+    "name": "Highland Hills",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 25
+  },
+  "cane-pole-ridge": {
+    "name": "Cane Pole Ridge",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 40
+  },
+  "misty-forest": {
+    "name": "Misty Forest",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 55
+  },
+  "black-rock-canyon": {
+    "name": "Black Rock Canyon",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 60
+  },
+  "forest": {
+    "name": "Forest",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 1
+  },
+  "mount-banon": {
+    "name": "Mount Banon",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 70
+  },
+  "ember-lagoon": {
+    "name": "Ember Lagoon",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 80
+  },
+  "whispering-creek": {
+    "name": "Whispering Creek",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 90
+  },
+  "santas-workshop": {
+    "name": "Santa's Workshop",
+    "type": "explore",
+    "season": {
+      "startDate": "12-01",
+      "endDate": "12-31"
+    },
+    "image": "/img/items/workshop.png"
+  },
+  "jundland-desert": {
+    "name": "Jundland Desert",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 99
+  },
+  "haunted-house": {
+    "name": "Haunted House",
+    "type": "explore",
+    "season": {
+      "startDate": "10-15",
+      "endDate": "11-05"
+    }
+  },
+  "garys-crushroom": {
+    "name": "Gary's Crushroom",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 99
+  },
+  "sinking-swamp-explore": {
+    "name": "Sinking Swamp (Explore)",
+    "type": "explore",
+    "reqSkill": "exploring",
+    "reqLevel": 99,
+    "image": "/img/items/swamp.png"
+  },
+  "small-pond": {
+    "name": "Small Pond",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 1,
+    "image": "/img/items/pond.png"
+  },
+  "farm-pond": {
+    "name": "Farm Pond",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 1,
+    "image": "/img/items/pond.png"
+  },
+  "forest-pond": {
+    "name": "Forest Pond",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 10
+  },
+  "lake-tempest": {
+    "name": "Lake Tempest",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 30
+  },
+  "small-island": {
+    "name": "Small Island",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 45
+  },
+  "crystal-river": {
+    "name": "Crystal River",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 60
+  },
+  "emerald-beach": {
+    "name": "Emerald Beach",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 70
+  },
+  "vast-ocean": {
+    "name": "Vast Ocean",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 80
+  },
+  "lake-minerva": {
+    "name": "Lake Minerva",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 90
+  },
+  "large-island": {
+    "name": "Large Island",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 95,
+    "image": "/img/items/largeisland.png"
+  },
+  "pirates-cove": {
+    "name": "Pirate's Cove",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 99
+  },
+  "glacier-lake": {
+    "name": "Glacier Lake",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 99
+  },
+  "apple-bobbing": {
+    "name": "Apple Bobbing",
+    "type": "fish",
+    "season": {
+      "startDate": "09-15",
+      "endDate": "10-31"
+    }
+  },
+  "sinking-swamp-fish": {
+    "name": "Sinking Swamp (Fishing)",
+    "type": "fish",
+    "reqSkill": "fishing",
+    "reqLevel": 99
+  },
+  "crops": {
+    "name": "Farm Crops",
+    "type": "farm"
+  },
+  "country-store": {
+    "name": "Country Store",
+    "type": "store"
+  },
+  "steak-market": {
+    "name": "Steak Market",
+    "type": "store",
+    "image": "/img/items/steak.png"
+  },
+  "wishing-well": {
+    "name": "Wishing Well",
+    "type": "well",
+    "image": "/img/items/well.png"
+  },
+  "exchange-center": {
+    "name": "Exchange Center",
+    "type": "exchange",
+    "image": "/img/items/exchange.png"
+  },
+  "temple": {
+    "name": "Temples",
+    "type": "temple",
+    "image": "/img/items/temple.png"
+  },
+  "workshop": {
+    "name": "Workshop",
+    "type": "workshop",
+    "image": "/img/items/hammer.png?2"
+  },
+  "building-chicken-coop": {
+    "name": "Chicken Coop",
+    "type": "building"
+  },
+  "building-cow-pasture": {
+    "name": "Cow Pasture",
+    "type": "building"
+  },
+  "building-pig-pen": {
+    "name": "Pig Pen",
+    "type": "building"
+  },
+  "building-raptor-pen": {
+    "name": "Raptor Pen",
+    "type": "building"
+  },
+  "building-worm-habitat": {
+    "name": "Worm Habitat",
+    "type": "building"
+  },
+  "building-orchard": {
+    "name": "Orchard",
+    "type": "building"
+  },
+  "building-odd-orchard": {
+    "name": "Odd Orchard",
+    "type": "building"
+  },
+  "building-trout-bait-farm": {
+    "name": "Trout / Bait Farm",
+    "type": "building"
+  },
+  "building-vineyard": {
+    "name": "Vineyard",
+    "type": "building"
+  },
+  "building-sawmill": {
+    "name": "Sawmill",
+    "type": "building"
+  },
+  "building-ironworks": {
+    "name": "Ironworks",
+    "type": "building"
+  },
+  "building-steelworks": {
+    "name": "Steelworks",
+    "type": "building"
+  },
+  "building-hay-field": {
+    "name": "Hay Field",
+    "type": "building"
+  },
+  "building-quarry": {
+    "name": "Quarry",
+    "type": "building"
+  },
+  "building-flour-mill": {
+    "name": "Flour Mill",
+    "type": "building"
+  },
+  "building-feed-mill": {
+    "name": "Feed Mill",
+    "type": "building"
+  },
+  "building-sugar-cane-mill": {
+    "name": "Sugar Cane Mill",
+    "type": "building"
+  },
+  "pet-cat": {
+    "name": "Cat",
+    "type": "pet",
+    "image": "/img/pets/pet_cat1.png"
+  },
+  "pet-dog": {
+    "name": "Dog",
+    "type": "pet",
+    "image": "/img/pets/pet_dog1.png"
+  },
+  "pet-squirrel": {
+    "name": "Squirrel",
+    "type": "pet"
+  },
+  "pet-owl": {
+    "name": "Owl",
+    "type": "pet"
+  },
+  "pet-swine": {
+    "name": "Swine",
+    "type": "pet"
+  },
+  "pet-snake": {
+    "name": "Snake",
+    "type": "pet"
+  },
+  "pet-lemur": {
+    "name": "Lemur",
+    "type": "pet"
+  },
+  "pet-baboon": {
+    "name": "Baboon",
+    "type": "pet"
+  },
+  "pet-frog": {
+    "name": "Frog",
+    "type": "pet"
+  },
+  "pet-hedgehog": {
+    "name": "Hedgehog",
+    "type": "pet"
+  },
+  "pet-fox": {
+    "name": "Fox",
+    "type": "pet"
+  },
+  "pet-armadillo": {
+    "name": "Armadillo",
+    "type": "pet"
+  },
+  "pet-spider": {
+    "name": "Spider",
+    "type": "pet",
+    "image": "/img/pets/pet_spider1.png"
+  },
+  "pet-pet-rock": {
+    "name": "Pet Rock",
+    "type": "pet"
+  },
+  "pet-bird": {
+    "name": "Bird",
+    "type": "pet"
+  },
+  "pet-penguin": {
+    "name": "Penguin",
+    "type": "pet"
+  },
+  "pet-green-dragon": {
+    "name": "Green Dragon",
+    "type": "pet"
+  },
+  "pet-red-dragon": {
+    "name": "Red Dragon",
+    "type": "pet"
+  },
+  "pet-blue-dragon": {
+    "name": "Blue Dragon",
+    "type": "pet"
+  },
+  "pet-bear": {
+    "name": "Bear",
+    "type": "pet"
+  },
+  "pet-capybara": {
+    "name": "Capybara",
+    "type": "pet"
+  },
+  "pet-strange-onion": {
+    "name": "Strange Onion",
+    "type": "pet"
+  },
+  "pet-seal": {
+    "name": "Seal",
+    "type": "pet"
+  },
+  "pet-miner": {
+    "name": "Miner",
+    "type": "pet"
+  },
+  "pet-shark": {
+    "name": "Shark",
+    "type": "pet"
+  },
+  "pet-wolf": {
+    "name": "Wolf",
+    "type": "pet"
+  },
+  "pet-critter": {
+    "name": "Critter",
+    "type": "pet"
+  },
+  "pet-polar-bear": {
+    "name": "Polar Bear",
+    "type": "pet"
+  },
+  "pet-hummingbird": {
+    "name": "Hummingbird",
+    "type": "pet"
+  },
+  "spring-cave": {
+    "name": "Spring Cave",
+    "type": "mining",
+    "image": "/img/items/springcave.png"
+  },
+  "highland-hollow": {
+    "name": "Highland Hollow",
+    "type": "mining",
+    "image": "/img/items/highlandhollow.png"
+  },
+  "sol-grotto": {
+    "name": "Sol Grotto",
+    "type": "mining",
+    "image": "/img/items/solgrotto.png"
+  },
+  "ember-caverns": {
+    "name": "Ember Caverns",
+    "type": "mining",
+    "image": "/img/items/embercaverns.png"
+  },
+  "fenrirs-den": {
+    "name": "Fenrir's Den",
+    "type": "mining",
+    "image": "/img/items/fenrircave.png"
+  },
+  "mossrock-mine": {
+    "name": "Mossrock Mine",
+    "type": "mining",
+    "image": "/img/items/Moss_cave.png"
+  }
+}

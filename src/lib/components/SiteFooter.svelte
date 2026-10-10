@@ -35,17 +35,13 @@
 	<p class="mt-2">
 		Built with <strong>AI assistance</strong>, reviewed and tested by a human before every release.
 	</p>
-	{#if onOpenSettings}
-		<p class="mt-2">
-			<button
-				type="button"
-				onclick={onOpenSettings}
-				class="text-emerald-600 hover:underline dark:text-emerald-400 cursor-pointer font-medium"
-			>
-				Settings, Guides & Credits
-			</button>
-		</p>
-	{/if}
+	<div class="mt-2 flex items-center justify-center gap-2">
+		<a href="/about" class="text-emerald-600 hover:underline dark:text-emerald-400">About</a>
+		<span class="text-gray-300 dark:text-gray-600">&middot;</span>
+		<a href="/changelog" class="text-emerald-600 hover:underline dark:text-emerald-400">Changelog</a>
+		<span class="text-gray-300 dark:text-gray-600">&middot;</span>
+		<a href="/credits" class="text-emerald-600 hover:underline dark:text-emerald-400">Credits</a>
+	</div>
 	<p class="mt-2">
 		&copy; {copyrightYears} <span class="text-gray-300 dark:text-gray-600">&middot;</span>
 		<span class="group relative inline-block">

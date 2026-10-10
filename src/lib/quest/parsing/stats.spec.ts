@@ -662,6 +662,24 @@ describe('parsePlayerStatsPaste', () => {
 		expect(stats.cooking).toBe(0);
 	});
 
+	it('parses Tower level when formatted as "The Tower" with "Level N" or intermediate points', () => {
+		const text = PROFILE_TOWER_UNLOCKED.replace(
+			'Tower Level\n220\n220 of 340 Floors Unlocked',
+			'The Tower\nUnused Points: 81\nLevel 63'
+		);
+		const stats = parsePlayerStatsPaste(text);
+		expect(stats.tower).toBe(63);
+	});
+
+	it('parses Tower level when formatted as "Tower Level: N"', () => {
+		const text = PROFILE_TOWER_UNLOCKED.replace(
+			'Tower Level\n220\n220 of 340 Floors Unlocked',
+			'Tower Level: 145'
+		);
+		const stats = parsePlayerStatsPaste(text);
+		expect(stats.tower).toBe(145);
+	});
+
 	it('throws StatsParseError on input with no recognizable skills block', () => {
 		expect(() => parsePlayerStatsPaste('just some random pasted text with no skills')).toThrow(
 			StatsParseError

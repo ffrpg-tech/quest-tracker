@@ -18,11 +18,11 @@
 	const isReady = $derived(node.left <= 0 && node.craftableQty > 0);
 </script>
 
-<div class="border-l-2 border-gray-200 pl-2 dark:border-gray-700">
+<div class="border-l border-gray-200 pl-2 dark:border-gray-700">
 	<div
 		class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs {satisfied ? 'opacity-50' : ''}"
 	>
-		<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
+		<span class="inline-flex items-center gap-1 font-medium text-gray-600 dark:text-gray-400">
 			<ItemIcon name={node.item} {hideCannotMail} cannotMailFormat="icon" />
 			<a
 				href={buddyFarmItemUrl(node.item)}
@@ -32,7 +32,7 @@
 			>
 		</span>
 		<span class="inline-flex items-center gap-1 tabular-nums">
-			<span>{formatNumber(node.have)} / {formatNumber(node.needed)}</span>
+			<span class="text-gray-500 dark:text-gray-400">{formatNumber(node.have)} / {formatNumber(node.needed)}</span>
 			{#if satisfied}
 				<Check
 					size={13}

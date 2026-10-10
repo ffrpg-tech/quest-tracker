@@ -2,33 +2,48 @@
 	import { X, Sun, Moon, Settings } from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { trapFocus } from '$lib/ui/trapFocus';
-	import { tutorialSteps } from '$lib/tutorial';
+	import CreditsContent from '$lib/components/content/CreditsContent.svelte';
+	import WhyContent from '$lib/components/content/WhyContent.svelte';
+	import TutorialContent from '$lib/components/content/TutorialContent.svelte';
 	import { parseChangelog, releasedEntries, groupByMinor } from '$lib/changelog';
 	import changelogRaw from '../../../CHANGELOG.md?raw';
 	import { APP_VERSION } from '$lib/version';
 
+	import { saveLastSeenChangelogVersion } from '$lib/quest/storage/persistence';
+
+	export type SettingsTab = 'preferences' | 'about' | 'tutorial' | 'credits' | 'changelog';
+
 	let {
 		open = $bindable(false),
+		activeTab = $bindable<SettingsTab>('preferences'),
 		showAllItems = $bindable(false),
 		showCraftable = $bindable(true),
+		showLocationSources = $bindable(true),
+		showAlternativeSources = $bindable(true),
 		maxCapacity = $bindable<number | null>(null),
 		darkMode = $bindable(false),
 		onToggleDarkMode
 	}: {
 		open: boolean;
+		activeTab?: SettingsTab;
 		showAllItems: boolean;
 		showCraftable: boolean;
+		showLocationSources?: boolean;
+		showAlternativeSources?: boolean;
 		maxCapacity: number | null;
 		darkMode: boolean;
 		onToggleDarkMode: () => void;
 	} = $props();
 
-	type SettingsTab = 'preferences' | 'about' | 'tutorial' | 'credits' | 'changelog';
-	let activeTab = $state<SettingsTab>('preferences');
-
 	const changelogEntries = $derived(releasedEntries(parseChangelog(changelogRaw)));
 	const changelogGroups = $derived(groupByMinor(changelogEntries));
 	let openChangelogGroups = $state<{ [key: string]: boolean }>({});
+
+	$effect(() => {
+		if (open && activeTab === 'changelog') {
+			saveLastSeenChangelogVersion(APP_VERSION);
+		}
+	});
 
 	$effect(() => {
 		if (changelogGroups.length > 0 && Object.keys(openChangelogGroups).length === 0) {
@@ -204,6 +219,64 @@
 								class="border-t border-gray-100 pt-4 dark:border-gray-700 flex items-center justify-between gap-4"
 							>
 								<div>
+									<label for="show-location-sources" class="font-medium">Show location sources</label>
+									<p class="text-xs text-gray-500 dark:text-gray-400">
+										Displays primary gathering or crafting sources next to needed items.
+									</p>
+								</div>
+								<button
+									id="show-location-sources"
+									type="button"
+									onclick={() => (showLocationSources = !showLocationSources)}
+									role="switch"
+									aria-checked={showLocationSources}
+									aria-label="Show location sources"
+									class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {showLocationSources
+										? 'bg-sky-600'
+										: 'bg-gray-300 dark:bg-gray-600'}"
+								>
+									<span
+										class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out {showLocationSources
+											? 'translate-x-5'
+											: 'translate-x-0'}"
+									></span>
+								</button>
+							</div>
+
+							{#if showLocationSources}
+								<div
+									class="ml-4 border-l-2 border-gray-100 pl-4 dark:border-gray-700 flex items-center justify-between gap-4"
+								>
+									<div>
+										<label for="show-alternative-sources" class="font-medium text-xs">Show alternative sources</label>
+										<p class="text-xs text-gray-500 dark:text-gray-400">
+											Displays (+N more) button and popup for items with multiple obtainable methods.
+										</p>
+									</div>
+									<button
+										id="show-alternative-sources"
+										type="button"
+										onclick={() => (showAlternativeSources = !showAlternativeSources)}
+										role="switch"
+										aria-checked={showAlternativeSources}
+										aria-label="Show alternative sources"
+										class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none {showAlternativeSources
+											? 'bg-sky-600'
+											: 'bg-gray-300 dark:bg-gray-600'}"
+									>
+										<span
+											class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out {showAlternativeSources
+												? 'translate-x-4'
+												: 'translate-x-0'}"
+										></span>
+									</button>
+								</div>
+							{/if}
+
+							<div
+								class="border-t border-gray-100 pt-4 dark:border-gray-700 flex items-center justify-between gap-4"
+							>
+								<div>
 									<span class="font-medium">Theme</span>
 									<p class="text-xs text-gray-500 dark:text-gray-400">
 										Toggle between light and dark visual mode.
@@ -269,160 +342,57 @@
 					</div>
 				{:else if activeTab === 'about'}
 					<div class="space-y-4 leading-relaxed text-gray-700 dark:text-gray-300">
-						<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
-							Why did I create this?
-						</h3>
-						<p>
-							Farm RPG has no shortage of quest data — <a
-								href="https://buddy.farm"
+						<div class="flex items-center justify-between">
+							<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+								Why did I create this?
+							</h3>
+							<a
+								href="/about#why"
 								target="_blank"
 								rel="noopener noreferrer"
-								class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
-								>buddy.farm</a
+								class="text-xs text-emerald-600 hover:underline dark:text-emerald-400"
 							>
-							already covers every questline and item. What it doesn't have is a checklist. So people
-							make their own: <strong>Quest Wall</strong> sheets, one questline at a time. However, it
-							is mainly focused on main quests, leaving other quests without their own dedicated sheets.
-						</p>
-						<p>
-							Additionally, because sheets only cover one questline at a time, it is difficult to
-							see the bigger picture. While we need to focus on one chain at a time, we also need to
-							plan ahead. If you have two sheets tackling different questlines, you end up syncing
-							the same inventory into both by hand and manually calculating materials.
-						</p>
-						<p>
-							That's exactly what happened while working on my ATI questline, and I realized it
-							wouldn't stop being a problem once ATI was finished. So I built this tracker to plan
-							out entire queues of questlines and pinpoint exactly where materials run dry.
-						</p>
-						<p>It is an open, non-commercial fan project built for the community.</p>
+								Open full page &nearr;
+							</a>
+						</div>
+						<WhyContent onNavigateToCredits={() => (activeTab = 'credits')} />
 					</div>
 				{:else if activeTab === 'tutorial'}
 					<div class="space-y-4">
-						<div>
-							<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Getting started</h3>
-							<p class="text-xs text-gray-500 dark:text-gray-400">
-								A quick walkthrough of the initial setup and everyday workflow loop.
-							</p>
+						<div class="flex items-center justify-between">
+							<div>
+								<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Getting started</h3>
+								<p class="text-xs text-gray-500 dark:text-gray-400">
+									A quick walkthrough of the initial setup and everyday workflow loop.
+								</p>
+							</div>
+							<a
+								href="/about#tutorial"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-xs text-emerald-600 hover:underline dark:text-emerald-400"
+							>
+								Open full page &nearr;
+							</a>
 						</div>
 
-						<ol class="divide-y divide-gray-100 dark:divide-gray-700">
-							{#each tutorialSteps as s (s.step)}
-								<li class="py-3">
-									<div class="font-semibold text-gray-900 dark:text-gray-100">
-										{s.step}. {s.title}
-									</div>
-									<div class="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-0.5">
-										{s.summary}
-									</div>
-									<p class="mt-1 text-xs leading-relaxed text-gray-600 dark:text-gray-300">
-										{s.details}
-									</p>
-								</li>
-							{/each}
-						</ol>
+						<TutorialContent collapsible={false} />
 					</div>
 				{:else if activeTab === 'credits'}
 					<div class="space-y-5 leading-relaxed text-gray-700 dark:text-gray-300">
-						<header>
+						<header class="flex items-center justify-between">
 							<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Credits</h3>
+							<a
+								href="/credits"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-xs text-emerald-600 hover:underline dark:text-emerald-400"
+							>
+								Open full page &nearr;
+							</a>
 						</header>
 
-						<div>
-							<h4 class="font-semibold text-gray-900 dark:text-gray-100">FarmRPG and its community</h4>
-							<p class="mt-1 text-xs">
-								FarmRPG and all related names, marks, and materials are trademarks of
-								<strong>Magic and Wires, LLC</strong> —
-								<a
-									href="https://farmrpg.com"
-									target="_blank"
-									rel="noopener noreferrer"
-									class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">farmrpg.com</a
-								>. This is an unofficial, non-commercial fan project and is not affiliated with, endorsed
-								by, or sponsored by Magic and Wires, LLC.
-							</p>
-							<p class="mt-2 text-xs">
-								<strong>Special thanks</strong> to these folks for providing me insights and contributions to
-								create this project:
-							</p>
-							<ol class="mt-1 list-decimal space-y-1 pl-5 text-xs">
-								<li>
-									<span class="font-medium text-emerald-600 dark:text-emerald-400">Erisere</span> — shared their
-									stored quest data via CSV to initialize the data.
-								</li>
-								<li>
-									<span class="font-medium text-emerald-600 dark:text-emerald-400">Natsulus</span> — offered early
-									insights on client-side inventory collection that helped shape the direction of the inventory
-									parser.
-								</li>
-								<li>
-									FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400"
-										>coderanger</span
-									> — provided technical assistance and guidance for the data pipeline and several clarifications.
-								</li>
-								<li>
-									<span class="font-medium text-emerald-600 dark:text-emerald-400">Lex 26</span> —
-									contributed in testing and provided feedback, gained inspiration from their
-									<a
-										href="https://crafttree.pages.dev"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">CraftTree</a
-									> website.
-								</li>
-								<li>
-									FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400">Rkm13</span
-									>
-									— for providing suggestions and clarifications, and for adding this tool to the game's
-									official
-									<a
-										href="https://farmrpg.com/index.php#!/wiki.php?page=Community%20Guides"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
-										>Community Guides</a
-									> page!
-								</li>
-								<li>
-									and <span class="font-medium text-emerald-600 dark:text-emerald-400">you!</span> — for using
-									the application itself!
-								</li>
-							</ol>
-						</div>
-
-						<div class="border-t border-gray-100 pt-3 dark:border-gray-700">
-							<h4 class="font-semibold text-gray-900 dark:text-gray-100">Sheet creators & maintainers</h4>
-							<p class="mt-1 text-xs">
-								This project wouldn't exist without the community members who <em>created and maintained existing Quest Wall spreadsheets</em>. Working through their filtering math and understanding how each questline's requirements were structured is what made it possible to centralize all of it into one calculator.
-							</p>
-							<p class="mt-2 text-xs">
-								<strong>Special thanks</strong> to the following sheets I've used to plan, design and build the
-								calculator:
-							</p>
-							<ol class="mt-1 list-decimal space-y-1 pl-5 text-xs">
-								<li>
-									<a
-										href="https://docs.google.com/spreadsheets/d/1PzawdSXTFVhy6Ro6j-m3wTPSJG0m3-AP4K6heH5T8Gk"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
-										>A Towering Investment Checklist & Strategy</a
-									>
-									— where I originated my idea.
-								</li>
-								<li>
-									<a
-										href="https://docs.google.com/spreadsheets/d/1RMPxMBkcK7rqapG7I8nPjF7Kop1i0oV26kV75QZ2VAw"
-										target="_blank"
-										rel="noopener noreferrer"
-										class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
-										>Compare Completed Quests</a
-									>
-									— whose approach to identifying completed quests informed the early direction of this project's
-									data handling.
-								</li>
-							</ol>
-						</div>
+						<CreditsContent />
 					</div>
 				{:else if activeTab === 'changelog'}
 					<div class="space-y-4">
@@ -433,6 +403,14 @@
 									What changed release by release &middot; Active: <strong>v{APP_VERSION}</strong>
 								</p>
 							</div>
+							<a
+								href="/changelog"
+								target="_blank"
+								rel="noopener noreferrer"
+								class="text-xs text-emerald-600 hover:underline dark:text-emerald-400"
+							>
+								Open full page &nearr;
+							</a>
 						</div>
 
 						<section class="space-y-4">
@@ -440,7 +418,6 @@
 								<details
 									open={openChangelogGroups[group.minor]}
 									ontoggle={(e) => toggleChangelogGroup(group.minor, e)}
-									class="rounded border border-gray-200 bg-gray-50/50 p-3 dark:border-gray-700 dark:bg-gray-800/50"
 								>
 									<summary
 										class="cursor-pointer text-sm font-semibold text-gray-900 select-none dark:text-gray-100"

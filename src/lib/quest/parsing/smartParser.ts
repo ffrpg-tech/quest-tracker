@@ -108,6 +108,7 @@ export function detectInputType(rawText: string): {
 	});
 	if (
 		lower.includes('tower level') ||
+		lower.includes('the tower') ||
 		(matchedSkills.length >= 2 &&
 			(/level\s+\d+/i.test(trimmed) ||
 				/not started/i.test(trimmed) ||
@@ -232,6 +233,7 @@ export function detectAndParseInput(
 		// 2. Player Stats candidate check
 		if (
 			lower.includes('tower level') ||
+			lower.includes('the tower') ||
 			lower.includes('my skills') ||
 			(matchedSkills.length >= 2 &&
 				(/level\s+\d+/i.test(trimmed) ||

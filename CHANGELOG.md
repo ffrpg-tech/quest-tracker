@@ -7,19 +7,31 @@ are grouped by feature/release, not by individual commit.
 This file is the source of truth for the in-app [changelog page](/changelog) —
 the page parses this file directly, so an entry added here is what users see.
 
-## [0.4.2] - 2026-10-08T00:00:00+08:00
+## [0.5.0] - 2026-10-10T00:00:00+08:00
 
 ### Added
 
-- **Unified Smart Import Parser**: Replaced multiple fragmented import textareas with a single intelligent ingestion box with heuristic schema auto-detection. Paste Inventory dumps, Player Stats, Mining Floors, Bank balances, or Completed Quests into one box—the tracker automatically detects the content format, extracts capacities, applies data non-destructively, and surfaces visual feedback pills. An explicit mode selector toggle remains available when needed.
-- **Inventory Capacity Forecasting & Bottleneck Indicator**: Added cumulative single-batch requirement tracking against your configured max inventory capacity (`maxCapacity`). Highlights the exact quest where cumulative required items exceed your inventory cap with a prominent badge (`EXCEEDS CAP`), warning when multiple turn-ins or inventory upgrades will be required independently of your current bag stock.
-- **Settings Modal & Footer Restructure**: Consolidated utility settings and site documentation into a centralized modal dialog accessible from the top navigation and footer. Relocated `Show all items` and `Show craftable amounts` toggles with persistent `localStorage` storage, along with _About_, _Tutorial_, _Credits_, and _Changelog_ tabs. Cleaned the persistent footer to focus solely on the legal/fan-project disclaimer.
-- **Client-Side Version Checking & Update Banner**: Added automated build version tracking and mismatch detection against `version.json`. When a new deployment is detected, a non-intrusive sticky update notification appears with a 1-click update action that purges service worker / asset caches and hard-reloads the application.
+- Exportable "Shopping / Request List" action in both the Shortfall Summary and directly on every quest row in the Results List for in-game trade and mailbox chat. Filters strictly for mailable items (excluding non-mailable items like Iron and Large Chests), accounts for inventory full / MAX ON HAND status, formats items using Farm RPG's `LF ((Item Name)) xCount` chat syntax, and greedily chunks messages to strictly adhere to the in-game 250-character chat limit.
+- 1-click inline copy request button on every active quest row in the Results List (desktop and mobile) to instantly export mailable requirements for immediate hurdles without opening a modal.
+- Added Mining category and 6 mining caves (Spring Cave, Highland Hollow, Sol Grotto, Ember Caverns, Fenrir's Den, Mossrock Mine) with all their drop items to item sources and the Shortfall Summary category filter.
+- Added credits category for item sources and references on the Credits page, honoring the Farm RPG WW Wants wiki page for wishing well drop sources.
+- Streamlined application startup loading overlay to a clean unified loading spinner.
+- Added item drop locations, crafting workshop sources, fishing spots, and farm production buildings directly inline across requirement rows in both the Shortfall Summary and Results lists.
+- Interactive location links that route directly to the corresponding buddy.farm entry on tap or click.
+- Expandable "+N more" source dropdown on multi-source items to inspect alternative drop zones, pet level thresholds, and passive production sources without cluttering primary rows.
+- Location-based multi-filter in the Shortfall Summary to isolate missing items by specific gathering areas, workshops, or farm structures.
+- Unified smart import paste box in the Import Data modal that automatically detects, parses, and populates inventory counts, player skills, mining floors, bank silver, and completed quests in a single pass.
+- Inventory capacity tracking: configure maximum bag capacity to flag requirement bottlenecks exceeding inventory limits with an EXCEEDS CAP warning indicator.
+- Settings & Info modal containing display toggles (source visibility, alternative drops), quick links to the getting started guide, project credits, and update history.
+- In-app version detection banner alerting users when a newer build of the tracker is deployed.
+- Last-updated timestamp for the item location catalog displayed in the Inventory panel header.
 
 ### Changed
 
-- **Unconditional Stats & Requirement Sections**: Player Stats, NPC friendship levels, and Mining Floors panels are now unconditionally exposed regardless of whether prior data was imported, defaulting gracefully to `0` or blank states.
-- **DOM Overhead Optimization**: Collapsible accordions for Player Skills, NPC Friendship, and Mining Floors now physically unmount their inner DOM nodes when collapsed, reducing memory footprint and DOM overhead.
+- Consolidated Shortfall Summary controls into compact icon button toolbars with contextual tooltips for sort directions, mailable filters, inventory capacity alerts, and completed status.
+- Mobile layout optimizations: enforced single-line item headers and refactored recursive Craft Tree containers to full-width to prevent cramped text and awkward wrapping on narrow viewports.
+- Locked quest steps blocked by missing prerequisites or skills are now visually dimmed with disabled checkboxes to clarify the exact blocker point in the chain.
+- Player skill levels, NPC friendship ranks, and mining floors panels are now rendered immediately on fresh sessions, allowing direct manual data entry prior to running an initial import.
 
 ## [0.4.1] - 2026-10-07T00:00:00+08:00
 

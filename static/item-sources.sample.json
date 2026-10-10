@@ -1,0 +1,6318 @@
+{
+  "Stone": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "building-quarry"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Nails": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "building-ironworks"
+    },
+    {
+      "locId": "country-store"
+    },
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Wood": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "building-sawmill"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 1"
+    }
+  ],
+  "Mushroom": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "garys-crushroom"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 1"
+    }
+  ],
+  "Bone": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 1"
+    }
+  ],
+  "Wooden Mask": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Grab Bag 02": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 04": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Skeleton Key": [
+    {
+      "locId": "small-cave"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 6"
+    }
+  ],
+  "Model Ship": [
+    {
+      "locId": "small-cave"
+    }
+  ],
+  "Feathers": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "building-chicken-coop"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 1"
+    }
+  ],
+  "Aquamarine": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Apple": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "building-orchard"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    },
+    {
+      "locId": "haunted-house"
+    },
+    {
+      "locId": "apple-bobbing"
+    }
+  ],
+  "Snail": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Dice": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Spectacles": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Small Chest 01": [
+    {
+      "locId": "small-spring"
+    }
+  ],
+  "Skull Coin": [
+    {
+      "locId": "small-spring"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 6"
+    }
+  ],
+  "Purple Flower": [
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 1"
+    }
+  ],
+  "Fern Leaf": [
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 1"
+    }
+  ],
+  "Amethyst": [
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Caterpillar": [
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Strange Letter": [
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 14": [
+    {
+      "locId": "highland-hills"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 3"
+    }
+  ],
+  "Medium Chest 01": [
+    {
+      "locId": "highland-hills"
+    }
+  ],
+  "Unpolished Shimmer Stone": [
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 3"
+    }
+  ],
+  "Iron": [
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "building-ironworks"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "country-store"
+    },
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Lemon Quartz": [
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Tea Leaves": [
+    {
+      "locId": "cane-pole-ridge"
+    }
+  ],
+  "Horned Beetle": [
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Pocket Watch": [
+    {
+      "locId": "cane-pole-ridge"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Lima Bean": [
+    {
+      "locId": "cane-pole-ridge"
+    }
+  ],
+  "Blue Feathers": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 3"
+    }
+  ],
+  "Acorn": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 3"
+    }
+  ],
+  "3-leaf Clover": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Straw": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "building-hay-field"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 3"
+    }
+  ],
+  "Sweet Root": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 3"
+    }
+  ],
+  "Unpolished Ruby": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 1"
+    }
+  ],
+  "Pine Cone": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "4-leaf Clover": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Shiny Beetle": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Spider": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Runestone 05": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Feather": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Frog": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Amber": [
+    {
+      "locId": "misty-forest"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 6"
+    }
+  ],
+  "Coal": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "building-quarry"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Sandstone": [
+    {
+      "locId": "black-rock-canyon"
+    }
+  ],
+  "Salt Rock": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "whispering-creek"
+    }
+  ],
+  "Horn": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Shimmer Quartz": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 3"
+    }
+  ],
+  "Ancient Coin": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Giant Centipede": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Ruby Scorpion": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 3"
+    }
+  ],
+  "Runestone 09": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 13": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 3"
+    }
+  ],
+  "Orange Gecko": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Large Chest 02": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 6"
+    }
+  ],
+  "Medium Chest 02": [
+    {
+      "locId": "black-rock-canyon"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 3"
+    }
+  ],
+  "Hide": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 1"
+    }
+  ],
+  "Antler": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "building-raptor-pen"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Arrowhead": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Bird Egg": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Fire Ant": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Leaf": [
+    {
+      "locId": "forest"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Unpolished Emerald": [
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 1"
+    }
+  ],
+  "Carbon Sphere": [
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Magna Quartz": [
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Bacon": [
+    {
+      "locId": "building-pig-pen"
+    },
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Small Chest 02": [
+    {
+      "locId": "mount-banon"
+    }
+  ],
+  "Runestone 19": [
+    {
+      "locId": "mount-banon"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Dragon Skull": [
+    {
+      "locId": "mount-banon"
+    }
+  ],
+  "Glass Orb": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 6"
+    }
+  ],
+  "Emberstone": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Prism Shard": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Moonstone": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Magicite": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 17": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Large Chest 01": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 6"
+    }
+  ],
+  "Diamond": [
+    {
+      "locId": "ember-lagoon"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 6"
+    }
+  ],
+  "Oak": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "building-sawmill"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 6"
+    }
+  ],
+  "Slimestone": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 1"
+    }
+  ],
+  "Unpolished Garnet": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 1"
+    }
+  ],
+  "Blue Gel": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 6"
+    }
+  ],
+  "Red Berries": [
+    {
+      "locId": "whispering-creek"
+    }
+  ],
+  "Sour Root": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 1"
+    }
+  ],
+  "Thorns": [
+    {
+      "locId": "whispering-creek"
+    }
+  ],
+  "Striped Feather": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 6"
+    }
+  ],
+  "Lemon": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "building-orchard"
+    },
+    {
+      "locId": "building-odd-orchard"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 1"
+    }
+  ],
+  "Orange": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "building-orchard"
+    },
+    {
+      "locId": "building-odd-orchard"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 1"
+    }
+  ],
+  "Herbs": [
+    {
+      "locId": "whispering-creek"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 6"
+    }
+  ],
+  "Raptor Egg": [
+    {
+      "locId": "whispering-creek"
+    }
+  ],
+  "Raptor Claw": [
+    {
+      "locId": "whispering-creek"
+    }
+  ],
+  "Red Ornament": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Purple Ornament": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Board": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "building-sawmill"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Green Ornament": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Blue Ornament": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Yellow Ornament": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Orange Ornament": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Candy Roll": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Candy Cane": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Yarn": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Star": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Rudolph": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Milk and Cookies": [
+    {
+      "locId": "santas-workshop"
+    }
+  ],
+  "Sand": [
+    {
+      "locId": "jundland-desert"
+    },
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Scrap Metal": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Scrap Wire": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Machine Part": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Transistor": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Prickly Pear": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Broken Pipe": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Small Bolt": [
+    {
+      "locId": "jundland-desert"
+    },
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Copper Wire": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Pulley": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Monster Skull": [
+    {
+      "locId": "jundland-desert"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Onyx Scorpion": [
+    {
+      "locId": "jundland-desert"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Langstaff Crest": [
+    {
+      "locId": "jundland-desert"
+    }
+  ],
+  "Candy": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Lollipop": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Taffy": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Candy Corn": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Witch Hat": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Bat Wing": [
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Chattering Teeth": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Jack-o-lantern": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Treat Bag 02": [
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Treat Bag 01": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Treat Bag 03": [
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Hockey Mask": [
+    {
+      "locId": "haunted-house"
+    }
+  ],
+  "Piece 30": [
+    {
+      "locId": "garys-crushroom"
+    }
+  ],
+  "Gary's Diary Page 77": [
+    {
+      "locId": "garys-crushroom"
+    }
+  ],
+  "Gary's Diary Page 36": [
+    {
+      "locId": "garys-crushroom"
+    }
+  ],
+  "Bamboo": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Scrap Cloth": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Swamp Thistle": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Mudcap": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Sinkroot": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Bogslug": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Amber Mire Bloom": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Swamp Algae": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Glowshroom": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Swamp Gourd": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Mist Lily": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Shadow Bloom": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Sporefly": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Water Lily": [
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "sinking-swamp-explore"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 3"
+    }
+  ],
+  "Re'taw": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "U'ral Talisman": [
+    {
+      "locId": "sinking-swamp-explore"
+    }
+  ],
+  "Drum": [
+    {
+      "locId": "small-pond"
+    },
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "lake-tempest"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 1"
+    }
+  ],
+  "Yellow Perch": [
+    {
+      "locId": "small-pond"
+    },
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "lake-tempest"
+    }
+  ],
+  "Fish Bones": [
+    {
+      "locId": "small-pond"
+    },
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "lake-tempest"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 1"
+    }
+  ],
+  "Cogwheel": [
+    {
+      "locId": "small-pond"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 08": [
+    {
+      "locId": "small-pond"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Small Key": [
+    {
+      "locId": "small-pond"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Largemouth Bass": [
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "lake-tempest"
+    }
+  ],
+  "Carp": [
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 1"
+    }
+  ],
+  "Trout": [
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "lake-tempest"
+    },
+    {
+      "locId": "crystal-river"
+    },
+    {
+      "locId": "building-trout-bait-farm"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 1"
+    }
+  ],
+  "Catfish": [
+    {
+      "locId": "farm-pond"
+    }
+  ],
+  "Flier": [
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "lake-tempest"
+    }
+  ],
+  "Runestone 02": [
+    {
+      "locId": "farm-pond"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Bluegill": [
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 3"
+    }
+  ],
+  "Grab Bag 01": [
+    {
+      "locId": "forest-pond"
+    }
+  ],
+  "Runestone 03": [
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Square Key": [
+    {
+      "locId": "forest-pond"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Crappie": [
+    {
+      "locId": "lake-tempest"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 1"
+    }
+  ],
+  "Globber": [
+    {
+      "locId": "lake-tempest"
+    },
+    {
+      "locId": "crystal-river"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 6"
+    }
+  ],
+  "Runestone 15": [
+    {
+      "locId": "lake-tempest"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 6"
+    }
+  ],
+  "Small Prawn": [
+    {
+      "locId": "small-island"
+    }
+  ],
+  "Mackerel": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "vast-ocean"
+    }
+  ],
+  "Blue Crab": [
+    {
+      "locId": "small-island"
+    }
+  ],
+  "Green Chromis": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 3"
+    }
+  ],
+  "Blue Shell": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 3"
+    }
+  ],
+  "Blue Sea Bass": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "vast-ocean"
+    }
+  ],
+  "Jellyfish": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "vast-ocean"
+    }
+  ],
+  "Mussel": [
+    {
+      "locId": "small-island"
+    }
+  ],
+  "MIAB": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Seaweed": [
+    {
+      "locId": "small-island"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 3"
+    }
+  ],
+  "Sunfish": [
+    {
+      "locId": "crystal-river"
+    }
+  ],
+  "Bone Fish": [
+    {
+      "locId": "crystal-river"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 3"
+    }
+  ],
+  "Blue Catfish": [
+    {
+      "locId": "crystal-river"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 3"
+    }
+  ],
+  "Old Boot": [
+    {
+      "locId": "crystal-river"
+    }
+  ],
+  "Glass Bottle": [
+    {
+      "locId": "crystal-river"
+    },
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 12": [
+    {
+      "locId": "crystal-river"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Clam Shell": [
+    {
+      "locId": "emerald-beach"
+    }
+  ],
+  "Conch Shell": [
+    {
+      "locId": "emerald-beach"
+    }
+  ],
+  "Starfish": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 1"
+    }
+  ],
+  "Red Starfish": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 1"
+    }
+  ],
+  "Clownfish": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 1"
+    }
+  ],
+  "Blue Tiger Fish": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 3"
+    }
+  ],
+  "Pearl": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-cat",
+      "tier": "Level 6"
+    }
+  ],
+  "Stingray": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "vast-ocean"
+    }
+  ],
+  "Seahorse": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 1"
+    }
+  ],
+  "Puffer": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 3"
+    }
+  ],
+  "Marlin": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 6"
+    }
+  ],
+  "Ruby Fish": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "vast-ocean"
+    }
+  ],
+  "Spiked Shell": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Crab Claw": [
+    {
+      "locId": "emerald-beach"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Magic Conch Shell": [
+    {
+      "locId": "emerald-beach"
+    }
+  ],
+  "Skipjack": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 3"
+    }
+  ],
+  "Shrimp": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 1"
+    }
+  ],
+  "Green Jellyfish": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Fluorifish": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 3"
+    }
+  ],
+  "Octopus": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Giant Squid": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 3"
+    }
+  ],
+  "Sea Dragon": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 18": [
+    {
+      "locId": "vast-ocean"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Diving Helmet": [
+    {
+      "locId": "vast-ocean"
+    }
+  ],
+  "Torch Fish": [
+    {
+      "locId": "lake-minerva"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 6"
+    }
+  ],
+  "Flamejack": [
+    {
+      "locId": "lake-minerva"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Redgill": [
+    {
+      "locId": "lake-minerva"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 6"
+    }
+  ],
+  "Flarefin": [
+    {
+      "locId": "lake-minerva"
+    }
+  ],
+  "Treasure Key": [
+    {
+      "locId": "lake-minerva"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Seasonal & Discontinued Trades"
+    }
+  ],
+  "Purple Ghost Crab": [
+    {
+      "locId": "lake-minerva"
+    }
+  ],
+  "Strange Ring": [
+    {
+      "locId": "lake-minerva"
+    }
+  ],
+  "Swordfish": [
+    {
+      "locId": "large-island"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 6"
+    }
+  ],
+  "Barracuda": [
+    {
+      "locId": "large-island"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 3"
+    }
+  ],
+  "Sea Catfish": [
+    {
+      "locId": "large-island"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 6"
+    }
+  ],
+  "Plumbfish": [
+    {
+      "locId": "large-island"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 1"
+    }
+  ],
+  "Spiral Shell": [
+    {
+      "locId": "large-island"
+    }
+  ],
+  "Serpent Eel": [
+    {
+      "locId": "large-island"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 6"
+    }
+  ],
+  "Ruby Coral": [
+    {
+      "locId": "large-island"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-penguin",
+      "tier": "Level 6"
+    }
+  ],
+  "Tribal Staff": [
+    {
+      "locId": "large-island"
+    }
+  ],
+  "Purple Butterfly Fish": [
+    {
+      "locId": "pirates-cove"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 3"
+    }
+  ],
+  "Crab": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Green Barracuda": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Mulberry Snapper": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Jumbo Fish": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Orcafish": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Speckled Grouper": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Mega Lamprey Shark": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Mystical Chest 02": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Large Chest 03": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Pirate Hook": [
+    {
+      "locId": "pirates-cove"
+    }
+  ],
+  "Crowfish": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Frosteye": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Bullfish": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Glassback": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Sea Crest": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Seeker": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Stone Jelly": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Ice Shark": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Grab Bag 08": [
+    {
+      "locId": "glacier-lake"
+    }
+  ],
+  "Frost Snapper Shell": [
+    {
+      "locId": "glacier-lake"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 6"
+    }
+  ],
+  "King Apple": [
+    {
+      "locId": "apple-bobbing"
+    }
+  ],
+  "Bitten Apple": [
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "apple-bobbing"
+    }
+  ],
+  "Apple Core": [
+    {
+      "locId": "apple-bobbing"
+    }
+  ],
+  "Ant Apple": [
+    {
+      "locId": "apple-bobbing"
+    }
+  ],
+  "Apple Slice": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    },
+    {
+      "locId": "apple-bobbing"
+    }
+  ],
+  "Slimeback": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Bog Barnacle": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Splatfish": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Magenta Growth": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Reaver Claw": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Blubberfish": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Boghead Snapper": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Slime Egg Shell": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Slobster": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Glass Eye Urchin": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Toxic Tendrils": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Tin Can": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Mini Slime Squid": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Gold Ring": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Lavos Shard": [
+    {
+      "locId": "sinking-swamp-fish"
+    }
+  ],
+  "Beet": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 1"
+    }
+  ],
+  "Blue Flowers": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 3"
+    }
+  ],
+  "Broccoli": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Cabbage": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 3"
+    }
+  ],
+  "Carrot": [
+    {
+      "locId": "crops"
+    }
+  ],
+  "Corn": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Cotton": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 3"
+    }
+  ],
+  "Cucumber": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 1"
+    }
+  ],
+  "Eggplant": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 1"
+    }
+  ],
+  "Gold Carrot": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Cucumber": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Eggplant": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Peas": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Peppers": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Hops": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 1"
+    }
+  ],
+  "Leek": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 3"
+    }
+  ],
+  "Onion": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 1"
+    }
+  ],
+  "Orange Flowers": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 1"
+    }
+  ],
+  "Peas": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-frog",
+      "tier": "Level 1"
+    }
+  ],
+  "Peppers": [
+    {
+      "locId": "crops"
+    }
+  ],
+  "Pine Tree": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 3"
+    }
+  ],
+  "Potato": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 1"
+    }
+  ],
+  "Pumpkin": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 6"
+    }
+  ],
+  "Radish": [
+    {
+      "locId": "crops"
+    }
+  ],
+  "Red Flowers": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 6"
+    }
+  ],
+  "Rice": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 3"
+    }
+  ],
+  "Sugar Cane": [
+    {
+      "locId": "crops"
+    }
+  ],
+  "Sunflower": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 3"
+    }
+  ],
+  "Tomato": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 1"
+    }
+  ],
+  "Watermelon": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 3"
+    }
+  ],
+  "Wheat": [
+    {
+      "locId": "crops"
+    }
+  ],
+  "White Flowers": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 3"
+    }
+  ],
+  "Yellow Flowers": [
+    {
+      "locId": "crops"
+    },
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 1"
+    }
+  ],
+  "Eggs": [
+    {
+      "locId": "building-chicken-coop"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 3"
+    }
+  ],
+  "Milk": [
+    {
+      "locId": "building-cow-pasture"
+    }
+  ],
+  "Black Truffle": [
+    {
+      "locId": "building-pig-pen"
+    }
+  ],
+  "White Truffle": [
+    {
+      "locId": "building-pig-pen"
+    }
+  ],
+  "Steak Kabob": [
+    {
+      "locId": "building-raptor-pen"
+    },
+    {
+      "locId": "steak-market"
+    }
+  ],
+  "Worms": [
+    {
+      "locId": "building-worm-habitat"
+    },
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Gummy Worms": [
+    {
+      "locId": "building-worm-habitat"
+    }
+  ],
+  "Mealworms": [
+    {
+      "locId": "building-worm-habitat"
+    }
+  ],
+  "Raspberry": [
+    {
+      "locId": "building-odd-orchard"
+    }
+  ],
+  "Pear": [
+    {
+      "locId": "building-odd-orchard"
+    }
+  ],
+  "Cherry": [
+    {
+      "locId": "building-odd-orchard"
+    }
+  ],
+  "Blueberry": [
+    {
+      "locId": "building-odd-orchard"
+    }
+  ],
+  "Avocado": [
+    {
+      "locId": "building-odd-orchard"
+    }
+  ],
+  "Grubs": [
+    {
+      "locId": "building-trout-bait-farm"
+    }
+  ],
+  "Minnows": [
+    {
+      "locId": "building-trout-bait-farm"
+    }
+  ],
+  "Grapes": [
+    {
+      "locId": "building-vineyard"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Steel": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "building-steelworks"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 6"
+    }
+  ],
+  "Steel Wire": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "building-steelworks"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 6"
+    }
+  ],
+  "Flour": [
+    {
+      "locId": "building-flour-mill"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 3"
+    }
+  ],
+  "Feed": [
+    {
+      "locId": "building-feed-mill"
+    }
+  ],
+  "Gold Feed": [
+    {
+      "locId": "building-feed-mill"
+    }
+  ],
+  "White Sugar": [
+    {
+      "locId": "building-sugar-cane-mill"
+    }
+  ],
+  "Brown Sugar": [
+    {
+      "locId": "building-sugar-cane-mill"
+    }
+  ],
+  "Molasses": [
+    {
+      "locId": "building-sugar-cane-mill"
+    }
+  ],
+  "Pepper Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Carrot Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Pea Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Sugar Cane Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Cucumber Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Eggplant Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Radish Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Onion Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Hops Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Potato Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Tomato Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Leek Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Watermelon Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Corn Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Cabbage Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Pine Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Pumpkin Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Wheat Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Mushroom Spores": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Broccoli Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Cotton Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Sunflower Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Beet Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Rice Seeds": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Welcome Card": [
+    {
+      "locId": "country-store"
+    }
+  ],
+  "Steak": [
+    {
+      "locId": "pet-swine",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "steak-market"
+    }
+  ],
+  "Bell": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Blue Purse": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Borgen Bag 01": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Canoe": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Captains Log": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Bear": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Camel": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Chicken": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Cow": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Dragon": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Fox": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Kitty": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Moose": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Mouse": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Owl": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Pig": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Rabbit": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Rhino": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Squirrel": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Squisquatch": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Carved Warthog": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Dancer": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Egg 02": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Egyptian Necklace": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Energy Coil": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Eye Patch": [
+    {
+      "locId": "pet-bird",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Fancy Box": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Fancy Drum": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Fancy Guitar": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Fancy Pipe": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Freaky Picture": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Gouda": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Grab Bag 07": [
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Holiday Wreath": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Machine Press": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Magna Core": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Metal Spool": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Mug of Beer": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Mushroom Paste": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Pirate Bandana": [
+    {
+      "locId": "pet-bird",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Pirate Flag": [
+    {
+      "locId": "pet-bird",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Popcorn": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Purple Bag": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "R.O.A.S.": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Red Shield": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Rubber Duckie": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Sealed Letter": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Shark Tooth": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Small Flute": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Small Gear": [
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Small Screw": [
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Spool of Copper": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Sturdy Bow": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Teapot": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Treasure Chest": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Vixen": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Wax Candle": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Wizard Hat": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Wooden Bow": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Wooden Pipe": [
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Wrench": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Exclusives and Curios"
+    }
+  ],
+  "Chum": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Emerald": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Catfish": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Coral": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Drum": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Goldfin": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Goldfish": [
+    {
+      "locId": "pet-owl",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Flier": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Goldgill": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Goldjack": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Goldray": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Sea Bass": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Gold Trout": [
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Honey": [
+    {
+      "locId": "pet-bear",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-owl",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Iced Tea": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Lemonade": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Orange Juice": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Ruby": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 01": [
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 06": [
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-seal",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 07": [
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Runestone 10": [
+    {
+      "locId": "pet-spider",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Small Spring": [
+    {
+      "locId": "pet-dog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "wishing-well",
+      "tier": "Standard Drops"
+    }
+  ],
+  "Salt": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Shinefish": [
+    {
+      "locId": "pet-cat",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Leather": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Buddystone": [
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Cutlass": [
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Arnold Palmer": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Mega Beet Seeds": [
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Mega Cotton Seeds": [
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    }
+  ],
+  "Void Bag 01": [
+    {
+      "locId": "exchange-center",
+      "tier": "Regular Trades"
+    },
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Frozen Cabbage": [
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Frozen Peas": [
+    {
+      "locId": "pet-polar-bear",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Frozen Pine": [
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Fireworks": [
+    {
+      "locId": "exchange-center",
+      "tier": "One Time Trades"
+    }
+  ],
+  "Snowball": [
+    {
+      "locId": "pet-seal",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Seasonal & Discontinued Trades"
+    }
+  ],
+  "Egg 04": [
+    {
+      "locId": "exchange-center",
+      "tier": "Seasonal & Discontinued Trades"
+    }
+  ],
+  "Spring Seeds": [
+    {
+      "locId": "pet-hummingbird",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "exchange-center",
+      "tier": "Seasonal & Discontinued Trades"
+    }
+  ],
+  "Cicada Shell": [
+    {
+      "locId": "exchange-center",
+      "tier": "Seasonal & Discontinued Trades"
+    }
+  ],
+  "Spring Basket 01": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Egg 07": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Egg of Ages": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Fuzzy Chick 07": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Nebula Egg": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Holger's Lunch Box": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Pink Ribbon": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Stone Fragment": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Ancient Stone Cicada": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Beatrix's Big Box of Boom": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Apple Pie": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Gold Apple": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Apple Ants": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Apple Belt": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Gold King Apple": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Cranberry Juice": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Treat Bag 05": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Gold Rudolph": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Gold Buddy Sweater": [
+    {
+      "locId": "temple",
+      "tier": "Seasonal Rewards"
+    }
+  ],
+  "Rope": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-dog",
+      "tier": "Level 3"
+    }
+  ],
+  "Large Clam Shell": [
+    {
+      "locId": "pet-dog",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 6"
+    }
+  ],
+  "Coin Purse": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 3"
+    }
+  ],
+  "Runestone 20": [
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 6"
+    }
+  ],
+  "Gold Crab": [
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 6"
+    }
+  ],
+  "Runestone 11": [
+    {
+      "locId": "pet-owl",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-green-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Green Dye": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 1"
+    }
+  ],
+  "Hammer": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 3"
+    }
+  ],
+  "Axe": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 3"
+    }
+  ],
+  "Shovel": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 3"
+    }
+  ],
+  "Ladder": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 3"
+    }
+  ],
+  "Jade": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-swine",
+      "tier": "Level 6"
+    }
+  ],
+  "Horseshoe": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 1"
+    }
+  ],
+  "Bucket": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 3"
+    }
+  ],
+  "Wine": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-snake",
+      "tier": "Level 6"
+    }
+  ],
+  "Grasshopper": [
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 6"
+    }
+  ],
+  "Cyclops Spider": [
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 6"
+    }
+  ],
+  "Dragonfly": [
+    {
+      "locId": "pet-lemur",
+      "tier": "Level 6"
+    }
+  ],
+  "Sturdy Shield": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 1"
+    }
+  ],
+  "Shimmer Topaz": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 3"
+    }
+  ],
+  "Grape Juice": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-baboon",
+      "tier": "Level 6"
+    }
+  ],
+  "Explosive": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 3"
+    }
+  ],
+  "Cheese": [
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 1"
+    }
+  ],
+  "Twine": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 3"
+    }
+  ],
+  "Green Shield": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-hedgehog",
+      "tier": "Level 6"
+    }
+  ],
+  "Green Cloak": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-fox",
+      "tier": "Level 1"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 3"
+    }
+  ],
+  "Peach": [
+    {
+      "locId": "pet-fox",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 6"
+    }
+  ],
+  "Iron Ring": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 1"
+    }
+  ],
+  "Iron Cup": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-armadillo",
+      "tier": "Level 1"
+    }
+  ],
+  "Ruby Ring": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 3"
+    }
+  ],
+  "Emerald Ring": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 3"
+    }
+  ],
+  "Mystic Ring": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 3"
+    }
+  ],
+  "Shimmer Ring": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 3"
+    }
+  ],
+  "Unpolished Jade": [
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 1"
+    }
+  ],
+  "Shimmer Stone": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-pet-rock",
+      "tier": "Level 6"
+    }
+  ],
+  "Fishing Net": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 1"
+    }
+  ],
+  "Blue Dye": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 3"
+    }
+  ],
+  "Large Net": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-bird",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-shark",
+      "tier": "Level 6"
+    }
+  ],
+  "Anglerfish": [
+    {
+      "locId": "pet-bird",
+      "tier": "Level 6"
+    }
+  ],
+  "Runestone 16": [
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Lantern": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-red-dragon",
+      "tier": "Level 3"
+    }
+  ],
+  "Lava Sphere": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-blue-dragon",
+      "tier": "Level 6"
+    }
+  ],
+  "Grab Bag 04": [
+    {
+      "locId": "pet-bear",
+      "tier": "Level 3"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 6"
+    }
+  ],
+  "Inferno Sphere": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-bear",
+      "tier": "Level 6"
+    }
+  ],
+  "Grab Bag 05": [
+    {
+      "locId": "pet-bear",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 6"
+    }
+  ],
+  "Apple Cider": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-capybara",
+      "tier": "Level 3"
+    }
+  ],
+  "Mega Sunflower Seeds": [
+    {
+      "locId": "pet-strange-onion",
+      "tier": "Level 6"
+    }
+  ],
+  "Mittens": [
+    {
+      "locId": "pet-seal",
+      "tier": "Level 3"
+    }
+  ],
+  "Gold Sea Crest": [
+    {
+      "locId": "pet-seal",
+      "tier": "Level 6"
+    }
+  ],
+  "Glacierstone": [
+    {
+      "locId": "pet-seal",
+      "tier": "Level 6"
+    }
+  ],
+  "Esperium": [
+    {
+      "locId": "spring-cave"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 1"
+    }
+  ],
+  "Plum Ore": [
+    {
+      "locId": "highland-hollow"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 1"
+    }
+  ],
+  "Mining Bag 01": [
+    {
+      "locId": "pet-miner",
+      "tier": "Level 1"
+    }
+  ],
+  "Mining Bag 02": [
+    {
+      "locId": "pet-miner",
+      "tier": "Level 1"
+    }
+  ],
+  "Green Halite": [
+    {
+      "locId": "spring-cave"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 3"
+    }
+  ],
+  "Mining Bag 03": [
+    {
+      "locId": "pet-miner",
+      "tier": "Level 3"
+    }
+  ],
+  "Cave Paste": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 3"
+    }
+  ],
+  "Cid's Stone Ale": [
+    {
+      "locId": "pet-miner",
+      "tier": "Level 6"
+    }
+  ],
+  "Flarite": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-miner",
+      "tier": "Level 6"
+    }
+  ],
+  "Mining Bag 04": [
+    {
+      "locId": "pet-miner",
+      "tier": "Level 6"
+    }
+  ],
+  "Barnacle Shell": [
+    {
+      "locId": "pet-shark",
+      "tier": "Level 1"
+    }
+  ],
+  "Sea Urchin": [
+    {
+      "locId": "pet-shark",
+      "tier": "Level 3"
+    }
+  ],
+  "Ghost Jelly": [
+    {
+      "locId": "pet-shark",
+      "tier": "Level 6"
+    }
+  ],
+  "Fall Leaves": [
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 3"
+    }
+  ],
+  "Green Rubee": [
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 6"
+    }
+  ],
+  "Raw Meat": [
+    {
+      "locId": "pet-wolf",
+      "tier": "Level 6"
+    }
+  ],
+  "Cooking Pot": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 1"
+    }
+  ],
+  "Pie Pan": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 3"
+    }
+  ],
+  "Corn Oil": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 6"
+    }
+  ],
+  "Bone Broth": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 6"
+    }
+  ],
+  "Butter": [
+    {
+      "locId": "workshop"
+    },
+    {
+      "locId": "pet-critter",
+      "tier": "Level 6"
+    }
+  ],
+  "Frozen Catfish": [
+    {
+      "locId": "pet-polar-bear",
+      "tier": "Level 1"
+    }
+  ],
+  "Frozen Radish": [
+    {
+      "locId": "pet-polar-bear",
+      "tier": "Level 1"
+    }
+  ],
+  "Frozen Squid": [
+    {
+      "locId": "pet-polar-bear",
+      "tier": "Level 3"
+    }
+  ],
+  "Frozen Crab Claw": [
+    {
+      "locId": "pet-polar-bear",
+      "tier": "Level 6"
+    }
+  ],
+  "Acid Extract": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Acorn Butter": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Acorn Pie": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Amber Cane": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Amethyst Necklace": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ancient Bird Fossil": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ancient Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ancient Ram Fossil": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Aquacite": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Aquacite Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Aquamarine Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Awl": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bamboo Chair": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bamboo Fence": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bamboo Flute": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bamboo Rope": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bamboo Trellis": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Barbed Wire": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Basic Pillow": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Belt Drive": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Bag": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Cloak": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Powder": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Purse": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Shield": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Black Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Block of Wood": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Blue Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Blue Diary": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Blue Parchment": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Blue Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Blue Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bone Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bottle Rocket": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bouquet of Flowers": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Breakfast Boost": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Bright Lantern": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Broom": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Brown Bag": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Brown Cloak": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Brown Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Brown Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Butter Churn": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Cabbage Stew": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Calmine Composite": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Calmine Lotion": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Calmine Statue": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Cannon": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Cat's Meow": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Chisel": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Cloth": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Compass": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Concord Grape Pie": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Condensed Gravicite": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Control Box": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Corn Husk Doll": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Crossbow": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Crown of Clover": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Crystal Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Deep Ocean Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Embershard Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Embershard Staff": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Engine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Esperium Band": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Essence of Slime": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fairy Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Chair": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Clock": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Pan Flute": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Pillow": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Sword": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Table": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fancy Violin": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fire Ant Farm": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Flarite Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Flying Machine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Flywheel": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Frost Shield": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Fruit Punch": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gainite": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Garnet": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Garnet Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Garnet Walking Stick": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gazebo": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Glass Jar": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Glowing Lantern": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Aquamarine Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Diamond Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Emerald Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Garnet Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Jade Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Lemon Quartz Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Gold Ruby Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Grand Piano": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Diary": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Halite Earrings": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Halite Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Parchment": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Green Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Handsaw": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Heart Container": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Heavy Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Hickory Omelette": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Horn Canteen": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Horn Powder": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Hourglass": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Jade Charm": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Joyful Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Kill Switch": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Leather Bag": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Leather Belt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Leather Diary": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Leather Helmet": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Leather Waterskin": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Lemon Quartz Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Linked Lantern": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Looking Glass": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Magnifying Glass": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Magus Hat": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Mayonnaise": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Monarch Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Mushroom Stew": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Nailed Board": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Neigh": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Oak Table": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ocean Stone": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Onion Soup": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Orange Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Orange Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Orange Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Orange Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Orange Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ornate Anvil": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ornate Flarite Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Over The Moon": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pair of Boots": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pair of Gold Boots": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Peach Juice": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pear Grease": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pearl Necklace": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Peridot": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pestle and Mortar": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pine Shavings": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pine Shelf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pinecone Bird Feeder": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pitchfork": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Plum Goblet": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Plum Iron": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Polished Boot": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Potato Battery": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Potion of Clarity": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Power Monitor": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Propeller Hat": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pumpkin Spiced Milk": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Purple Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Purple Diary": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Purple Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Purple Parchment": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Purple Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Purple Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Pyrite": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "QED Cell": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Quandary Chowder": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Quench": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Re'taw Pail": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Berry Pie": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Brick": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Diary": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Parchment": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Trunk": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Red Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Redbrook Patch": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Refined Esperium": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Refined Plum Ore": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Reforged Sword": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Reinforced Helmet": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Rucksack": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sail Cloth": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Scissors": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sea Pincher Special": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Seashell Necklace": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sewing Needle": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Shining Earrings": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ship in a Bottle": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Ship Mast": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Shrimp-a-Plenty": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Silk": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Snow Shoes": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sparkle Dust": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Spiky Bracelet": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Spooky Scarecrow": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Spoon": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Stained Glass Art": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Steel Buckle": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Steel Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Steel Plate": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Steel Vise": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Step Ladder": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Strong Paste": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Strong Wire": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sturdy Box": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sturdy Pickaxe": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sturdy Sword": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sugar Cube": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sunflower Oil": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Sunstone Ring": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Swamp Puzzle": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Tie Dye Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Tin Goblet": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Tin Scraps": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Toilet Paper": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Valve": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Veggie Juice": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wagon Wheel": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Cloak": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Parchment": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Purse": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "White Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Witch's Brew": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Witch's Broom": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wood Planer": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Barrel": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Box": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Button": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Footstool": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Plank": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Shield": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Spear": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Sword": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Wooden Table": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Y73841 Detector": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Bag": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Butterfly": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Dye": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Purse": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Scarf": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Shirt": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Yellow Twine": [
+    {
+      "locId": "workshop"
+    }
+  ],
+  "Briomine": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Calcifite": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Unpolished Aquacite": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Bone Fragments": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Cave Mushroom": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Bird Skull 01": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Fossilized Print": [
+    {
+      "locId": "spring-cave"
+    }
+  ],
+  "Fairy Crystal": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Lapis Lazuli": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Bone 02": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Oceanite": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Bone 03": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Purple Mushroom": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Ram Skull 01": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Fossilized Frog": [
+    {
+      "locId": "highland-hollow"
+    }
+  ],
+  "Pyredrop": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Sunstone": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Stone Shell": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Bone 04": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Orange Calcite": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Fire Crystal": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Red Mushrooms": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Fossilized Leaf": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Sol Orb": [
+    {
+      "locId": "sol-grotto"
+    }
+  ],
+  "Embershard": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Magmastone": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Unpolished Flarite": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Bone 05": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Pitviper Tail": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Brain Fungus": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Fossilized Shell": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Broken Sword": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Runestone 27": [
+    {
+      "locId": "ember-caverns"
+    }
+  ],
+  "Mossy Stone": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Jadeite": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Unpolished Pyrite": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Bone 06": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Blood Crystal": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Nightshade Cap": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Rune Shard": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Broken Bangle": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Fenrir's Coin": [
+    {
+      "locId": "fenrirs-den"
+    }
+  ],
+  "Gravicite": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Unpolished Peridot": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Veinshard": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Gravity Orb": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Mossroom": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Green Gel": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Mossy Cog": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Mossy Bone": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Ancient Rune": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Fossilized Viper": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ],
+  "Ruined Ether Hammer": [
+    {
+      "locId": "mossrock-mine"
+    }
+  ]
+}

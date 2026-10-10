@@ -110,7 +110,11 @@ function parseInventoryBlock(afterAnchor: string): ParsedInventoryLine[] {
 			}
 			const itemName = chunkLines[0];
 			const maxed = chunkLines.some((l) =>
-				STATUS_FLAGS.some((flag) => flag.toLowerCase() === l.toLowerCase())
+				STATUS_FLAGS.some(
+					(flag) =>
+						flag.toLowerCase() === l.toLowerCase() ||
+						l.toLowerCase().includes(flag.toLowerCase())
+				)
 			);
 			results.push({
 				itemName,

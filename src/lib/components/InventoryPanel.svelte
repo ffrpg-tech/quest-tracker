@@ -2,19 +2,38 @@
 	import { Upload, Trash2, X, TriangleAlert } from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { matchesQuery } from '$lib/ui/matchesQuery';
-	import type { InventoryEntry } from '$lib/quest/types';
+	import type { InventoryEntry, PlayerStats } from '$lib/quest/types';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
+	import { getSourcesState } from '$lib/quest/storage/sourcesStore.svelte';
 	import ItemIcon from './ItemIcon.svelte';
+	import ItemSourcePill from './ItemSourcePill.svelte';
 
 	let {
 		inventory = $bindable(),
 		inventoryStale,
+		playerStats = null,
+		showLocationSources = true,
+		showAlternativeSources = true,
 		onOpenImport
 	}: {
 		inventory: InventoryEntry[];
 		inventoryStale: boolean;
+		playerStats?: PlayerStats | null;
+		showLocationSources?: boolean;
+		showAlternativeSources?: boolean;
 		onOpenImport: () => void;
 	} = $props();
+
+	const sourcesState = getSourcesState();
+	const sourcesLastUpdatedLabel = $derived(
+		sourcesState.sourcesLastUpdated
+			? new Date(sourcesState.sourcesLastUpdated).toLocaleDateString(undefined, {
+					month: 'short',
+					day: 'numeric',
+					year: 'numeric'
+			  })
+			: null
+	);
 
 	let inventoryQuery = $state('');
 
@@ -41,7 +60,14 @@
 	class="flex min-h-0 flex-col space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
 >
 	<div class="flex items-center justify-between">
-		<h2 class="font-semibold">2. Inventory ({inventory.length})</h2>
+		<h2 class="font-semibold">
+			2. Inventory ({inventory.length})
+			{#if sourcesLastUpdatedLabel}
+				<span class="text-xs font-normal text-gray-500 dark:text-gray-400"
+					>&middot; Sources updated {sourcesLastUpdatedLabel}</span
+				>
+			{/if}
+		</h2>
 		<div class="flex items-center gap-1">
 			<button
 				onclick={onOpenImport}
@@ -113,7 +139,7 @@
 				{#each filteredInventory as entry (entry.item)}
 					<tr class="border-t border-gray-100 dark:border-gray-700">
 						<td class="p-2">
-							<div class="flex items-center gap-1.5">
+							<div class="flex flex-wrap items-center gap-1.5">
 								<ItemIcon name={entry.item} />
 								<a
 									href={buddyFarmItemUrl(entry.item)}
@@ -121,6 +147,9 @@
 									rel="noopener noreferrer"
 									class="hover:underline">{entry.item}</a
 								>{#if entry.maxed}<span class="text-red-600 dark:text-red-400"> (MAX)</span>{/if}
+								{#if showLocationSources}
+									<ItemSourcePill itemName={entry.item} {playerStats} {showAlternativeSources} />
+								{/if}
 							</div>
 						</td>
 						<td class="p-2">

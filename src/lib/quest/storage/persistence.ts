@@ -260,6 +260,31 @@ export function saveShowCraftable(enabled: boolean): boolean {
 	return saveJSON(SHOW_CRAFTABLE_KEY, enabled);
 }
 
+const SHOW_LOCATION_SOURCES_KEY = 'farmrpg-quest-tracker:show-location-sources';
+const SHOW_ALTERNATIVE_SOURCES_KEY = 'farmrpg-quest-tracker:show-alternative-sources';
+
+export function loadShowLocationSources(): boolean {
+	if (!hasLocalStorage()) return true;
+	const raw = window.localStorage.getItem(SHOW_LOCATION_SOURCES_KEY);
+	if (raw === null) return true; // Default true
+	return raw === 'true';
+}
+
+export function saveShowLocationSources(enabled: boolean): boolean {
+	return saveJSON(SHOW_LOCATION_SOURCES_KEY, enabled);
+}
+
+export function loadShowAlternativeSources(): boolean {
+	if (!hasLocalStorage()) return true;
+	const raw = window.localStorage.getItem(SHOW_ALTERNATIVE_SOURCES_KEY);
+	if (raw === null) return true; // Default true
+	return raw === 'true';
+}
+
+export function saveShowAlternativeSources(enabled: boolean): boolean {
+	return saveJSON(SHOW_ALTERNATIVE_SOURCES_KEY, enabled);
+}
+
 export function loadCachedAppVersion(): string | null {
 	if (!hasLocalStorage()) return null;
 	return window.localStorage.getItem(APP_VERSION_KEY);
@@ -269,4 +294,113 @@ export function saveCachedAppVersion(version: string): boolean {
 	if (!hasLocalStorage()) return true;
 	window.localStorage.setItem(APP_VERSION_KEY, version);
 	return true;
+}
+
+const QUESTLINE_FILTERS_KEY = 'farmrpg-quest-tracker:questline-filters-v1';
+const SHORTFALL_FILTERS_KEY = 'farmrpg-quest-tracker:shortfall-filters-v1';
+
+export type QuestlineStatusFilter = 'not-started' | 'ongoing' | 'done';
+export type EligibilityFilter = 'eligible' | 'locked';
+
+export interface QuestlineFilters {
+	status: QuestlineStatusFilter[];
+	eligibility: EligibilityFilter[];
+	showUnavailable: boolean;
+	mainQuestOnly: boolean;
+}
+
+export const DEFAULT_QUESTLINE_FILTERS: QuestlineFilters = {
+	status: ['not-started', 'ongoing'],
+	eligibility: ['eligible'],
+	showUnavailable: false,
+	mainQuestOnly: false
+};
+
+export function loadQuestlineFilters(): QuestlineFilters {
+	if (!hasLocalStorage()) return { ...DEFAULT_QUESTLINE_FILTERS };
+	try {
+		const raw = window.localStorage.getItem(QUESTLINE_FILTERS_KEY);
+		if (!raw) return { ...DEFAULT_QUESTLINE_FILTERS };
+		const parsed = JSON.parse(raw);
+		if (!parsed || typeof parsed !== 'object') return { ...DEFAULT_QUESTLINE_FILTERS };
+		return {
+			status: Array.isArray(parsed.status)
+				? parsed.status.filter((s: unknown): s is QuestlineStatusFilter =>
+						s === 'not-started' || s === 'ongoing' || s === 'done'
+				  )
+				: DEFAULT_QUESTLINE_FILTERS.status,
+			eligibility: Array.isArray(parsed.eligibility)
+				? parsed.eligibility.filter((e: unknown): e is EligibilityFilter =>
+						e === 'eligible' || e === 'locked'
+				  )
+				: DEFAULT_QUESTLINE_FILTERS.eligibility,
+			showUnavailable: typeof parsed.showUnavailable === 'boolean' ? parsed.showUnavailable : false,
+			mainQuestOnly: typeof parsed.mainQuestOnly === 'boolean' ? parsed.mainQuestOnly : false
+		};
+	} catch {
+		return { ...DEFAULT_QUESTLINE_FILTERS };
+	}
+}
+
+export function saveQuestlineFilters(filters: QuestlineFilters): boolean {
+	return saveJSON(QUESTLINE_FILTERS_KEY, filters);
+}
+
+export type MailFilter = 'mailable' | 'not-mailable';
+export type SortDirection = 'desc' | 'asc';
+
+export interface ShortfallFilters {
+	sortDirection: SortDirection;
+	mailFilters: MailFilter[];
+	maxedOnly: boolean;
+	exceedsCapOnly: boolean;
+	sourceFilters?: string[];
+	categoryFilters?: string[];
+}
+
+export const DEFAULT_SHORTFALL_FILTERS: ShortfallFilters = {
+	sortDirection: 'desc',
+	mailFilters: ['mailable', 'not-mailable'],
+	maxedOnly: false,
+	exceedsCapOnly: false,
+	sourceFilters: [],
+	categoryFilters: []
+};
+
+export function loadShortfallFilters(): ShortfallFilters {
+	if (!hasLocalStorage()) return { ...DEFAULT_SHORTFALL_FILTERS };
+	try {
+		const raw = window.localStorage.getItem(SHORTFALL_FILTERS_KEY);
+		if (!raw) return { ...DEFAULT_SHORTFALL_FILTERS };
+		const parsed = JSON.parse(raw);
+		if (!parsed || typeof parsed !== 'object') return { ...DEFAULT_SHORTFALL_FILTERS };
+		return {
+			sortDirection: parsed.sortDirection === 'asc' ? 'asc' : 'desc',
+			mailFilters: Array.isArray(parsed.mailFilters)
+				? parsed.mailFilters.filter((m: unknown): m is MailFilter =>
+						m === 'mailable' || m === 'not-mailable'
+				  )
+				: DEFAULT_SHORTFALL_FILTERS.mailFilters,
+			maxedOnly: typeof parsed.maxedOnly === 'boolean' ? parsed.maxedOnly : false,
+			exceedsCapOnly: typeof parsed.exceedsCapOnly === 'boolean' ? parsed.exceedsCapOnly : false,
+			sourceFilters: Array.isArray(parsed.sourceFilters)
+				? parsed.sourceFilters.filter(isString)
+				: [],
+			categoryFilters: Array.isArray(parsed.categoryFilters)
+				? parsed.categoryFilters.filter(isString)
+				: []
+		};
+	} catch {
+		return { ...DEFAULT_SHORTFALL_FILTERS };
+	}
+}
+
+export function saveShortfallFilters(filters: ShortfallFilters): boolean {
+	return saveJSON(SHORTFALL_FILTERS_KEY, filters);
+}
+
+export function hasUnreadChangelog(currentVersion: string): boolean {
+	if (!hasLocalStorage()) return false;
+	const seen = loadLastSeenChangelogVersion();
+	return seen !== currentVersion;
 }

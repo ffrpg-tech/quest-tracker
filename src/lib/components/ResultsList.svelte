@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ChevronRight } from '@lucide/svelte';
+	import { ChevronDown, ChevronRight, Copy, Check } from '@lucide/svelte';
 	import { MediaQuery, SvelteMap, SvelteSet } from 'svelte/reactivity';
 	import type {
 		ItemRunsDryAt,
@@ -17,16 +17,25 @@
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
 	import { buddyFarmItemUrl } from '$lib/ui/buddyFarmLink';
+	import { copyToClipboard } from '$lib/ui/clipboard';
+	import { generateRequestList } from '$lib/quest/export/requestList';
+	import { getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
 	import ItemIcon from './ItemIcon.svelte';
 	import CraftTree from './CraftTree.svelte';
+	import CraftTreeNodeComponent from './CraftTreeNode.svelte';
+	import ItemSourcePill from './ItemSourcePill.svelte';
+	import type { PlayerStats } from '$lib/quest/types';
 
 	let {
 		diffResults,
 		eligibilityByQuestline,
 		maxedItems,
 		runsDryAt,
+		playerStats = null,
 		showAllItems = false,
 		showCraftable = true,
+		showLocationSources = true,
+		showAlternativeSources = true,
 		onOpenImport,
 		onToggleCompleted
 	}: {
@@ -36,8 +45,11 @@
 		maxedItems: Set<string>;
 		/** For each currently-maxed item, the exact (questline, quest) where its stockpile first runs out in queue order — surfaced as a RUNS DRY badge on that one row. */
 		runsDryAt: Map<string, ItemRunsDryAt>;
+		playerStats?: PlayerStats | null;
 		showAllItems: boolean;
 		showCraftable?: boolean;
+		showLocationSources?: boolean;
+		showAlternativeSources?: boolean;
 		onOpenImport?: (tab: 'stats' | 'mining') => void;
 		onToggleCompleted: (questlineName: string, questName: string) => void;
 	} = $props();
@@ -46,6 +58,12 @@
 	// closed questline otherwise still rendered its whole row list (up to ~99
 	// rows), which dominated render/paint time whenever diffResults changed.
 	let openQuestlines = new SvelteSet<string>();
+	let expandedCraftTrees = new SvelteSet<string>();
+
+	function toggleCraftTree(key: string) {
+		if (expandedCraftTrees.has(key)) expandedCraftTrees.delete(key);
+		else expandedCraftTrees.add(key);
+	}
 
 	function handleToggle(name: string, event: Event) {
 		if ((event.currentTarget as HTMLDetailsElement).open) openQuestlines.add(name);
@@ -128,7 +146,32 @@
 	});
 
 	function isRunsDryHere(item: string, questlineName: string, questName: string): boolean {
-		return runsDryKeySet.has(`\({item}:\){questlineName}:${questName}`);
+		return runsDryKeySet.has(`${item}:${questlineName}:${questName}`);
+	}
+
+	let copiedQuestKey = $state<string | null>(null);
+
+	async function copyQuestRequest(questlineName: string, q: QuestDiffResult) {
+		const res = generateRequestList(q.shortfalls, { deductCraftable: showCraftable });
+		if (!res.allText) return;
+		const ok = await copyToClipboard(res.allText);
+		if (ok) {
+			const key = `${questlineName}:${q.questName}`;
+			copiedQuestKey = key;
+			setTimeout(() => {
+				if (copiedQuestKey === key) copiedQuestKey = null;
+			}, 1500);
+		}
+	}
+
+	function hasMailableShortfalls(shortfalls: ItemShortfall[]): boolean {
+		return shortfalls.some((s) => {
+			const netShort =
+				showCraftable && s.craftableQty !== undefined
+					? Math.max(0, s.short - s.craftableQty)
+					: s.short;
+			return netShort > 0 && getItemCanMail(s.item) === true;
+		});
 	}
 </script>
 
@@ -327,69 +370,123 @@
 	<ul class="space-y-0.5 text-xs">
 		{#each items as s (s.item)}
 			{@const cappedKey = q.questName + ':' + s.item}
+			{@const craftKey = q.questName + ':' + s.item}
 			{@const maxed = maxedItems.has(s.item)}
 			{@const runsDryHere = isRunsDryHere(s.item, questlineName, q.questName)}
-			<li>
-				<span class="items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
-					<ItemIcon name={s.item} />
-					<a
-						href={buddyFarmItemUrl(s.item)}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="hover:underline">{s.item}</a
-					></span
-				>: <span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
-				{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
-					<span class="tabular-nums text-violet-600 dark:text-violet-400">(+{s.craftableQty})</span>
-					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
-					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400"
-						>{s.short - s.craftableQty}</span
-					> left)
-				{:else if s.short > 0}
-					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
-					(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
-				{:else}
-					/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
-					<span class="font-medium {statusTextColorClass('good')}">(met)</span>
+			{@const hasBadges = s.capped || s.isThresholdBreaker || s.exceedsCapacity || maxed || runsDryHere}
+			<li class="py-0.5">
+				<div class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs">
+					<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
+						<ItemIcon name={s.item} />
+						<a
+							href={buddyFarmItemUrl(s.item)}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="hover:underline">{s.item}</a
+						>
+					</span>:
+					<span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
+					{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
+						<span class="tabular-nums text-violet-600 dark:text-violet-400">(+{s.craftableQty})</span>
+						/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
+						(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400"
+							>{s.short - s.craftableQty}</span
+						> left)
+					{:else if s.short > 0}
+						/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
+						(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
+					{:else}
+						/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
+						<span class="font-medium {statusTextColorClass('good')}">(met)</span>
+					{/if}
+
+					<!-- Separator before location -->
+					{#if showLocationSources && s.short > 0}
+						<span class="text-gray-300 dark:text-gray-600">|</span>
+						<ItemSourcePill itemName={s.item} {playerStats} {showAlternativeSources} />
+					{/if}
+
+					<!-- Separator and Craft Tree toggle button if craftable -->
+					{#if showCraftable && s.craftTree && s.craftTree.craftable && s.craftTree.children.length > 0}
+						<span class="text-gray-300 dark:text-gray-600">|</span>
+						<button
+							type="button"
+							onclick={() => toggleCraftTree(craftKey)}
+							aria-expanded={expandedCraftTrees.has(craftKey)}
+							class="inline-flex cursor-pointer items-center gap-0.5 text-xs text-sky-700 hover:underline dark:text-sky-400"
+						>
+							{#if expandedCraftTrees.has(craftKey)}<ChevronDown size={12} />{:else}<ChevronRight size={12} />{/if}
+							<span>{expandedCraftTrees.has(craftKey) ? 'Hide' : 'Craft Tree'}</span>
+							{#if !expandedCraftTrees.has(craftKey) && s.craftTree.left <= 0 && s.craftTree.craftableQty > 0}
+								<span
+									class="rounded bg-emerald-100 px-1 py-0.2 text-[9px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+								>
+									Ready
+								</span>
+							{/if}
+						</button>
+					{/if}
+
+					<!-- Separator before badges if any badges exist -->
+					{#if hasBadges}
+						<span class="text-gray-300 dark:text-gray-600">|</span>
+					{/if}
+
+					<!-- Status badges (CAPPED, EXCEEDS CAP, MAX ON HAND, RUNS DRY) -->
+					{#if s.capped}
+						<button
+							type="button"
+							onclick={() => toggleCappedExplanation(cappedKey)}
+							title={CAPPED_EXPLANATION}
+							aria-expanded={expandedCapped === cappedKey}
+							class="cursor-pointer rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
+							>CAPPED</button
+						>
+					{/if}
+					{#if s.isThresholdBreaker}
+						<span
+							title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed ? ' (currently MAX ON HAND)' : ''}"
+							class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+							>EXCEEDS CAP HERE</span
+						>
+					{:else if s.exceedsCapacity}
+						<span
+							title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest ? ` (first exceeded at ${s.thresholdBreakerQuest})` : ''}{maxed ? ' (currently MAX ON HAND)' : ''} — multiple turn-ins or inventory upgrades required"
+							class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+							>EXCEEDS CAP {#if s.thresholdBreakerQuest} (from {s.thresholdBreakerQuest}){/if}</span
+						>
+					{/if}
+					{#if maxed}
+						<span
+							title={MAXED_EXPLANATION}
+							class="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+							>MAX ON HAND</span
+						>
+					{/if}
+					{#if runsDryHere}
+						<span
+							title={RUNS_DRY_EXPLANATION}
+							class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+							>RUNS DRY HERE</span
+						>
+					{/if}
+				</div>
+
+				<!-- Render expanded Craft Tree OUTSIDE the flex row as a full-width block below -->
+				{#if showCraftable && s.craftTree && expandedCraftTrees.has(craftKey)}
+					<div class="mt-1 space-y-1 border-l border-gray-200 pl-2.5 dark:border-gray-700">
+						{#each s.craftTree.children as child (child.item)}
+							{#if showAllItems || child.left > 0}
+								<CraftTreeNodeComponent node={child} {showAllItems} />
+							{/if}
+						{/each}
+					</div>
 				{/if}
-				{#if s.capped}
-					<button
-						type="button"
-						onclick={() => toggleCappedExplanation(cappedKey)}
-						title={CAPPED_EXPLANATION}
-						aria-expanded={expandedCapped === cappedKey}
-						class="ml-1 cursor-pointer rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
-						>CAPPED</button
-					>
-				{/if}
-				{#if s.exceedsCapacity}
-					<span
-						title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()} — multiple turn-ins or inventory upgrades required"
-						class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-						>EXCEEDS CAP</span
-					>
-				{/if}
-				{#if maxed}
-					<span
-						title={MAXED_EXPLANATION}
-						class="ml-1 rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
-						>MAXED</span
-					>
-				{/if}
-				{#if runsDryHere}
-					<span
-						title={RUNS_DRY_EXPLANATION}
-						class="ml-1 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-						>RUNS DRY HERE</span
-					>
-				{/if}
+
 				{#if s.capped && expandedCapped === cappedKey}
 					<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
 						{CAPPED_EXPLANATION}
 					</div>
-				{/if}
-				{#if showCraftable && s.craftTree}
-					<CraftTree node={s.craftTree} {showAllItems} />
 				{/if}
 			</li>
 		{/each}
@@ -466,50 +563,63 @@
 											</tr>
 										</thead>
 										<tbody>
-											{#each diffResult.quests as q (q.questName)}
-												{@const gaps = questGaps(
-													diffResult.questlineName,
-													diffResult.quests.indexOf(q)
-												)}
+											{#each diffResult.quests as q, qi (q.questName)}
+												{@const gaps = questGaps(diffResult.questlineName, qi)}
 												{@const items = showAllItems ? q.requirements : q.shortfalls}
+												{@const isBlocked = qi === block?.qi}
+												{@const isLocked = !q.done && gaps.length > 0}
+												{@const questKey = `${diffResult.questlineName}:${q.questName}`}
+												{@const isCopied = copiedQuestKey === questKey}
 												<tr
 													class="border-t border-gray-100 dark:border-gray-700"
-													class:bg-red-50={diffResult.quests.indexOf(q) === block?.qi}
-													class:dark:bg-red-950={diffResult.quests.indexOf(q) === block?.qi}
+													class:bg-red-50={isBlocked}
+													class:dark:bg-red-950={isBlocked}
+													class:bg-gray-50={isLocked && !isBlocked}
+													class:dark:bg-gray-800={isLocked && !isBlocked}
 													class:opacity-50={q.done}
 												>
 													<td class="p-2 m-2">
 														<input
 															type="checkbox"
 															checked={q.done}
+															disabled={isLocked}
 															aria-label="Mark {q.questName} done"
+															title={isLocked ? 'Locked: complete prerequisite requirements first' : undefined}
 															onchange={() =>
 																onToggleCompleted(diffResult.questlineName, q.questName)}
-															class="cursor-pointer h-4 w-4 shrink-0"
+															class="h-4 w-4 shrink-0"
+															class:cursor-pointer={!isLocked}
+															class:cursor-not-allowed={isLocked}
+															class:opacity-40={isLocked}
 														/>
 													</td>
 													<td class="p-2 text-xs text-gray-400">{q.seq}</td>
 													<td class="p-2">
-														<span class:line-through={q.done}>{q.questName}</span>
-														{#if q.capacityBottlenecks && q.capacityBottlenecks.length > 0}
-															<div class="mt-1 space-y-1">
-																{#each q.capacityBottlenecks as b (b.item)}
-																	<div
-																		class="flex items-center gap-1.5 rounded bg-amber-50 px-2 py-0.5 text-[11px] text-amber-900 border border-amber-200 dark:border-amber-800 dark:bg-amber-950/70 dark:text-amber-200"
-																	>
-																		<span
-																			class="rounded bg-amber-200 px-1 text-[9px] font-bold dark:bg-amber-900"
-																			>EXCEEDS MAX CAPACITY</span
-																		>
-																		<span
-																			>Exceeds max capacity of {b.maxCapacity.toLocaleString()} ({b.item}:
-																			{b.cumulativeNeeded.toLocaleString()} needed) — multiple turn-ins
-																			or inventory upgrades required</span
-																		>
-																	</div>
-																{/each}
-															</div>
-														{/if}
+														<div class="flex flex-col items-start gap-1">
+															<span
+																class:line-through={q.done}
+																class:text-gray-500={isLocked && !isBlocked}
+																class:dark:text-gray-400={isLocked && !isBlocked}
+															>{q.questName}</span>
+															{#if !q.done && hasMailableShortfalls(q.shortfalls)}
+																<button
+																	type="button"
+																	onclick={() => copyQuestRequest(diffResult.questlineName, q)}
+																	title={isCopied ? 'Copied to clipboard!' : 'Copy request list for chat/trade'}
+																	class="inline-flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors {isCopied
+																		? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+																		: 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-100'}"
+																>
+																	{#if isCopied}
+																		<Check size={11} class="text-emerald-600 dark:text-emerald-400" />
+																		<span>Copied!</span>
+																	{:else}
+																		<Copy size={11} />
+																		<span>Copy</span>
+																	{/if}
+																</button>
+															{/if}
+														</div>
 													</td>
 													<td class="p-2">
 														{@render statusLabel(
@@ -544,45 +654,63 @@
 									{#each diffResult.quests as q, qi (q.questName + qi)}
 										{@const gaps = questGaps(diffResult.questlineName, qi)}
 										{@const items = showAllItems ? q.requirements : q.shortfalls}
+										{@const isBlocked = qi === block?.qi}
+										{@const isLocked = !q.done && gaps.length > 0}
+										{@const questKey = `${diffResult.questlineName}:${q.questName}`}
+										{@const isCopied = copiedQuestKey === questKey}
 										<div
 											class="flex flex-col gap-1.5 p-2"
-											class:bg-red-50={qi === block?.qi}
-											class:dark:bg-red-950={qi === block?.qi}
+											class:bg-red-50={isBlocked}
+											class:dark:bg-red-950={isBlocked}
+											class:bg-gray-50={isLocked && !isBlocked}
+											class:dark:bg-gray-800={isLocked && !isBlocked}
 											class:opacity-50={q.done}
 										>
 											<div class="flex items-start justify-between gap-2">
-												<div class="flex min-w-0 items-center gap-2">
+												<div class="flex min-w-0 items-start gap-2">
 													<input
 														type="checkbox"
 														checked={q.done}
+														disabled={isLocked}
 														aria-label="Mark {q.questName} done"
+														title={isLocked ? 'Locked: complete prerequisite requirements first' : undefined}
 														onchange={() =>
 															onToggleCompleted(diffResult.questlineName, q.questName)}
-														class="shrink-0 cursor-pointer"
+														class="mt-0.5 shrink-0"
+														class:cursor-pointer={!isLocked}
+														class:cursor-not-allowed={isLocked}
+														class:opacity-40={isLocked}
 													/>
-													<span class="shrink-0 text-xs text-gray-400">#{q.seq}</span>
-													<span class="text-sm" class:line-through={q.done}>{q.questName}</span>
+													<span class="mt-0.5 shrink-0 text-xs text-gray-400">#{q.seq}</span>
+													<div class="flex flex-col items-start gap-1">
+														<span
+															class="text-sm font-medium"
+															class:line-through={q.done}
+															class:text-gray-500={isLocked && !isBlocked}
+															class:dark:text-gray-400={isLocked && !isBlocked}
+														>{q.questName}</span>
+														{#if !q.done && hasMailableShortfalls(q.shortfalls)}
+															<button
+																type="button"
+																onclick={() => copyQuestRequest(diffResult.questlineName, q)}
+																title={isCopied ? 'Copied to clipboard!' : 'Copy request list for chat/trade'}
+																class="inline-flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors {isCopied
+																	? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+																	: 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-100'}"
+															>
+																{#if isCopied}
+																	<Check size={11} class="text-emerald-600 dark:text-emerald-400" />
+																	<span>Copied!</span>
+																{:else}
+																	<Copy size={11} />
+																	<span>Copy</span>
+																{/if}
+															</button>
+														{/if}
+													</div>
 												</div>
 												{@render statusLabel(q, qi === block?.qi, true, gaps)}
 											</div>
-											{#if q.capacityBottlenecks && q.capacityBottlenecks.length > 0}
-												<div class="pl-6 space-y-1">
-													{#each q.capacityBottlenecks as b (b.item)}
-														<div
-															class="flex items-center gap-1.5 rounded bg-amber-50 px-2 py-0.5 text-[11px] text-amber-900 border border-amber-200 dark:border-amber-800 dark:bg-amber-950/70 dark:text-amber-200"
-														>
-															<span
-																class="rounded bg-amber-200 px-1 text-[9px] font-bold dark:bg-amber-900"
-																>EXCEEDS MAX CAPACITY</span
-															>
-															<span
-																>Exceeds max capacity of {b.maxCapacity.toLocaleString()} ({b.item}: {b.cumulativeNeeded.toLocaleString()}
-																needed) — multiple turn-ins or upgrades required</span
-															>
-														</div>
-													{/each}
-												</div>
-											{/if}
 											{#if showAllItems}
 												{@const reqs = questRequirements(diffResult.questlineName, qi)}
 												{#if reqs.length > 0}

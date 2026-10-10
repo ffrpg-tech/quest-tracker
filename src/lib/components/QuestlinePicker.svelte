@@ -11,7 +11,8 @@
 		CircleCheck,
 		Lock,
 		LockOpen,
-		CalendarOff
+		CalendarOff,
+		RotateCcw
 	} from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import { matchesQuery } from '$lib/ui/matchesQuery';
@@ -24,7 +25,15 @@
 		type EligibilityGap,
 		type QuestlineEligibility
 	} from '$lib/quest/calc/eligibility';
+	import { onMount } from 'svelte';
 	import { toggleExpanded } from '$lib/ui/toggleExpanded';
+	import {
+		DEFAULT_QUESTLINE_FILTERS,
+		loadQuestlineFilters,
+		saveQuestlineFilters,
+		type QuestlineStatusFilter,
+		type EligibilityFilter
+	} from '$lib/quest/storage/persistence';
 
 	let {
 		questlineOptions,
@@ -51,11 +60,7 @@
 	// — this just gates the filter/badge UI on "do we have any questlines at all".
 	const hasEligibilityData = $derived(eligibilityByQuestline.size > 0);
 
-	type EligibilityFilter = 'eligible' | 'locked';
-	// Checkbox-style multi-select (any combination), not a single active choice —
-	// different players want different combinations (e.g. locked + not-started).
-	// Defaults to 'eligible' only checked, so the picker opens showing what's
-	// actually startable right now.
+	let filtersHydrated = $state(false);
 	let eligibilityFilters = $state<Set<EligibilityFilter>>(new Set(['eligible']));
 
 	function toggleInSet<T>(set: Set<T>, value: T): Set<T> {
@@ -65,10 +70,6 @@
 		return next;
 	}
 
-	// Expired-season quests are a different category from an ordinary skill/NPC
-	// lock — there's no known guarantee they ever return — so they're excluded
-	// from the list entirely by default rather than folded into "Locked", and
-	// surfaced only via this explicit opt-in toggle.
 	let showUnavailable = $state(false);
 
 	// Second, independent "wall" from diff.ts's material wall. Deliberately
@@ -127,12 +128,36 @@
 	});
 
 	let questlineQuery = $state('');
-	type QuestlineStatusFilter = 'not-started' | 'ongoing' | 'done';
-	// Checkbox-style multi-select. "Done" starts unchecked so finished questlines
-	// don't clutter the list by default — opt in via the icon to see them again.
 	let questlineStatusFilters = $state<Set<QuestlineStatusFilter>>(
 		new Set(['not-started', 'ongoing'])
 	);
+
+	function resetFilters() {
+		questlineStatusFilters = new Set(DEFAULT_QUESTLINE_FILTERS.status);
+		eligibilityFilters = new Set(DEFAULT_QUESTLINE_FILTERS.eligibility);
+		showUnavailable = DEFAULT_QUESTLINE_FILTERS.showUnavailable;
+		mainQuestOnly = DEFAULT_QUESTLINE_FILTERS.mainQuestOnly;
+	}
+
+	onMount(() => {
+		const saved = loadQuestlineFilters();
+		questlineStatusFilters = new Set(saved.status);
+		eligibilityFilters = new Set(saved.eligibility);
+		showUnavailable = saved.showUnavailable;
+		mainQuestOnly = saved.mainQuestOnly;
+		filtersHydrated = true;
+	});
+
+	$effect(() => {
+		if (filtersHydrated) {
+			saveQuestlineFilters({
+				status: Array.from(questlineStatusFilters),
+				eligibility: Array.from(eligibilityFilters),
+				showUnavailable,
+				mainQuestOnly
+			});
+		}
+	});
 
 	const statusFilterIcon = {
 		'not-started': CircleDashed,
@@ -357,6 +382,16 @@
 			aria-checked={mainQuestOnly}
 		>
 			<Star size={14} class={mainQuestOnly ? 'fill-amber-400 text-amber-400' : ''} />
+		</button>
+		<span class="mx-0.5 h-4 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></span>
+		<button
+			type="button"
+			onclick={resetFilters}
+			title="Reset filters to default"
+			aria-label="Reset filters to default"
+			class={buttonClass('icon')}
+		>
+			<RotateCcw size={14} class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />
 		</button>
 	</div>
 

@@ -140,9 +140,6 @@
 
 			<!-- Skills & Tower Grid -->
 			<div>
-				<h3 class="mb-1 text-xs font-medium text-gray-500 dark:text-gray-400">
-					Skills & Tower ({SKILLS.length})
-				</h3>
 				<div class="grid grid-cols-4 gap-2 text-center text-xs sm:grid-cols-7">
 					{#each SKILLS as skill (skill.key)}
 						<div class="rounded border border-gray-100 p-1.5 dark:border-gray-700">
@@ -165,9 +162,6 @@
 
 			<!-- NPC Friendships Search & List -->
 			<div class="flex flex-1 flex-col space-y-2 min-h-0">
-				<h3 class="text-xs font-medium text-gray-500 dark:text-gray-400">
-					NPC Friendships ({allNpcNames.length})
-				</h3>
 				<div class="relative">
 					<input
 						bind:value={npcQuery}

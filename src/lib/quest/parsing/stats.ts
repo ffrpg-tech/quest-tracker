@@ -112,11 +112,23 @@ function findNpcLevel(lines: string[], displayName: string): number | null {
 }
 
 function findTowerLevel(lines: string[]): number {
-	const idx = lines.findIndex((l) => l.toLowerCase() === TOWER_LEVEL_LINE.toLowerCase());
-	if (idx === -1) return 0; // Valid outcome for Tower-locked players, not a parse error.
-	const next = lines[idx + 1];
-	if (!next || !/^\d+$/.test(next)) return 0;
-	return parseInt(next, 10);
+	for (const line of lines) {
+		const m = /^(?:The\s+)?Tower(?:\s+Level)?[:\s]+(\d+)$/i.exec(line);
+		if (m) return parseInt(m[1], 10);
+	}
+
+	for (let idx = 0; idx < lines.length; idx++) {
+		const l = lines[idx].toLowerCase();
+		if (l === 'tower level' || l === 'the tower' || l === 'tower') {
+			for (let i = idx + 1; i < Math.min(lines.length, idx + 5); i++) {
+				const candidate = lines[i];
+				if (/missing tower key/i.test(candidate)) return 0;
+				const mLevel = /^(?:Level|Floor)?\s*(\d+)$/i.exec(candidate);
+				if (mLevel) return parseInt(mLevel[1], 10);
+			}
+		}
+	}
+	return 0; // Valid outcome for Tower-locked players, not a parse error.
 }
 
 /**
