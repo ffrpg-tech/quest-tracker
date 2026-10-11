@@ -648,9 +648,7 @@
 									</table>
 								</div>
 							{:else}
-								<div
-									class="max-h-[32rem] divide-y divide-gray-100 overflow-y-auto rounded border border-gray-100 dark:divide-gray-700 dark:border-gray-700"
-								>
+								<div class="space-y-3">
 									{#each diffResult.quests as q, qi (q.questName + qi)}
 										{@const gaps = questGaps(diffResult.questlineName, qi)}
 										{@const items = showAllItems ? q.requirements : q.shortfalls}
@@ -659,11 +657,11 @@
 										{@const questKey = `${diffResult.questlineName}:${q.questName}`}
 										{@const isCopied = copiedQuestKey === questKey}
 										<div
-											class="flex flex-col gap-1.5 p-2"
-											class:bg-red-50={isBlocked}
-											class:dark:bg-red-950={isBlocked}
-											class:bg-gray-50={isLocked && !isBlocked}
-											class:dark:bg-gray-800={isLocked && !isBlocked}
+											class="flex flex-col gap-1.5 rounded-lg border border-gray-200 p-3 border-l-4 dark:border-[#222a36] {isBlocked
+												? 'border-l-red-500 bg-red-50/60 dark:bg-[#2a1518]'
+												: isLocked
+													? 'border-l-transparent bg-gray-50 dark:bg-gray-800'
+													: 'border-l-transparent bg-white dark:bg-[#1b212b]'}"
 											class:opacity-50={q.done}
 										>
 											<div class="flex items-start justify-between gap-2">
