@@ -2,6 +2,37 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+	--header-h: 56px;
+}
+
+@media (min-width: 640px) {
+	:root {
+		--header-h: 99px;
+	}
+}
+
+html {
+	scroll-padding-top: var(--header-h);
+}
+
+[id],
+:target,
+section,
+[data-testid="result-row"],
+[data-testid="queue-row"] {
+	scroll-margin-top: var(--header-h);
+}
+
+@media (max-width: 639.98px) {
+	header {
+		margin-left: -0.75rem;
+		margin-right: -0.75rem;
+		padding-left: 0.75rem;
+		padding-right: 0.75rem;
+	}
+}
+
 /* This is a plain CSS file (imported via JS, not a compiled .svelte <style>
    block), so Svelte's :global() wrapper has no meaning here — it's already
    global scope. A previous version wrapped this in :global(body), which is

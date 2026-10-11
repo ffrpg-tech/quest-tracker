@@ -602,7 +602,7 @@
 
 <UpdateBanner />
 
-<div class="mx-auto max-w-6xl space-y-8 p-6 dark:text-gray-100">
+<div class="mx-auto max-w-6xl space-y-8 p-3 sm:p-6 dark:text-gray-100">
 	<AppHeader
 		{darkMode}
 		hasUnreadChangelog={unreadChangelog}
