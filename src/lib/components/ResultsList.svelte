@@ -664,66 +664,194 @@
 													: 'border-l-transparent bg-white dark:bg-[#1b212b]'}"
 											class:opacity-50={q.done}
 										>
-											<div class="flex items-start justify-between gap-2">
-												<div class="flex min-w-0 items-start gap-2">
-													<input
-														type="checkbox"
-														checked={q.done}
-														disabled={isLocked}
-														aria-label="Mark {q.questName} done"
-														title={isLocked ? 'Locked: complete prerequisite requirements first' : undefined}
-														onchange={() =>
-															onToggleCompleted(diffResult.questlineName, q.questName)}
-														class="mt-0.5 shrink-0"
-														class:cursor-pointer={!isLocked}
-														class:cursor-not-allowed={isLocked}
-														class:opacity-40={isLocked}
-													/>
-													<span class="mt-0.5 shrink-0 text-xs text-gray-400">#{q.seq}</span>
-													<div class="flex flex-col items-start gap-1">
+											<div class="grid grid-cols-[auto_1fr_auto] items-start gap-2">
+												<input
+													type="checkbox"
+													checked={q.done}
+													disabled={isLocked}
+													aria-label="Mark {q.questName} done"
+													title={isLocked ? 'Locked: complete prerequisite requirements first' : undefined}
+													onchange={() =>
+														onToggleCompleted(diffResult.questlineName, q.questName)}
+													class="mt-0.5 shrink-0"
+													class:cursor-pointer={!isLocked}
+													class:cursor-not-allowed={isLocked}
+													class:opacity-40={isLocked}
+												/>
+												<div class="flex min-w-0 flex-col items-start gap-1">
+													<div class="flex min-w-0 items-baseline gap-1.5">
+														<span class="shrink-0 text-xs text-gray-400">#{q.seq}</span>
 														<span
 															class="text-sm font-medium"
 															class:line-through={q.done}
 															class:text-gray-500={isLocked && !isBlocked}
 															class:dark:text-gray-400={isLocked && !isBlocked}
 														>{q.questName}</span>
-														{#if !q.done && hasMailableShortfalls(q.shortfalls)}
-															<button
-																type="button"
-																onclick={() => copyQuestRequest(diffResult.questlineName, q)}
-																title={isCopied ? 'Copied to clipboard!' : 'Copy request list for chat/trade'}
-																class="inline-flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors {isCopied
-																	? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-																	: 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-100'}"
-															>
-																{#if isCopied}
-																	<Check size={11} class="text-emerald-600 dark:text-emerald-400" />
-																	<span>Copied!</span>
-																{:else}
-																	<Copy size={11} />
-																	<span>Copy</span>
-																{/if}
-															</button>
-														{/if}
 													</div>
+													{#if !q.done && hasMailableShortfalls(q.shortfalls)}
+														<button
+															type="button"
+															onclick={() => copyQuestRequest(diffResult.questlineName, q)}
+															title={isCopied ? 'Copied to clipboard!' : 'Copy request list for chat/trade'}
+															class="inline-flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors {isCopied
+																? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+																: 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-100'}"
+														>
+															{#if isCopied}
+																<Check size={11} class="text-emerald-600 dark:text-emerald-400" />
+																<span>Copied!</span>
+															{:else}
+																<Copy size={11} />
+																<span>Copy</span>
+															{/if}
+														</button>
+													{/if}
 												</div>
 												{@render statusLabel(q, qi === block?.qi, true, gaps)}
 											</div>
 											{#if showAllItems}
 												{@const reqs = questRequirements(diffResult.questlineName, qi)}
 												{#if reqs.length > 0}
-													<div class="pl-6">
+													<div class="pt-1">
 														{@render eligibilityRequirementList(reqs)}
 													</div>
 												{/if}
 											{:else if gaps.length > 0}
-												<div class="pl-6">
+												<div class="pt-1">
 													{@render eligibilityGapList(gaps)}
 												</div>
 											{/if}
 											{#if items.length > 0}
-												<div class="pl-6">
-													{@render itemList(q, items, diffResult.questlineName)}
+												<div class="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-800">
+													{#each items as s (s.item)}
+														{@const cappedKey = q.questName + ':' + s.item}
+														{@const craftKey = q.questName + ':' + s.item}
+														{@const maxed = maxedItems.has(s.item)}
+														{@const runsDryHere = isRunsDryHere(s.item, diffResult.questlineName, q.questName)}
+														<div class="grid grid-cols-[28px_1fr] items-center gap-2">
+															<div class="flex items-center justify-center">
+																<ItemIcon name={s.item} hideCannotMail={true} />
+															</div>
+															<div class="flex min-w-0 flex-col gap-0.5 text-xs">
+																<!-- Item name with state badges beside it -->
+																<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+																	<a
+																		href={buddyFarmItemUrl(s.item)}
+																		target="_blank"
+																		rel="noopener noreferrer"
+																		class="font-medium text-gray-700 hover:underline dark:text-gray-300"
+																	>{s.item}</a>
+
+																	{#if s.capped}
+																		<button
+																			type="button"
+																			onclick={() => toggleCappedExplanation(cappedKey)}
+																			title={CAPPED_EXPLANATION}
+																			aria-expanded={expandedCapped === cappedKey}
+																			class="cursor-pointer rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
+																		>CAPPED</button>
+																	{/if}
+																	{#if s.isThresholdBreaker}
+																		<span
+																			title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed ? ' (currently MAX ON HAND)' : ''}"
+																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																		>EXCEEDS CAP HERE</span>
+																	{:else if s.exceedsCapacity}
+																		<span
+																			title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest ? ` (first exceeded at ${s.thresholdBreakerQuest})` : ''}{maxed ? ' (currently MAX ON HAND)' : ''} — multiple turn-ins or inventory upgrades required"
+																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																		>EXCEEDS CAP {#if s.thresholdBreakerQuest} (from {s.thresholdBreakerQuest}){/if}</span>
+																	{/if}
+																	{#if maxed}
+																		<span
+																			title={MAXED_EXPLANATION}
+																			class="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
+																		>MAX ON HAND</span>
+																	{/if}
+																	{#if runsDryHere}
+																		<span
+																			title={RUNS_DRY_EXPLANATION}
+																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300"
+																		>RUNS DRY HERE</span>
+																	{/if}
+																</div>
+
+																<!-- Source line: ItemSourcePill and the Craft Tree button -->
+																{#if (showLocationSources && s.short > 0) || (showCraftable && s.craftTree && s.craftTree.craftable && s.craftTree.children.length > 0)}
+																	<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-gray-500 dark:text-gray-400">
+																		{#if showLocationSources && s.short > 0}
+																			<ItemSourcePill itemName={s.item} {playerStats} {showAlternativeSources} />
+																		{/if}
+
+																		{#if showCraftable && s.craftTree && s.craftTree.craftable && s.craftTree.children.length > 0}
+																			{#if showLocationSources && s.short > 0}
+																				<span class="text-gray-300 dark:text-gray-600">|</span>
+																			{/if}
+																			<button
+																				type="button"
+																				onclick={() => toggleCraftTree(craftKey)}
+																				aria-expanded={expandedCraftTrees.has(craftKey)}
+																				class="inline-flex cursor-pointer items-center gap-0.5 text-xs text-sky-700 hover:underline dark:text-sky-400"
+																			>
+																				{#if expandedCraftTrees.has(craftKey)}<ChevronDown size={12} />{:else}<ChevronRight size={12} />{/if}
+																				<span>{expandedCraftTrees.has(craftKey) ? 'Hide' : 'Craft Tree'}</span>
+																				{#if !expandedCraftTrees.has(craftKey) && s.craftTree.left <= 0 && s.craftTree.craftableQty > 0}
+																					<span
+																						class="rounded bg-emerald-100 px-1 py-0.2 text-[9px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
+																					>
+																						Ready
+																					</span>
+																				{/if}
+																			</button>
+																		{/if}
+																	</div>
+																{/if}
+
+																<!-- Count line: Can't mail badge (if unmailable), then have / need (left) in a single whitespace-nowrap tabular-nums span -->
+																<div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+																	{#if getItemCanMail(s.item) === false}
+																		<span
+																			title="Can't be mailed — you'll need to get this yourself"
+																			class="shrink-0 rounded border-l-4 border-red-500 bg-red-500/10 bg-red-100 px-1 text-[9px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
+																		>CAN'T MAIL</span>
+																	{/if}
+																	<span class="whitespace-nowrap tabular-nums text-xs">
+																		<span class="text-sky-600 dark:text-sky-400">{s.have}</span>
+																		{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
+																			<span class="text-violet-600 dark:text-violet-400">(+{s.craftableQty})</span>
+																			/ <span class="text-gray-500 dark:text-gray-400">{s.needed}</span>
+																			(<span class="font-semibold text-red-600 dark:text-red-400"
+																				>{s.short - s.craftableQty}</span
+																			> left)
+																		{:else if s.short > 0}
+																			/ <span class="text-gray-500 dark:text-gray-400">{s.needed}</span>
+																			(<span class="font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
+																		{:else}
+																			/ <span class="text-gray-500 dark:text-gray-400">{s.needed}</span>
+																			<span class="font-medium {statusTextColorClass('good')}">(met)</span>
+																		{/if}
+																	</span>
+																</div>
+
+																<!-- Render expanded Craft Tree OUTSIDE the flex row as a full-width block below -->
+																{#if showCraftable && s.craftTree && expandedCraftTrees.has(craftKey)}
+																	<div class="mt-1 space-y-1 border-l border-gray-200 pl-2.5 dark:border-gray-700">
+																		{#each s.craftTree.children as child (child.item)}
+																			{#if showAllItems || child.left > 0}
+																				<CraftTreeNodeComponent node={child} {showAllItems} />
+																			{/if}
+																		{/each}
+																	</div>
+																{/if}
+
+																{#if s.capped && expandedCapped === cappedKey}
+																	<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+																		{CAPPED_EXPLANATION}
+																	</div>
+																{/if}
+															</div>
+														</div>
+													{/each}
 												</div>
 											{/if}
 										</div>
