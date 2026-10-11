@@ -42,6 +42,8 @@
 	import CraftTree from './CraftTree.svelte';
 	import ItemSourcePill from './ItemSourcePill.svelte';
 	import RequestListModal from './RequestListModal.svelte';
+	import BottomSheet from './BottomSheet.svelte';
+	import { MediaQuery } from 'svelte/reactivity';
 	import type { PlayerStats } from '$lib/quest/types';
 
 	let {
@@ -132,8 +134,11 @@
 		showSourcePopover = false;
 	}
 
+	const wide = new MediaQuery('min-width: 640px', true);
+
 	function handleWindowClick(e: MouseEvent) {
 		if (
+			wide.current &&
 			showSourcePopover &&
 			sourcePopoverContainer &&
 			!sourcePopoverContainer.contains(e.target as Node)
@@ -492,135 +497,145 @@
 							</button>
 
 							<!-- Sources Popover -->
-							{#if showSourcePopover}
-								<div
-									bind:this={sourcePopoverContainer}
-									class="absolute left-0 top-full z-40 mt-1 max-h-80 w-72 sm:w-80 overflow-y-auto rounded-md border border-gray-200 bg-white p-2.5 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-									role="region"
-									aria-label="Filter by source"
-								>
-									<div class="mb-2 flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-gray-700">
-										<div class="flex items-center gap-1.5">
-											<MapPin size={13} class="text-sky-600 dark:text-sky-400" />
-											<span class="text-xs font-semibold text-gray-700 dark:text-gray-300">
-												Filter by Source
-											</span>
+							{#snippet sourceFilterContent()}
+								<div class="mb-2 flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-gray-700">
+									<div class="flex items-center gap-1.5">
+										<MapPin size={13} class="text-sky-600 dark:text-sky-400" />
+										<span class="text-xs font-semibold text-gray-700 dark:text-gray-300">
+											Filter by Source
+										</span>
+									</div>
+									<button
+										type="button"
+										onclick={closeSourcePopover}
+										aria-label="Close"
+										class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+									>
+										<X size={13} />
+									</button>
+								</div>
+
+								<!-- Level 1: Category Filter Chips -->
+								{#if availableCategories.length > 0}
+									<div class="mb-2.5">
+										<div class="mb-1 text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+											Categories ({availableCategories.length})
 										</div>
-										<button
-											type="button"
-											onclick={closeSourcePopover}
-											aria-label="Close"
-											class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-										>
-											<X size={13} />
-										</button>
+										<div class="flex flex-wrap gap-1">
+											{#each availableCategories as cat (cat.id)}
+												<button
+													type="button"
+													onclick={() => toggleCategory(cat.id)}
+													class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {selectedCategories.has(cat.id)
+														? 'bg-sky-600 font-semibold text-white shadow-sm dark:bg-sky-500'
+														: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'}"
+													aria-pressed={selectedCategories.has(cat.id)}
+												>
+													<span>{cat.icon}</span>
+													<span>{cat.label}</span>
+													<span class="text-[10px] opacity-75">({cat.itemCount})</span>
+												</button>
+											{/each}
+										</div>
+									</div>
+								{/if}
+
+								<!-- Level 2: Specific Sources -->
+								<div class="border-t border-gray-100 pt-2 dark:border-gray-700">
+									<div class="mb-1.5 flex items-center justify-between">
+										<span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+											Specific Sources ({availableSources.length})
+										</span>
+										<div class="flex items-center gap-2 text-[11px]">
+											<button
+												type="button"
+												onclick={selectAllSources}
+												class="text-sky-600 hover:underline dark:text-sky-400"
+											>
+												Select all
+											</button>
+											<span class="text-gray-300 dark:text-gray-600">|</span>
+											<button
+												type="button"
+												onclick={clearAllSourceFilters}
+												class="text-gray-500 hover:underline dark:text-gray-400"
+											>
+												Clear all
+											</button>
+										</div>
 									</div>
 
-									<!-- Level 1: Category Filter Chips -->
-									{#if availableCategories.length > 0}
-										<div class="mb-2.5">
-											<div class="mb-1 text-[11px] font-semibold text-gray-700 dark:text-gray-300">
-												Categories ({availableCategories.length})
-											</div>
-											<div class="flex flex-wrap gap-1">
-												{#each availableCategories as cat (cat.id)}
-													<button
-														type="button"
-														onclick={() => toggleCategory(cat.id)}
-														class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {selectedCategories.has(cat.id)
-															? 'bg-sky-600 font-semibold text-white shadow-sm dark:bg-sky-500'
-															: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'}"
-														aria-pressed={selectedCategories.has(cat.id)}
-													>
-														<span>{cat.icon}</span>
-														<span>{cat.label}</span>
-														<span class="text-[10px] opacity-75">({cat.itemCount})</span>
-													</button>
-												{/each}
-											</div>
+									{#if availableSources.length > 5}
+										<div class="mb-2">
+											<input
+												bind:value={sourceFilterSearch}
+												placeholder="Search sources…"
+												class="w-full rounded border border-gray-300 px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
+											/>
 										</div>
 									{/if}
 
-									<!-- Level 2: Specific Sources -->
-									<div class="border-t border-gray-100 pt-2 dark:border-gray-700">
-										<div class="mb-1.5 flex items-center justify-between">
-											<span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
-												Specific Sources ({availableSources.length})
-											</span>
-											<div class="flex items-center gap-2 text-[11px]">
-												<button
-													type="button"
-													onclick={selectAllSources}
-													class="text-sky-600 hover:underline dark:text-sky-400"
+									<ul class="space-y-1 text-xs max-h-44 overflow-y-auto">
+										{#each filteredAvailableSources as src (src.id)}
+											{@const cat = getCategoryForType(src.type)}
+											{@const isCatSelected = selectedCategories.has(cat)}
+											<li>
+												<label
+													class="flex cursor-pointer items-center justify-between gap-1.5 rounded px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 {isCatSelected ? 'bg-sky-50/50 dark:bg-sky-950/30' : ''}"
 												>
-													Select all
-												</button>
-												<span class="text-gray-300 dark:text-gray-600">|</span>
-												<button
-													type="button"
-													onclick={clearAllSourceFilters}
-													class="text-gray-500 hover:underline dark:text-gray-400"
-												>
-													Clear all
-												</button>
-											</div>
-										</div>
-
-										{#if availableSources.length > 5}
-											<div class="mb-2">
-												<input
-													bind:value={sourceFilterSearch}
-													placeholder="Search sources…"
-													class="w-full rounded border border-gray-300 px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
-												/>
-											</div>
-										{/if}
-
-										<ul class="space-y-1 text-xs max-h-44 overflow-y-auto">
-											{#each filteredAvailableSources as src (src.id)}
-												{@const cat = getCategoryForType(src.type)}
-												{@const isCatSelected = selectedCategories.has(cat)}
-												<li>
-													<label
-														class="flex cursor-pointer items-center justify-between gap-1.5 rounded px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 {isCatSelected ? 'bg-sky-50/50 dark:bg-sky-950/30' : ''}"
-													>
-														<div class="flex min-w-0 items-center gap-1.5">
-															<input
-																type="checkbox"
-																checked={selectedSources.has(src.id) || isCatSelected}
-																disabled={isCatSelected}
-																onchange={() => toggleSource(src.id)}
-																class="h-3.5 w-3.5 shrink-0 rounded text-sky-600"
+													<div class="flex min-w-0 items-center gap-1.5">
+														<input
+															type="checkbox"
+															checked={selectedSources.has(src.id) || isCatSelected}
+															disabled={isCatSelected}
+															onchange={() => toggleSource(src.id)}
+															class="h-3.5 w-3.5 shrink-0 rounded text-sky-600"
+														/>
+														{#if src.image && !isImageFailed(src.image)}
+															<img
+																src={getFullSourceImageUrl(src.image)}
+																alt=""
+																width="12"
+																height="12"
+																class="inline-block shrink-0 object-contain"
+																loading="lazy"
+																onerror={() => markImageFailed(src.image)}
 															/>
-															{#if src.image && !isImageFailed(src.image)}
-																<img
-																	src={getFullSourceImageUrl(src.image)}
-																	alt=""
-																	width="12"
-																	height="12"
-																	class="inline-block shrink-0 object-contain"
-																	loading="lazy"
-																	onerror={() => markImageFailed(src.image)}
-																/>
-															{/if}
-															<span class="truncate">{src.name}</span>
-															{#if isCatSelected}
-																<span class="text-[9px] text-sky-600 dark:text-sky-400 font-medium shrink-0">
-																	(in category)
-																</span>
-															{/if}
-														</div>
-														<span class="shrink-0 text-[10px] text-gray-400">({src.itemCount})</span>
-													</label>
-												</li>
-											{:else}
-												<li class="py-2 text-center text-[11px] text-gray-400">
-													No sources match "{sourceFilterSearch}".
-												</li>
-											{/each}
-										</ul>
-									</div>
+														{/if}
+														<span class="truncate">{src.name}</span>
+														{#if isCatSelected}
+															<span class="text-[9px] text-sky-600 dark:text-sky-400 font-medium shrink-0">
+																(in category)
+															</span>
+														{/if}
+													</div>
+													<span class="shrink-0 text-[10px] text-gray-400">({src.itemCount})</span>
+												</label>
+											</li>
+										{:else}
+											<li class="py-2 text-center text-[11px] text-gray-400">
+												No sources match "{sourceFilterSearch}".
+											</li>
+										{/each}
+									</ul>
 								</div>
+							{/snippet}
+
+							{#if showSourcePopover}
+								{#if wide.current}
+									<div
+										bind:this={sourcePopoverContainer}
+										class="absolute left-0 top-full z-40 mt-1 max-h-80 w-72 sm:w-80 overflow-y-auto rounded-md border border-gray-200 bg-white p-2.5 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+										role="region"
+										aria-label="Filter by source"
+									>
+										{@render sourceFilterContent()}
+									</div>
+								{:else}
+									<BottomSheet bind:open={showSourcePopover} title="Filter by Source">
+										{@render sourceFilterContent()}
+									</BottomSheet>
+								{/if}
 							{/if}
 						</div>
 					{/if}

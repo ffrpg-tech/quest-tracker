@@ -7,6 +7,8 @@
 		markImageFailed,
 		type ResolvedSource
 	} from '$lib/quest/storage/sourcesStore.svelte';
+	import BottomSheet from './BottomSheet.svelte';
+	import { MediaQuery } from 'svelte/reactivity';
 	import type { PlayerStats } from '$lib/quest/types';
 
 	let {
@@ -26,6 +28,8 @@
 	let showSecondary = $state(false);
 	let popoverContainer: HTMLDivElement | null = $state(null);
 
+	const wide = new MediaQuery('min-width: 640px', true);
+
 	function toggleSecondary(e: MouseEvent) {
 		e.stopPropagation();
 		showSecondary = !showSecondary;
@@ -36,7 +40,7 @@
 	}
 
 	function handleWindowClick(e: MouseEvent) {
-		if (showSecondary && popoverContainer && !popoverContainer.contains(e.target as Node)) {
+		if (wide.current && showSecondary && popoverContainer && !popoverContainer.contains(e.target as Node)) {
 			showSecondary = false;
 		}
 	}
@@ -127,71 +131,82 @@
 			</button>
 		{/if}
 
-		<!-- Floating popover with secondary sources (completely unmounted when closed) -->
-		{#if showAlternativeSources && showSecondary}
-			<div
-				bind:this={popoverContainer}
-				class="absolute left-0 top-full z-40 mt-1 max-h-56 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-				role="region"
-				aria-label="Other sources for {itemName}"
-			>
-				<div class="mb-1.5 flex items-center justify-between border-b border-gray-100 pb-1 dark:border-gray-700">
-					<span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
-						Other Sources ({secondary.length})
-					</span>
-					<button
-						type="button"
-						onclick={closeSecondary}
-						aria-label="Close"
-						class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-					>
-						<X size={12} />
-					</button>
-				</div>
-				<ul class="space-y-1 text-[11px]">
-					{#each secondary as sec (sec.locId + (sec.tier ?? ''))}
-						<li class="flex items-center justify-between gap-1 py-0.5">
-							<div class="flex min-w-0 items-center gap-1">
-								{#if sec.image && !isImageFailed(sec.image)}
-									<img
-										src={getFullSourceImageUrl(sec.image)}
-										alt=""
-										width="12"
-										height="12"
-										class="inline-block shrink-0 object-contain"
-										loading="lazy"
-										onerror={() => markImageFailed(sec.image)}
-									/>
-								{/if}
-								{#if sec.buddyUrl}
-									<a
-										href={sec.buddyUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										class="truncate text-sky-700 hover:text-sky-800 hover:underline dark:text-sky-400 dark:hover:text-sky-300"
-									>
-										{formatSourceName(sec)}
-									</a>
-								{:else}
-									<span class="truncate text-gray-700 dark:text-gray-300">
-										{formatSourceName(sec)}
-									</span>
-								{/if}
-								{#if (sec.type === 'well' || sec.type === 'exchange') && sec.tier}
-									<span class="text-[10px] text-gray-400 shrink-0">({sec.tier})</span>
-								{/if}
-							</div>
-							<div class="flex shrink-0 items-center gap-1 text-[10px]">
-								{#if !sec.unlocked}
-									<span class="font-medium text-amber-600 dark:text-amber-400">
-										Req. {sec.reqLevel}
-									</span>
-								{/if}
-							</div>
-						</li>
-					{/each}
-				</ul>
+		<!-- Secondary sources content snippet -->
+		{#snippet secondarySourcesContent()}
+			<div class="mb-1.5 flex items-center justify-between border-b border-gray-100 pb-1 dark:border-gray-700">
+				<span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
+					Other Sources ({secondary.length})
+				</span>
+				<button
+					type="button"
+					onclick={closeSecondary}
+					aria-label="Close"
+					class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+				>
+					<X size={12} />
+				</button>
 			</div>
+			<ul class="space-y-1 text-[11px]">
+				{#each secondary as sec (sec.locId + (sec.tier ?? ''))}
+					<li class="flex items-center justify-between gap-1 py-0.5">
+						<div class="flex min-w-0 items-center gap-1">
+							{#if sec.image && !isImageFailed(sec.image)}
+								<img
+									src={getFullSourceImageUrl(sec.image)}
+									alt=""
+									width="12"
+									height="12"
+									class="inline-block shrink-0 object-contain"
+									loading="lazy"
+									onerror={() => markImageFailed(sec.image)}
+								/>
+							{/if}
+							{#if sec.buddyUrl}
+								<a
+									href={sec.buddyUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="truncate text-sky-700 hover:text-sky-800 hover:underline dark:text-sky-400 dark:hover:text-sky-300"
+								>
+									{formatSourceName(sec)}
+								</a>
+							{:else}
+								<span class="truncate text-gray-700 dark:text-gray-300">
+									{formatSourceName(sec)}
+								</span>
+							{/if}
+							{#if (sec.type === 'well' || sec.type === 'exchange') && sec.tier}
+								<span class="text-[10px] text-gray-400 shrink-0">({sec.tier})</span>
+							{/if}
+						</div>
+						<div class="flex shrink-0 items-center gap-1 text-[10px]">
+							{#if !sec.unlocked}
+								<span class="font-medium text-amber-600 dark:text-amber-400">
+									Req. {sec.reqLevel}
+								</span>
+							{/if}
+						</div>
+					</li>
+				{/each}
+			</ul>
+		{/snippet}
+
+		<!-- Secondary sources popover: Desktop inline popover, Mobile BottomSheet -->
+		{#if showAlternativeSources && showSecondary}
+			{#if wide.current}
+				<div
+					bind:this={popoverContainer}
+					class="absolute left-0 top-full z-40 mt-1 max-h-56 w-64 overflow-y-auto rounded-md border border-gray-200 bg-white p-2 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+					role="region"
+					aria-label="Other sources for {itemName}"
+				>
+					{@render secondarySourcesContent()}
+				</div>
+			{:else}
+				<BottomSheet bind:open={showSecondary} title="Other Sources for {itemName}">
+					{@render secondarySourcesContent()}
+				</BottomSheet>
+			{/if}
 		{/if}
 	</span>
 {/if}

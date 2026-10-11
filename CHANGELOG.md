@@ -7,6 +7,8 @@ are grouped by feature/release, not by individual commit.
 This file is the source of truth for the in-app [changelog page](/changelog) —
 the page parses this file directly, so an entry added here is what users see.
 
+## [Unreleased]
+
 ## [0.5.1] - 2026-10-11T00:00:00+08:00
 
 ### Added
