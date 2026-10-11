@@ -1,6 +1,6 @@
 import { loadCachedAppVersion, saveCachedAppVersion } from './quest/storage/persistence';
 
-export const APP_VERSION = '0.5.0';
+export const APP_VERSION = '0.5.1';
 
 /**
  * Compares two semantic version strings (e.g. '0.4.2' and '0.4.1').

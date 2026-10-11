@@ -7,6 +7,25 @@ are grouped by feature/release, not by individual commit.
 This file is the source of truth for the in-app [changelog page](/changelog) —
 the page parses this file directly, so an entry added here is what users see.
 
+## [0.5.1] - 2026-10-11T00:00:00+08:00
+
+### Added
+
+- New floating menu button (bottom-right) on phones that opens a bottom sheet with Import data pinned at the top, followed by Progress backup, Feedback, Tutorial & Guide, Changelog, Settings & Info, and the theme toggle.
+
+### Changed
+
+- Slimmer sticky header on phones: the title stays at the top, and actions move into the floating menu bottom sheet.
+- Quest cards on mobile no longer sit in a nested scroll box and now scroll with the page.
+- Quest items on mobile use a grid layout: the icon on the left, and the name, source, and counts stacked on the right. Counts stay on one line, and "Can't mail" sits with them.
+- Wall-point quests use a red left edge and a dark red tint instead of a solid red fill, so the numbers stay readable.
+- Desktop layout, table, and header remain completely unchanged.
+
+### Fixed
+
+- "Filter by Source" and "+N more" lists now open in a bottom sheet on phones, so they no longer run off the edge of the screen.
+- Jumping to an anchored quest now lands cleanly below the sticky header.
+
 ## [0.5.0] - 2026-10-10T00:00:00+08:00
 
 ### Added

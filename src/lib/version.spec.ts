@@ -18,7 +18,7 @@ describe('compareSemver', () => {
 		expect(compareSemver('0.4.0', '0.4.2')).toBe(-1);
 	});
 
-	it('exports valid APP_VERSION constant matching 0.5.0', () => {
-		expect(APP_VERSION).toBe('0.5.0');
+	it('exports valid APP_VERSION constant matching 0.5.1', () => {
+		expect(APP_VERSION).toBe('0.5.1');
 	});
 });
