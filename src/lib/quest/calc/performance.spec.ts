@@ -66,7 +66,7 @@ describe('performance characterization', () => {
 	it.skipIf(process.env.BENCHMARK_WITH_PLANNER !== '1')(
 		'measures planner work independently from queue walking',
 		() => {
-			const planner = createCraftingPlanner(emptyInventory, recipes);
+			const planner = createCraftingPlanner(new Map(emptyInventory), recipes);
 			const craftableRequirements = questlines.flatMap((questline) =>
 				questline.quests.flatMap((quest) =>
 					quest.requirements.filter((requirement) => recipes.has(requirement.item))

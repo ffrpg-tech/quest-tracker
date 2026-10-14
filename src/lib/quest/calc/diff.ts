@@ -294,10 +294,6 @@ function walkQuestline(
 					totalShortfallMap.set(req.item, aggregate);
 				}
 			}
-
-			// Decrement regardless of shortfall so later quests in the chain
-			// still show accurate running numbers (floor at 0, never negative).
-			inv.set(req.item, Math.max(0, have - req.qty));
 		}
 
 		quests.push({

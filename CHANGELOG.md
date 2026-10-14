@@ -9,6 +9,18 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.5.2] - 2026-10-14T00:00:00+08:00
+
+## Fixed
+
+- Shortfalls and craftable counts now account for stock used by crafts earlier in your queue. Previously, ingredients spent crafting one item could still look available to later quests, so totals could be too optimistic. Your shortfall totals may be larger than before. They now show what you actually need to gather.
+
+## [0.5.1.1] - 2026-10-11T00:00:00+08:00
+
+### Fixed
+
+- Restored fixed container height (`max-h-[32rem]`) and vertical scrolling for the mobile quest card list in Results, preventing long quest chains from stretching the page.
+
 ## [0.5.1] - 2026-10-11T00:00:00+08:00
 
 ### Added

@@ -648,7 +648,7 @@
 									</table>
 								</div>
 							{:else}
-								<div class="space-y-3">
+								<div class="max-h-[32rem] space-y-3 overflow-y-auto pr-1">
 									{#each diffResult.quests as q, qi (q.questName + qi)}
 										{@const gaps = questGaps(diffResult.questlineName, qi)}
 										{@const items = showAllItems ? q.requirements : q.shortfalls}

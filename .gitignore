@@ -21,6 +21,7 @@ Thumbs.db
 # Offline data-fetch tooling and its output — not committed; regenerated
 # locally and injected via the deploy platform's build-time env vars instead.
 /api
+/analytics
 /static/questlines.json
 /static/questlines-meta.json
 /static/items.json

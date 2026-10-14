@@ -492,9 +492,9 @@ describe('diffQuestline', () => {
 		});
 	});
 
-	it('does not starve a later intermediate item if an earlier intermediate item cannot be crafted', () => {
-		// Chain A needs Crate (needs 4 Wood), stock only has 2 Wood -> Crate craftableQty: 0
-		// Chain B needs Tool (needs 2 Wood) -> should be able to craft 1 Tool using the 2 Wood!
+	it('earlier uncraftable intermediate reserves shared stock and starves later quests', () => {
+		// Chain A needs Crate (needs 4 Wood), stock only has 2 Wood -> reserves 2 Wood, short Wood 2
+		// Chain B needs Tool (needs 2 Wood) -> 0 Wood left -> cannot craft Tool, short Wood 2
 		const questlineA: Questline = {
 			name: 'Chain A',
 			questCount: 1,
@@ -536,28 +536,40 @@ describe('diffQuestline', () => {
 			recipes
 		);
 
-		// Chain A cannot craft Crate (needs 4 Wood, only have 2)
+		// Chain A cannot complete Crate (needs 4 Wood, only 2 on hand -> raw shortfall Wood 2)
 		expect(resultA.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Crate',
+			needed: 1,
+			have: 0,
+			short: 1,
 			craftableQty: 0,
 			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 0, left: 1 }),
 			rawShortfalls: new Map([['Wood', 2]])
 		});
 
-		// Chain B gets the 2 Wood because Chain A did not consume it
+		// Chain B cannot craft Tool because Chain A reserved/drained the 2 Wood toward Crate
 		expect(resultB.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Tool',
-			craftableQty: 1,
-			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 1, left: 0 })
+			needed: 1,
+			have: 0,
+			short: 1,
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Tool', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 2]])
 		});
+
+		// Queue total raw Wood shortfall = 2 + 2 = 4
+		const totalWoodShort =
+			(resultA.quests[0].shortfalls[0].rawShortfalls?.get('Wood') ?? 0) +
+			(resultB.quests[0].shortfalls[0].rawShortfalls?.get('Wood') ?? 0);
+		expect(totalWoodShort).toBe(4);
 	});
 
-	it('splits shared raw stock correctly across partial craft quantities in queue', () => {
+	it('earlier partial craft reserves leftover shared stock toward uncraftable remainder', () => {
 		// Have 3 Wood.
 		// Chain A needs 2 Crates (each Crate needs 1 Board = 2 Wood, so 4 Wood for both).
-		// Chain A can only craft 1 Crate (consumes 2 Wood), leaving 1 Wood.
-		// Chain B needs 1 Stick (needs 1 Wood).
-		// Chain B can craft 1 Stick using the remaining 1 Wood!
+		// Chain A crafts 1 Crate (consumes 2 Wood), and 1 leftover Wood is drained toward the 2nd Crate.
+		// Chain B needs 1 Stick (needs 1 Wood) -> 0 Wood left, cannot craft Stick.
 		const questlineA: Questline = {
 			name: 'Chain A',
 			questCount: 1,
@@ -598,20 +610,33 @@ describe('diffQuestline', () => {
 			recipes
 		);
 
+		// Chain A crafts 1 Crate (uses 2 Wood) and drains the 1 leftover Wood toward the second Crate
 		expect(resultA.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Crate',
 			needed: 2,
+			have: 0,
+			short: 2,
 			craftableQty: 1,
 			craftTree: expect.objectContaining({ item: 'Crate', craftableQty: 1, left: 1 }),
 			rawShortfalls: new Map([['Wood', 1]])
 		});
 
+		// Chain B cannot craft Stick because the leftover Wood was drained by Chain A
 		expect(resultB.quests[0].shortfalls[0]).toMatchObject({
 			item: 'Stick',
 			needed: 1,
-			craftableQty: 1,
-			craftTree: expect.objectContaining({ item: 'Stick', craftableQty: 1, left: 0 })
+			have: 0,
+			short: 1,
+			craftableQty: 0,
+			craftTree: expect.objectContaining({ item: 'Stick', craftableQty: 0, left: 1 }),
+			rawShortfalls: new Map([['Wood', 1]])
 		});
+
+		// Queue total raw Wood shortfall = 1 + 1 = 2
+		const totalWoodShort =
+			(resultA.quests[0].shortfalls[0].rawShortfalls?.get('Wood') ?? 0) +
+			(resultB.quests[0].shortfalls[0].rawShortfalls?.get('Wood') ?? 0);
+		expect(totalWoodShort).toBe(2);
 	});
 });
 

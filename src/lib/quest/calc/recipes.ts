@@ -211,25 +211,22 @@ function collectRawShortfalls(
 	return result;
 }
 
+/** Creates a crafting planner that mutates the provided starting inventory Map in place as items and ingredients are consumed. */
 export function createCraftingPlanner(
 	startingInventory: Map<string, number>,
 	recipes: RecipeMap
 ): CraftingPlanner {
-	const resources = new Map(startingInventory);
+	const resources = startingInventory;
 
 	return {
 		plan(item, quantity) {
-			const treeResources = new Map(resources);
-			const craftTree = buildCraftTree(item, quantity, treeResources, recipes);
+			const craftTree = buildCraftTree(item, quantity, resources, recipes);
 			const have = resources.get(item) ?? 0;
 			const craftableQty = Math.min(quantity, have + craftTree.craftableQty);
 
 			const usedOnHand = Math.min(quantity, have);
 			if (usedOnHand > 0) {
 				resources.set(item, have - usedOnHand);
-			}
-			if (craftTree.craftableQty > 0) {
-				canCraft(item, craftTree.craftableQty, resources, recipes);
 			}
 
 			return {
