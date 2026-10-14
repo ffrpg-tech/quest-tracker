@@ -1,6 +1,9 @@
 /questlines.json
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
 
+/questlines-meta:json
+  Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
+
 /items.json
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
 
@@ -8,4 +11,16 @@
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
 
 /recipes.json
+  Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
+
+/mining.json
+  Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
+
+/item-sources.json
+  Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
+
+/item-sources-meta.json
+  Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
+
+/locations.json
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
