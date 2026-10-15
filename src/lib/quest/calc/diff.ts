@@ -1,11 +1,14 @@
-import { questKey, type Questline } from '../types';
+import { questKey, type PlayerStats, type Questline } from '../types';
 import { createCraftingPlanner, type CraftTreeNode, type RecipeMap } from './recipes';
+import { getItemCanMail } from '../storage/itemsStore.svelte';
+import type { RecipeGateMap } from './recipeLevels';
 
 export interface CapacityBottleneck {
 	item: string;
 	cumulativeNeeded: number;
 	maxCapacity: number;
 	questName: string;
+	capType?: 'hard' | 'soft';
 }
 
 export interface ItemShortfall {
@@ -28,6 +31,12 @@ export interface ItemShortfall {
 	isThresholdBreaker?: boolean;
 	/** Name of the quest where cumulative requirement first crossed storageCap */
 	thresholdBreakerQuest?: string;
+	/** 'hard' for non-mailable items (absolute blocker); 'soft' for mailable items (can overflow) */
+	capType?: 'hard' | 'soft';
+	/** True if a single quest requirement strictly exceeds maxCapacity */
+	isSingleQuestBreach?: boolean;
+	/** True if cumulative requirement exceeds maxCapacity but single quest requirements do not */
+	isCumulativeOnly?: boolean;
 }
 
 export interface QuestDiffResult {
@@ -52,11 +61,18 @@ export interface QuestShortfallShare {
 	rawShortfalls?: Map<string, number>;
 	craftTree?: CraftTreeNode;
 	isThresholdBreaker?: boolean;
+	capType?: 'hard' | 'soft';
 }
 
 /** A chain-level aggregated shortfall, broken down by which quest(s) in the chain it came from. */
 export interface AggregatedItemShortfall extends ItemShortfall {
 	byQuest: QuestShortfallShare[];
+}
+
+export interface DiffOptions {
+	canMailLookup?: (item: string) => boolean | undefined;
+	playerStats?: PlayerStats | null;
+	recipeGates?: RecipeGateMap;
 }
 
 /** Folds a new `needed`/`short` hit into an existing aggregate in place, keeping `have = needed - short` internally consistent — the single accumulation rule shared by the chain-level (`walkQuestline`) and queue-level (`aggregateQueueShortfalls`) rollups, so the invariant can't drift out of sync between the two call sites. */
@@ -70,7 +86,10 @@ function accumulateShortfall(
 	exceedsCapacity?: boolean,
 	storageCap?: number,
 	cumulativeNeeded?: number,
-	thresholdBreakerQuest?: string
+	thresholdBreakerQuest?: string,
+	capType?: 'hard' | 'soft',
+	isSingleQuestBreach?: boolean,
+	isCumulativeOnly?: boolean
 ): void {
 	target.needed += needed;
 	target.short += short;
@@ -81,6 +100,16 @@ function accumulateShortfall(
 	if (cumulativeNeeded !== undefined) target.cumulativeNeeded = cumulativeNeeded;
 	if (thresholdBreakerQuest !== undefined && !target.thresholdBreakerQuest) {
 		target.thresholdBreakerQuest = thresholdBreakerQuest;
+	}
+	if (capType !== undefined) target.capType = capType;
+	if (isSingleQuestBreach !== undefined) {
+		target.isSingleQuestBreach =
+			target.isSingleQuestBreach !== undefined
+				? target.isSingleQuestBreach || isSingleQuestBreach
+				: isSingleQuestBreach;
+	}
+	if (isCumulativeOnly !== undefined) {
+		target.isCumulativeOnly = target.isCumulativeOnly ?? isCumulativeOnly;
 	}
 	if (craftableQty !== undefined) {
 		target.craftableQty = (target.craftableQty ?? 0) + craftableQty;
@@ -117,7 +146,8 @@ function walkQuestline(
 	craftingPlanner = createCraftingPlanner(inv, recipes),
 	maxCapacity: number | null = null,
 	cumulativeRequiredMap: Map<string, number> = new Map(),
-	breachedCapsMap: Map<string, string> = new Map()
+	breachedCapsMap: Map<string, string> = new Map(),
+	options: DiffOptions = {}
 ): QuestlineDiffResult {
 	const quests: QuestDiffResult[] = [];
 	let wallPointIndex: number | null = null;
@@ -156,10 +186,22 @@ function walkQuestline(
 
 			let exceedsCapacity = false;
 			let isThresholdBreaker = false;
+			const isSingleQuestBreach =
+				effectiveCap !== undefined && !isSilver ? req.qty > effectiveCap : undefined;
+
+			let capType: 'hard' | 'soft' | undefined;
+			let isCumulativeOnly: boolean | undefined;
 
 			if (effectiveCap !== undefined && !isSilver) {
 				if (currentCumulative > effectiveCap) {
 					exceedsCapacity = true;
+					const checkCanMail = options.canMailLookup ?? getItemCanMail;
+					const canMail = checkCanMail(req.item);
+					if (canMail !== undefined) {
+						capType = canMail === false ? 'hard' : 'soft';
+					}
+					isCumulativeOnly = !isSingleQuestBreach;
+
 					if (!breachedCapsMap.has(req.item)) {
 						breachedCapsMap.set(req.item, q.name);
 						isThresholdBreaker = true;
@@ -167,7 +209,8 @@ function walkQuestline(
 							item: req.item,
 							cumulativeNeeded: currentCumulative,
 							maxCapacity: effectiveCap,
-							questName: q.name
+							questName: q.name,
+							...(capType && { capType })
 						});
 					}
 				}
@@ -201,6 +244,11 @@ function walkQuestline(
 				requirement.exceedsCapacity = true;
 				requirement.storageCap = effectiveCap;
 				requirement.thresholdBreakerQuest = breachedCapsMap.get(req.item);
+				if (capType !== undefined) requirement.capType = capType;
+				if (isCumulativeOnly !== undefined) requirement.isCumulativeOnly = isCumulativeOnly;
+			}
+			if (isSingleQuestBreach !== undefined) {
+				requirement.isSingleQuestBreach = isSingleQuestBreach;
 			}
 			if (isThresholdBreaker) {
 				requirement.isThresholdBreaker = true;
@@ -227,7 +275,10 @@ function walkQuestline(
 						exceedsCapacity || undefined,
 						effectiveCap,
 						maxCapacity !== null ? currentCumulative : undefined,
-						breachedCapsMap.get(req.item)
+						breachedCapsMap.get(req.item),
+						capType,
+						isSingleQuestBreach,
+						isCumulativeOnly
 					);
 
 					// Same quest can hit the same item twice only if it lists the
@@ -250,7 +301,8 @@ function walkQuestline(
 							craftableQty,
 							...(rawShortfalls && { rawShortfalls }),
 							...(craftTree && { craftTree }),
-							...(isThresholdBreaker && { isThresholdBreaker })
+							...(isThresholdBreaker && { isThresholdBreaker }),
+							...(capType && { capType })
 						});
 					}
 				} else {
@@ -267,7 +319,8 @@ function walkQuestline(
 								...(craftableQty !== undefined && { craftableQty }),
 								...(rawShortfalls && { rawShortfalls }),
 								...(craftTree && { craftTree }),
-								...(isThresholdBreaker && { isThresholdBreaker })
+								...(isThresholdBreaker && { isThresholdBreaker }),
+								...(capType && { capType })
 							}
 						]
 					};
@@ -277,6 +330,11 @@ function walkQuestline(
 					if (exceedsCapacity) {
 						aggregate.exceedsCapacity = true;
 						aggregate.storageCap = effectiveCap;
+						if (capType !== undefined) aggregate.capType = capType;
+						if (isCumulativeOnly !== undefined) aggregate.isCumulativeOnly = isCumulativeOnly;
+					}
+					if (isSingleQuestBreach !== undefined) {
+						aggregate.isSingleQuestBreach = isSingleQuestBreach;
 					}
 					if (isThresholdBreaker) {
 						aggregate.isThresholdBreaker = true;
@@ -328,7 +386,8 @@ export function diffQuestline(
 	completed: Set<string> = new Set(),
 	caps: Map<string, number> = new Map(),
 	recipes: RecipeMap = new Map(),
-	maxCapacity: number | null = null
+	maxCapacity: number | null = null,
+	options: DiffOptions = {}
 ): QuestlineDiffResult {
 	const inv = new Map(startingInventory);
 	return walkQuestline(
@@ -337,10 +396,14 @@ export function diffQuestline(
 		completed,
 		caps,
 		recipes,
-		createCraftingPlanner(inv, recipes),
+		createCraftingPlanner(inv, recipes, {
+			playerStats: options.playerStats,
+			recipeGates: options.recipeGates
+		}),
 		maxCapacity,
 		new Map(),
-		new Map()
+		new Map(),
+		options
 	);
 }
 
@@ -356,10 +419,14 @@ export function diffQuestlineQueue(
 	completed: Set<string> = new Set(),
 	caps: Map<string, number> = new Map(),
 	recipes: RecipeMap = new Map(),
-	maxCapacity: number | null = null
+	maxCapacity: number | null = null,
+	options: DiffOptions = {}
 ): QuestlineDiffResult[] {
 	const inv = new Map(startingInventory);
-	const craftingPlanner = createCraftingPlanner(inv, recipes);
+	const craftingPlanner = createCraftingPlanner(inv, recipes, {
+		playerStats: options.playerStats,
+		recipeGates: options.recipeGates
+	});
 	const cumulativeRequiredMap = new Map<string, number>();
 	const breachedCapsMap = new Map<string, string>();
 	return questlines.map((questline) =>
@@ -372,7 +439,8 @@ export function diffQuestlineQueue(
 			craftingPlanner,
 			maxCapacity,
 			cumulativeRequiredMap,
-			breachedCapsMap
+			breachedCapsMap,
+			options
 		)
 	);
 }
@@ -428,7 +496,10 @@ export function aggregateQueueShortfalls(results: QuestlineDiffResult[]): QueueI
 					s.exceedsCapacity,
 					s.storageCap,
 					s.cumulativeNeeded,
-					s.thresholdBreakerQuest
+					s.thresholdBreakerQuest,
+					s.capType,
+					s.isSingleQuestBreach,
+					s.isCumulativeOnly
 				);
 				existing.byQuestline.push(share);
 			} else {
@@ -442,7 +513,14 @@ export function aggregateQueueShortfalls(results: QuestlineDiffResult[]): QueueI
 					...(s.storageCap !== undefined && { storageCap: s.storageCap }),
 					...(s.cumulativeNeeded !== undefined && { cumulativeNeeded: s.cumulativeNeeded }),
 					...(s.isThresholdBreaker !== undefined && { isThresholdBreaker: s.isThresholdBreaker }),
-					...(s.thresholdBreakerQuest !== undefined && { thresholdBreakerQuest: s.thresholdBreakerQuest }),
+					...(s.thresholdBreakerQuest !== undefined && {
+						thresholdBreakerQuest: s.thresholdBreakerQuest
+					}),
+					...(s.capType !== undefined && { capType: s.capType }),
+					...(s.isSingleQuestBreach !== undefined && {
+						isSingleQuestBreach: s.isSingleQuestBreach
+					}),
+					...(s.isCumulativeOnly !== undefined && { isCumulativeOnly: s.isCumulativeOnly }),
 					byQuestline: [share],
 					...(s.craftableQty !== undefined && { craftableQty: s.craftableQty }),
 					...(s.rawShortfalls && { rawShortfalls: new Map(s.rawShortfalls) })

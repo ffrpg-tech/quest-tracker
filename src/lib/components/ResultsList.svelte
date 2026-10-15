@@ -21,7 +21,6 @@
 	import { generateRequestList } from '$lib/quest/export/requestList';
 	import { getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
 	import ItemIcon from './ItemIcon.svelte';
-	import CraftTree from './CraftTree.svelte';
 	import CraftTreeNodeComponent from './CraftTreeNode.svelte';
 	import ItemSourcePill from './ItemSourcePill.svelte';
 	import type { PlayerStats } from '$lib/quest/types';
@@ -138,9 +137,9 @@
 		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
 
 	const runsDryKeySet = $derived.by(() => {
-		const set = new Set();
+		const set = new Set<string>();
 		for (const [item, loc] of runsDryAt.entries()) {
-			set.add(`\({item}:\){loc.questlineName}:${loc.questName}`);
+			set.add(`${item}:${loc.questlineName}:${loc.questName}`);
 		}
 		return set;
 	});
@@ -373,7 +372,8 @@
 			{@const craftKey = q.questName + ':' + s.item}
 			{@const maxed = maxedItems.has(s.item)}
 			{@const runsDryHere = isRunsDryHere(s.item, questlineName, q.questName)}
-			{@const hasBadges = s.capped || s.isThresholdBreaker || s.exceedsCapacity || maxed || runsDryHere}
+			{@const hasBadges =
+				s.capped || s.isThresholdBreaker || s.exceedsCapacity || maxed || runsDryHere}
 			<li class="py-0.5">
 				<div class="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs">
 					<span class="inline-flex items-center gap-1 font-medium text-gray-700 dark:text-gray-300">
@@ -381,20 +381,23 @@
 						<a
 							href={buddyFarmItemUrl(s.item)}
 							target="_blank"
-							rel="noopener noreferrer"
+							rel="external noopener noreferrer"
 							class="hover:underline">{s.item}</a
 						>
 					</span>:
 					<span class="tabular-nums text-sky-600 dark:text-sky-400">{s.have}</span>
 					{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
-						<span class="tabular-nums text-violet-600 dark:text-violet-400">(+{s.craftableQty})</span>
+						<span class="tabular-nums text-violet-600 dark:text-violet-400"
+							>(+{s.craftableQty})</span
+						>
 						/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 						(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400"
 							>{s.short - s.craftableQty}</span
 						> left)
 					{:else if s.short > 0}
 						/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
-						(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
+						(<span class="tabular-nums font-semibold text-red-600 dark:text-red-400">{s.short}</span
+						> left)
 					{:else}
 						/ <span class="tabular-nums text-gray-500 dark:text-gray-400">{s.needed}</span>
 						<span class="font-medium {statusTextColorClass('good')}">(met)</span>
@@ -407,7 +410,7 @@
 					{/if}
 
 					<!-- Separator and Craft Tree toggle button if craftable -->
-					{#if showCraftable && s.craftTree && s.craftTree.craftable && s.craftTree.children.length > 0}
+					{#if showCraftable && s.craftTree && s.craftTree.children.length > 0}
 						<span class="text-gray-300 dark:text-gray-600">|</span>
 						<button
 							type="button"
@@ -415,7 +418,9 @@
 							aria-expanded={expandedCraftTrees.has(craftKey)}
 							class="inline-flex cursor-pointer items-center gap-0.5 text-xs text-sky-700 hover:underline dark:text-sky-400"
 						>
-							{#if expandedCraftTrees.has(craftKey)}<ChevronDown size={12} />{:else}<ChevronRight size={12} />{/if}
+							{#if expandedCraftTrees.has(craftKey)}<ChevronDown size={12} />{:else}<ChevronRight
+									size={12}
+								/>{/if}
 							<span>{expandedCraftTrees.has(craftKey) ? 'Hide' : 'Craft Tree'}</span>
 							{#if !expandedCraftTrees.has(craftKey) && s.craftTree.left <= 0 && s.craftTree.craftableQty > 0}
 								<span
@@ -444,17 +449,62 @@
 						>
 					{/if}
 					{#if s.isThresholdBreaker}
-						<span
-							title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed ? ' (currently MAX ON HAND)' : ''}"
-							class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-							>EXCEEDS CAP HERE</span
-						>
+						{#if s.capType === 'hard'}
+							<span
+								title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest for non-mailable item{maxed
+									? ' (currently MAX ON HAND)'
+									: ''} — impossible to complete without Storehouse upgrades"
+								class="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+								>HARD CAP HERE</span
+							>
+						{:else if s.capType === 'soft'}
+							<span
+								title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed
+									? ' (currently MAX ON HAND)'
+									: ''} — mailable item, can overflow via trade or mailbox"
+								class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+								>SOFT CAP HERE</span
+							>
+						{:else}
+							<span
+								title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed
+									? ' (currently MAX ON HAND)'
+									: ''}"
+								class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+								>EXCEEDS CAP HERE</span
+							>
+						{/if}
 					{:else if s.exceedsCapacity}
-						<span
-							title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest ? ` (first exceeded at ${s.thresholdBreakerQuest})` : ''}{maxed ? ' (currently MAX ON HAND)' : ''} — multiple turn-ins or inventory upgrades required"
-							class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-							>EXCEEDS CAP {#if s.thresholdBreakerQuest} (from {s.thresholdBreakerQuest}){/if}</span
-						>
+						{#if s.capType === 'hard'}
+							<span
+								title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+									? ` (first exceeded at ${s.thresholdBreakerQuest})`
+									: ''}{maxed ? ' (currently MAX ON HAND)' : ''} for non-mailable item"
+								class="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+								>HARD CAP {#if s.thresholdBreakerQuest}
+									(from {s.thresholdBreakerQuest}){/if}</span
+							>
+						{:else if s.capType === 'soft'}
+							<span
+								title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+									? ` (first exceeded at ${s.thresholdBreakerQuest})`
+									: ''}{maxed ? ' (currently MAX ON HAND)' : ''} — mailable item"
+								class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+								>SOFT CAP {#if s.thresholdBreakerQuest}
+									(from {s.thresholdBreakerQuest}){/if}</span
+							>
+						{:else}
+							<span
+								title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+									? ` (first exceeded at ${s.thresholdBreakerQuest})`
+									: ''}{maxed
+									? ' (currently MAX ON HAND)'
+									: ''} — multiple turn-ins or inventory upgrades required"
+								class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+								>EXCEEDS CAP {#if s.thresholdBreakerQuest}
+									(from {s.thresholdBreakerQuest}){/if}</span
+							>
+						{/if}
 					{/if}
 					{#if maxed}
 						<span
@@ -584,7 +634,9 @@
 															checked={q.done}
 															disabled={isLocked}
 															aria-label="Mark {q.questName} done"
-															title={isLocked ? 'Locked: complete prerequisite requirements first' : undefined}
+															title={isLocked
+																? 'Locked: complete prerequisite requirements first'
+																: undefined}
 															onchange={() =>
 																onToggleCompleted(diffResult.questlineName, q.questName)}
 															class="h-4 w-4 shrink-0"
@@ -600,18 +652,24 @@
 																class:line-through={q.done}
 																class:text-gray-500={isLocked && !isBlocked}
 																class:dark:text-gray-400={isLocked && !isBlocked}
-															>{q.questName}</span>
+																>{q.questName}</span
+															>
 															{#if !q.done && hasMailableShortfalls(q.shortfalls)}
 																<button
 																	type="button"
 																	onclick={() => copyQuestRequest(diffResult.questlineName, q)}
-																	title={isCopied ? 'Copied to clipboard!' : 'Copy request list for chat/trade'}
+																	title={isCopied
+																		? 'Copied to clipboard!'
+																		: 'Copy request list for chat/trade'}
 																	class="inline-flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors {isCopied
 																		? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
 																		: 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-100'}"
 																>
 																	{#if isCopied}
-																		<Check size={11} class="text-emerald-600 dark:text-emerald-400" />
+																		<Check
+																			size={11}
+																			class="text-emerald-600 dark:text-emerald-400"
+																		/>
 																		<span>Copied!</span>
 																	{:else}
 																		<Copy size={11} />
@@ -631,7 +689,10 @@
 													</td>
 													<td class="p-2">
 														{#if showAllItems}
-															{@const reqs = questRequirements(diffResult.questlineName, diffResult.quests.indexOf(q))}
+															{@const reqs = questRequirements(
+																diffResult.questlineName,
+																diffResult.quests.indexOf(q)
+															)}
 															{#if reqs.length > 0}
 																{@render eligibilityRequirementList(reqs)}
 															{/if}
@@ -670,9 +731,10 @@
 													checked={q.done}
 													disabled={isLocked}
 													aria-label="Mark {q.questName} done"
-													title={isLocked ? 'Locked: complete prerequisite requirements first' : undefined}
-													onchange={() =>
-														onToggleCompleted(diffResult.questlineName, q.questName)}
+													title={isLocked
+														? 'Locked: complete prerequisite requirements first'
+														: undefined}
+													onchange={() => onToggleCompleted(diffResult.questlineName, q.questName)}
 													class="mt-0.5 shrink-0"
 													class:cursor-pointer={!isLocked}
 													class:cursor-not-allowed={isLocked}
@@ -685,14 +747,16 @@
 															class="text-sm font-medium"
 															class:line-through={q.done}
 															class:text-gray-500={isLocked && !isBlocked}
-															class:dark:text-gray-400={isLocked && !isBlocked}
-														>{q.questName}</span>
+															class:dark:text-gray-400={isLocked && !isBlocked}>{q.questName}</span
+														>
 													</div>
 													{#if !q.done && hasMailableShortfalls(q.shortfalls)}
 														<button
 															type="button"
 															onclick={() => copyQuestRequest(diffResult.questlineName, q)}
-															title={isCopied ? 'Copied to clipboard!' : 'Copy request list for chat/trade'}
+															title={isCopied
+																? 'Copied to clipboard!'
+																: 'Copy request list for chat/trade'}
 															class="inline-flex cursor-pointer items-center gap-1 rounded px-1.5 py-0.5 text-[11px] font-medium transition-colors {isCopied
 																? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
 																: 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-gray-100'}"
@@ -722,12 +786,18 @@
 												</div>
 											{/if}
 											{#if items.length > 0}
-												<div class="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-800">
+												<div
+													class="mt-2 space-y-2 border-t border-gray-100 pt-2 dark:border-gray-800"
+												>
 													{#each items as s (s.item)}
 														{@const cappedKey = q.questName + ':' + s.item}
 														{@const craftKey = q.questName + ':' + s.item}
 														{@const maxed = maxedItems.has(s.item)}
-														{@const runsDryHere = isRunsDryHere(s.item, diffResult.questlineName, q.questName)}
+														{@const runsDryHere = isRunsDryHere(
+															s.item,
+															diffResult.questlineName,
+															q.questName
+														)}
 														<div class="grid grid-cols-[28px_1fr] items-center gap-2">
 															<div class="flex items-center justify-center">
 																<ItemIcon name={s.item} hideCannotMail={true} />
@@ -738,9 +808,10 @@
 																	<a
 																		href={buddyFarmItemUrl(s.item)}
 																		target="_blank"
-																		rel="noopener noreferrer"
+																		rel="external noopener noreferrer"
 																		class="font-medium text-gray-700 hover:underline dark:text-gray-300"
-																	>{s.item}</a>
+																		>{s.item}</a
+																	>
 
 																	{#if s.capped}
 																		<button
@@ -749,41 +820,101 @@
 																			title={CAPPED_EXPLANATION}
 																			aria-expanded={expandedCapped === cappedKey}
 																			class="cursor-pointer rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
-																		>CAPPED</button>
+																			>CAPPED</button
+																		>
 																	{/if}
 																	{#if s.isThresholdBreaker}
-																		<span
-																			title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed ? ' (currently MAX ON HAND)' : ''}"
-																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-																		>EXCEEDS CAP HERE</span>
+																		{#if s.capType === 'hard'}
+																			<span
+																				title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed
+																					? ' (currently MAX ON HAND)'
+																					: ''} — impossible to complete without Storehouse upgrades"
+																				class="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+																				>HARD CAP HERE</span
+																			>
+																		{:else if s.capType === 'soft'}
+																			<span
+																				title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed
+																					? ' (currently MAX ON HAND)'
+																					: ''} — mailable item, can overflow via trade or mailbox"
+																				class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																				>SOFT CAP HERE</span
+																			>
+																		{:else}
+																			<span
+																				title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest{maxed
+																					? ' (currently MAX ON HAND)'
+																					: ''}"
+																				class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																				>EXCEEDS CAP HERE</span
+																			>
+																		{/if}
 																	{:else if s.exceedsCapacity}
-																		<span
-																			title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest ? ` (first exceeded at ${s.thresholdBreakerQuest})` : ''}{maxed ? ' (currently MAX ON HAND)' : ''} — multiple turn-ins or inventory upgrades required"
-																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-																		>EXCEEDS CAP {#if s.thresholdBreakerQuest} (from {s.thresholdBreakerQuest}){/if}</span>
+																		{#if s.capType === 'hard'}
+																			<span
+																				title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+																					? ` (first exceeded at ${s.thresholdBreakerQuest})`
+																					: ''}{maxed
+																					? ' (currently MAX ON HAND)'
+																					: ''} for non-mailable item"
+																				class="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+																				>HARD CAP {#if s.thresholdBreakerQuest}
+																					(from {s.thresholdBreakerQuest}){/if}</span
+																			>
+																		{:else if s.capType === 'soft'}
+																			<span
+																				title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+																					? ` (first exceeded at ${s.thresholdBreakerQuest})`
+																					: ''}{maxed
+																					? ' (currently MAX ON HAND)'
+																					: ''} — mailable item"
+																				class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																				>SOFT CAP {#if s.thresholdBreakerQuest}
+																					(from {s.thresholdBreakerQuest}){/if}</span
+																			>
+																		{:else}
+																			<span
+																				title="Cumulative requirement exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+																					? ` (first exceeded at ${s.thresholdBreakerQuest})`
+																					: ''}{maxed
+																					? ' (currently MAX ON HAND)'
+																					: ''} — multiple turn-ins or inventory upgrades required"
+																				class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																				>EXCEEDS CAP {#if s.thresholdBreakerQuest}
+																					(from {s.thresholdBreakerQuest}){/if}</span
+																			>
+																		{/if}
 																	{/if}
 																	{#if maxed}
 																		<span
 																			title={MAXED_EXPLANATION}
 																			class="rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:bg-sky-950 dark:text-sky-300"
-																		>MAX ON HAND</span>
+																			>MAX ON HAND</span
+																		>
 																	{/if}
 																	{#if runsDryHere}
 																		<span
 																			title={RUNS_DRY_EXPLANATION}
 																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300"
-																		>RUNS DRY HERE</span>
+																			>RUNS DRY HERE</span
+																		>
 																	{/if}
 																</div>
 
 																<!-- Source line: ItemSourcePill and the Craft Tree button -->
-																{#if (showLocationSources && s.short > 0) || (showCraftable && s.craftTree && s.craftTree.craftable && s.craftTree.children.length > 0)}
-																	<div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-gray-500 dark:text-gray-400">
+																{#if (showLocationSources && s.short > 0) || (showCraftable && s.craftTree && s.craftTree.children.length > 0)}
+																	<div
+																		class="flex flex-wrap items-center gap-x-2 gap-y-1 text-gray-500 dark:text-gray-400"
+																	>
 																		{#if showLocationSources && s.short > 0}
-																			<ItemSourcePill itemName={s.item} {playerStats} {showAlternativeSources} />
+																			<ItemSourcePill
+																				itemName={s.item}
+																				{playerStats}
+																				{showAlternativeSources}
+																			/>
 																		{/if}
 
-																		{#if showCraftable && s.craftTree && s.craftTree.craftable && s.craftTree.children.length > 0}
+																		{#if showCraftable && s.craftTree && s.craftTree.children.length > 0}
 																			{#if showLocationSources && s.short > 0}
 																				<span class="text-gray-300 dark:text-gray-600">|</span>
 																			{/if}
@@ -793,8 +924,14 @@
 																				aria-expanded={expandedCraftTrees.has(craftKey)}
 																				class="inline-flex cursor-pointer items-center gap-0.5 text-xs text-sky-700 hover:underline dark:text-sky-400"
 																			>
-																				{#if expandedCraftTrees.has(craftKey)}<ChevronDown size={12} />{:else}<ChevronRight size={12} />{/if}
-																				<span>{expandedCraftTrees.has(craftKey) ? 'Hide' : 'Craft Tree'}</span>
+																				{#if expandedCraftTrees.has(craftKey)}<ChevronDown
+																						size={12}
+																					/>{:else}<ChevronRight size={12} />{/if}
+																				<span
+																					>{expandedCraftTrees.has(craftKey)
+																						? 'Hide'
+																						: 'Craft Tree'}</span
+																				>
 																				{#if !expandedCraftTrees.has(craftKey) && s.craftTree.left <= 0 && s.craftTree.craftableQty > 0}
 																					<span
 																						class="rounded bg-emerald-100 px-1 py-0.2 text-[9px] font-semibold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300"
@@ -813,29 +950,45 @@
 																		<span
 																			title="Can't be mailed — you'll need to get this yourself"
 																			class="shrink-0 rounded border-l-4 border-red-500 bg-red-500/10 bg-red-100 px-1 text-[9px] font-semibold text-red-700 dark:bg-red-950 dark:text-red-300"
-																		>CAN'T MAIL</span>
+																			>CAN'T MAIL</span
+																		>
 																	{/if}
 																	<span class="whitespace-nowrap tabular-nums text-xs">
 																		<span class="text-sky-600 dark:text-sky-400">{s.have}</span>
 																		{#if s.short > 0 && showCraftable && s.craftableQty !== undefined && s.craftableQty > 0}
-																			<span class="text-violet-600 dark:text-violet-400">(+{s.craftableQty})</span>
-																			/ <span class="text-gray-500 dark:text-gray-400">{s.needed}</span>
+																			<span class="text-violet-600 dark:text-violet-400"
+																				>(+{s.craftableQty})</span
+																			>
+																			/
+																			<span class="text-gray-500 dark:text-gray-400"
+																				>{s.needed}</span
+																			>
 																			(<span class="font-semibold text-red-600 dark:text-red-400"
 																				>{s.short - s.craftableQty}</span
 																			> left)
 																		{:else if s.short > 0}
-																			/ <span class="text-gray-500 dark:text-gray-400">{s.needed}</span>
-																			(<span class="font-semibold text-red-600 dark:text-red-400">{s.short}</span> left)
+																			/ <span class="text-gray-500 dark:text-gray-400"
+																				>{s.needed}</span
+																			>
+																			(<span class="font-semibold text-red-600 dark:text-red-400"
+																				>{s.short}</span
+																			> left)
 																		{:else}
-																			/ <span class="text-gray-500 dark:text-gray-400">{s.needed}</span>
-																			<span class="font-medium {statusTextColorClass('good')}">(met)</span>
+																			/ <span class="text-gray-500 dark:text-gray-400"
+																				>{s.needed}</span
+																			>
+																			<span class="font-medium {statusTextColorClass('good')}"
+																				>(met)</span
+																			>
 																		{/if}
 																	</span>
 																</div>
 
 																<!-- Render expanded Craft Tree OUTSIDE the flex row as a full-width block below -->
 																{#if showCraftable && s.craftTree && expandedCraftTrees.has(craftKey)}
-																	<div class="mt-1 space-y-1 border-l border-gray-200 pl-2.5 dark:border-gray-700">
+																	<div
+																		class="mt-1 space-y-1 border-l border-gray-200 pl-2.5 dark:border-gray-700"
+																	>
 																		{#each s.craftTree.children as child (child.item)}
 																			{#if showAllItems || child.left > 0}
 																				<CraftTreeNodeComponent node={child} {showAllItems} />

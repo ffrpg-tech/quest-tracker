@@ -871,13 +871,44 @@ describe('aggregateQueueShortfalls', () => {
 				name: 'Threshold Chain',
 				questCount: 4,
 				quests: [
-					{ name: 'Step 1', startDate: '', endDate: '', requirements: [{ item: 'Wood', qty: 50 }], seq: 1 },
-					{ name: 'Step 2', startDate: '', endDate: '', requirements: [{ item: 'Wood', qty: 50 }], seq: 2 },
-					{ name: 'Step 3', startDate: '', endDate: '', requirements: [{ item: 'Wood', qty: 50 }], seq: 3 },
-					{ name: 'Step 4', startDate: '', endDate: '', requirements: [{ item: 'Wood', qty: 10 }], seq: 4 }
+					{
+						name: 'Step 1',
+						startDate: '',
+						endDate: '',
+						requirements: [{ item: 'Wood', qty: 50 }],
+						seq: 1
+					},
+					{
+						name: 'Step 2',
+						startDate: '',
+						endDate: '',
+						requirements: [{ item: 'Wood', qty: 50 }],
+						seq: 2
+					},
+					{
+						name: 'Step 3',
+						startDate: '',
+						endDate: '',
+						requirements: [{ item: 'Wood', qty: 50 }],
+						seq: 3
+					},
+					{
+						name: 'Step 4',
+						startDate: '',
+						endDate: '',
+						requirements: [{ item: 'Wood', qty: 10 }],
+						seq: 4
+					}
 				]
 			};
-			const result = diffQuestline(fourStepQuestline, new Map(), new Set(), new Map(), new Map(), 100);
+			const result = diffQuestline(
+				fourStepQuestline,
+				new Map(),
+				new Set(),
+				new Map(),
+				new Map(),
+				100
+			);
 			expect(result.quests[2].requirements[0].isThresholdBreaker).toBe(true);
 			expect(result.quests[2].requirements[0].thresholdBreakerQuest).toBe('Step 3');
 			expect(result.quests[3].requirements[0].exceedsCapacity).toBe(true);

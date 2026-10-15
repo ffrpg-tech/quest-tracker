@@ -266,13 +266,7 @@ describe('T2c — total raw Wood shortfall must be equal across T2 and T2b', () 
 		const invT2b = new Map([['Wood', 40]]);
 		const q1_T2b = ql('Q1', quest('Q1', 1, [{ item: 'Wood', qty: 40 }]));
 		const q2_T2b = ql('Q2', quest('Q2', 1, [{ item: 'Board', qty: 1 }]));
-		const resT2b = diffQuestlineQueue(
-			[q1_T2b, q2_T2b],
-			invT2b,
-			new Set(),
-			new Map(),
-			BOARD_RECIPE
-		);
+		const resT2b = diffQuestlineQueue([q1_T2b, q2_T2b], invT2b, new Set(), new Map(), BOARD_RECIPE);
 
 		const totalWoodT2 = getTotalRawShortfall(resT2, 'Wood');
 		const totalWoodT2b = getTotalRawShortfall(resT2b, 'Wood');
@@ -486,5 +480,3 @@ describe('T7 — inv {Board 3, Wood 100}; Q1{Board 10} Q2{Wood 70}', () => {
 		expect(q2Wood!.have).toBe(65);
 	});
 });
-
-

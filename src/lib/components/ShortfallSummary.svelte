@@ -175,7 +175,8 @@
 
 	function getCategoryForType(type?: string): string {
 		if (!type) return 'town';
-		if (type === 'store' || type === 'well' || type === 'exchange' || type === 'temple') return 'town';
+		if (type === 'store' || type === 'well' || type === 'exchange' || type === 'temple')
+			return 'town';
 		return type;
 	}
 
@@ -349,15 +350,15 @@
 		"This is the first quest, in queue order, where this maxed item's stockpile actually falls short.";
 
 	const runsDryKeySet = $derived.by(() => {
-		const set = new Set();
+		const set = new Set<string>();
 		for (const [item, loc] of runsDryAt.entries()) {
-			set.add(`\({item}:\){loc.questlineName}:${loc.questName}`);
+			set.add(`${item}:${loc.questlineName}:${loc.questName}`);
 		}
 		return set;
 	});
 
 	function isRunsDryHere(item: string, questlineName: string, questName: string): boolean {
-		return runsDryKeySet.has(`\({item}:\){questlineName}:${questName}`);
+		return runsDryKeySet.has(`${item}:${questlineName}:${questName}`);
 	}
 </script>
 
@@ -485,7 +486,9 @@
 								onclick={toggleSourcePopover}
 								aria-expanded={showSourcePopover}
 								class="flex items-center gap-1 {buttonClass('icon', activeSourceFiltersCount > 0)}"
-								title="Filter by item sources{activeSourceFiltersCount > 0 ? ` (${activeSourceFiltersCount} active)` : ''}"
+								title="Filter by item sources{activeSourceFiltersCount > 0
+									? ` (${activeSourceFiltersCount} active)`
+									: ''}"
 								aria-label="Filter by item sources"
 							>
 								<MapPin size={14} />
@@ -498,7 +501,9 @@
 
 							<!-- Sources Popover -->
 							{#snippet sourceFilterContent()}
-								<div class="mb-2 flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-gray-700">
+								<div
+									class="mb-2 flex items-center justify-between border-b border-gray-100 pb-1.5 dark:border-gray-700"
+								>
 									<div class="flex items-center gap-1.5">
 										<MapPin size={13} class="text-sky-600 dark:text-sky-400" />
 										<span class="text-xs font-semibold text-gray-700 dark:text-gray-300">
@@ -526,7 +531,9 @@
 												<button
 													type="button"
 													onclick={() => toggleCategory(cat.id)}
-													class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {selectedCategories.has(cat.id)
+													class="inline-flex cursor-pointer items-center gap-1 rounded-full px-2 py-0.5 text-xs transition-colors {selectedCategories.has(
+														cat.id
+													)
 														? 'bg-sky-600 font-semibold text-white shadow-sm dark:bg-sky-500'
 														: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600'}"
 													aria-pressed={selectedCategories.has(cat.id)}
@@ -581,7 +588,9 @@
 											{@const isCatSelected = selectedCategories.has(cat)}
 											<li>
 												<label
-													class="flex cursor-pointer items-center justify-between gap-1.5 rounded px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 {isCatSelected ? 'bg-sky-50/50 dark:bg-sky-950/30' : ''}"
+													class="flex cursor-pointer items-center justify-between gap-1.5 rounded px-1.5 py-1 hover:bg-gray-50 dark:hover:bg-gray-700/60 {isCatSelected
+														? 'bg-sky-50/50 dark:bg-sky-950/30'
+														: ''}"
 												>
 													<div class="flex min-w-0 items-center gap-1.5">
 														<input
@@ -604,7 +613,9 @@
 														{/if}
 														<span class="truncate">{src.name}</span>
 														{#if isCatSelected}
-															<span class="text-[9px] text-sky-600 dark:text-sky-400 font-medium shrink-0">
+															<span
+																class="text-[9px] text-sky-600 dark:text-sky-400 font-medium shrink-0"
+															>
 																(in category)
 															</span>
 														{/if}
@@ -650,7 +661,10 @@
 						aria-label="Reset all sorting and filters"
 						class={buttonClass('icon')}
 					>
-						<RotateCcw size={14} class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />
+						<RotateCcw
+							size={14}
+							class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+						/>
 					</button>
 
 					<span class="mx-0.5 h-4 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></span>
@@ -676,12 +690,14 @@
 					>
 						{#each filteredShortfallSummary as s (s.item)}
 							<li class="border-b border-gray-100 py-1 dark:border-gray-700">
-								<div class="flex flex-wrap items-center gap-1.5 font-medium text-gray-900 dark:text-gray-100">
+								<div
+									class="flex flex-wrap items-center gap-1.5 font-medium text-gray-900 dark:text-gray-100"
+								>
 									<ItemIcon name={s.item} />
 									<a
 										href={buddyFarmItemUrl(s.item)}
 										target="_blank"
-										rel="noopener noreferrer"
+										rel="external noopener noreferrer"
 										class="hover:underline">{s.item}</a
 									>
 									{#if showLocationSources}
@@ -698,11 +714,33 @@
 										>
 									{/if}
 									{#if s.exceedsCapacity}
-										<span
-											title="Total requirement ({s.needed.toLocaleString()}) exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest ? ` (first exceeded at ${s.thresholdBreakerQuest})` : ''}{maxedItems.has(s.item) ? ' (currently MAX ON HAND)' : ''} — multiple turn-ins or inventory upgrades required"
-											class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-											>EXCEEDS CAP</span
-										>
+										{#if s.capType === 'hard'}
+											<span
+												title="Total requirement ({s.needed.toLocaleString()}) exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+													? ` (first exceeded at ${s.thresholdBreakerQuest})`
+													: ''} for non-mailable item — cannot hold enough at once without Storehouse upgrades"
+												class="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+												>HARD CAP</span
+											>
+										{:else if s.capType === 'soft'}
+											<span
+												title="Total requirement ({s.needed.toLocaleString()}) exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+													? ` (first exceeded at ${s.thresholdBreakerQuest})`
+													: ''} — mailable item, can overflow inventory via mailbox deliveries or trade"
+												class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+												>SOFT CAP</span
+											>
+										{:else}
+											<span
+												title="Total requirement ({s.needed.toLocaleString()}) exceeds max capacity of {s.storageCap?.toLocaleString()}{s.thresholdBreakerQuest
+													? ` (first exceeded at ${s.thresholdBreakerQuest})`
+													: ''}{maxedItems.has(s.item)
+													? ' (currently MAX ON HAND)'
+													: ''} — multiple turn-ins or inventory upgrades required"
+												class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+												>EXCEEDS CAP</span
+											>
+										{/if}
 									{/if}
 									{#if maxedItems.has(s.item)}
 										<span
@@ -753,14 +791,30 @@
 																	>
 																{/if}
 																{#if bq.isThresholdBreaker}
-																	<span
-																		title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest"
-																		class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
-																		>EXCEEDS CAP HERE</span
-																	>
+																	{#if bq.capType === 'hard' || s.capType === 'hard'}
+																		<span
+																			title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest for non-mailable item (absolute blocker)"
+																			class="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-semibold text-rose-800 dark:bg-rose-950 dark:text-rose-300"
+																			>HARD CAP HERE</span
+																		>
+																	{:else if bq.capType === 'soft' || s.capType === 'soft'}
+																		<span
+																			title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest — mailable item, can overflow via trade/mailbox"
+																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																			>SOFT CAP HERE</span
+																		>
+																	{:else}
+																		<span
+																			title="Inventory capacity limit ({s.storageCap?.toLocaleString()}) is first crossed starting at this quest"
+																			class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+																			>EXCEEDS CAP HERE</span
+																		>
+																	{/if}
 																{/if}
 															</span>
-															<span class="text-red-300 tabular-nums">−{formatNumber(bq.short)}</span>
+															<span class="text-red-300 tabular-nums"
+																>−{formatNumber(bq.short)}</span
+															>
 														</div>
 														{#if showCraftable && bq.craftTree}
 															<CraftTree node={bq.craftTree} {showAllItems} {hideCannotMail} />
