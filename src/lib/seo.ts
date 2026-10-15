@@ -4,9 +4,13 @@ export const SITE_URL = 'https://farm-rpg-quest-tracker.pages.dev';
 
 export const SITE_NAME = 'FarmRPG Quest Tracker';
 
+export const SITE_TITLE = 'FarmRPG Quest Tracker';
+
+export const SITE_AUTHOR = 'kodyy';
+
 export const DEFAULT_DESCRIPTION =
-	'Free FarmRPG tool for tracking your inventory for quests: paste your inventory, queue Quest Wall questlines that share one ' +
-	"inventory, and see the first quest you can't complete in each.";
+	'Free, unofficial FarmRPG Quest Tracker: paste your inventory, queue questlines with shared inventory, ' +
+	'calculate material shortfalls, explore recursive craft trees, and generate 1-click in-game trade request lists.';
 
 export function canonicalUrl(pathname: string): string {
 	return new URL(pathname, SITE_URL).toString();

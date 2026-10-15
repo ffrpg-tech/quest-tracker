@@ -31,7 +31,7 @@
 					month: 'short',
 					day: 'numeric',
 					year: 'numeric'
-			  })
+				})
 			: null
 	);
 

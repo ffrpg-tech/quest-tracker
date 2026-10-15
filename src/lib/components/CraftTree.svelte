@@ -36,7 +36,9 @@
 		{/if}
 	</button>
 	{#if expanded}
-		<div class="mt-1 w-full basis-full space-y-1 border-l border-gray-200 pl-2.5 dark:border-gray-700">
+		<div
+			class="mt-1 w-full basis-full space-y-1 border-l border-gray-200 pl-2.5 dark:border-gray-700"
+		>
 			{#each node.children as child (child.item)}
 				{#if showAllItems || child.left > 0}
 					<CraftTreeNodeComponent node={child} {showAllItems} {hideCannotMail} />

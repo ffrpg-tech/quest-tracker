@@ -34,12 +34,16 @@ describe('BottomSheet portal and focus behavior', () => {
 		// Tab on last element cycles back to first element
 		btn2.focus();
 		expect(document.activeElement).toBe(btn2);
-		dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false, bubbles: true }));
+		dialog.dispatchEvent(
+			new KeyboardEvent('keydown', { key: 'Tab', shiftKey: false, bubbles: true })
+		);
 		expect(document.activeElement).toBe(btn1);
 		expect(document.activeElement).not.toBe(outsideBtn);
 
 		// Shift+Tab on first element cycles back to last element
-		dialog.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true }));
+		dialog.dispatchEvent(
+			new KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true })
+		);
 		expect(document.activeElement).toBe(btn2);
 		expect(document.activeElement).not.toBe(outsideBtn);
 

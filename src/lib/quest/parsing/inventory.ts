@@ -1,5 +1,10 @@
 import type { InventoryEntry } from '../types';
-import { indexOfCaseInsensitive, parseCommaNumber, parseFromAnchor, toTrimmedLines } from './pasteParsing';
+import {
+	indexOfCaseInsensitive,
+	parseCommaNumber,
+	parseFromAnchor,
+	toTrimmedLines
+} from './pasteParsing';
 
 // Client-side only — parses a manual select-all + copy of the player's raw
 // FarmRPG inventory PAGE text (browser or Steam client's Edit > Select All >
@@ -112,8 +117,7 @@ function parseInventoryBlock(afterAnchor: string): ParsedInventoryLine[] {
 			const maxed = chunkLines.some((l) =>
 				STATUS_FLAGS.some(
 					(flag) =>
-						flag.toLowerCase() === l.toLowerCase() ||
-						l.toLowerCase().includes(flag.toLowerCase())
+						flag.toLowerCase() === l.toLowerCase() || l.toLowerCase().includes(flag.toLowerCase())
 				)
 			);
 			results.push({

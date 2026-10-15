@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { resolve } from '$app/paths';
-	import { canonicalUrl, SITE_NAME } from '$lib/seo';
+	import { canonicalUrl, SITE_AUTHOR, SITE_NAME } from '$lib/seo';
 	import { parseChangelog, releasedEntries, latestVersion, groupByMinor } from '$lib/changelog';
 	import { saveLastSeenChangelogVersion } from '$lib/quest/storage/persistence';
 	import changelogRaw from '../../../CHANGELOG.md?raw';
@@ -9,9 +9,18 @@
 	const title = `Changelog — ${SITE_NAME}`;
 	const description = 'What changed in the FarmRPG Quest Tracker, release by release.';
 
+	const changelogJsonLd = {
+		'@context': 'https://schema.org',
+		'@type': 'WebPage',
+		name: title,
+		url: canonicalUrl('/changelog'),
+		description,
+		author: { '@type': 'Person', name: SITE_AUTHOR }
+	};
+
 	const entries = releasedEntries(parseChangelog(changelogRaw));
 	const groups = groupByMinor(entries);
-	
+
 	let openGroups = $state<{ [key: string]: boolean }>({ [groups[0]?.minor]: true });
 
 	let isMounted = $state(false);
@@ -27,24 +36,25 @@
 	}
 
 	function formatToUserDate(rawDate: string): string {
-	const parsed = new Date(rawDate);
+		const parsed = new Date(rawDate);
 
-	// Fallback to raw string if parsing fails or date is invalid
-	if (isNaN(parsed.getTime())) {
-		return rawDate;
-	}
+		// Fallback to raw string if parsing fails or date is invalid
+		if (isNaN(parsed.getTime())) {
+			return rawDate;
+		}
 
-	return new Intl.DateTimeFormat(undefined, {
-		year: 'numeric',
-		month: 'long',
-		day: 'numeric'
-	}).format(parsed);
+		return new Intl.DateTimeFormat(undefined, {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		}).format(parsed);
 	}
 </script>
 
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
+	<meta name="author" content={SITE_AUTHOR} />
 	<link rel="canonical" href={canonicalUrl('/changelog')} />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={title} />
@@ -54,6 +64,11 @@
 	<meta name="twitter:card" content="summary" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />
+
+	<!-- eslint-disable svelte/no-at-html-tags -- JSON-LD script tags: content is
+	     JSON.stringify of static metadata, not user input. -->
+	{@html `<script type="application/ld+json">${JSON.stringify(changelogJsonLd)}</` + 'script>'}
+	<!-- eslint-enable svelte/no-at-html-tags -->
 </svelte:head>
 
 <div class="mx-auto max-w-3xl space-y-6 p-6 dark:text-gray-100">
@@ -67,10 +82,7 @@
 
 	<section class="space-y-4">
 		{#each groups as group, i (group.minor)}
-			<details
-				open={openGroups[group.minor]}
-				ontoggle={(e) => toggleGroup(group.minor, e)}
-			>
+			<details open={openGroups[group.minor]} ontoggle={(e) => toggleGroup(group.minor, e)}>
 				<summary
 					class="cursor-pointer text-sm font-semibold text-gray-900 select-none dark:text-gray-100"
 				>
@@ -93,7 +105,9 @@
 										<h3 class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
 											{section.heading}
 										</h3>
-										<ul class="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
+										<ul
+											class="mt-1 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300"
+										>
 											{#each section.items as item (item)}
 												<li>{item}</li>
 											{/each}

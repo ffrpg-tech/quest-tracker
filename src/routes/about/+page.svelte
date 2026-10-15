@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { canonicalUrl, SITE_NAME } from '$lib/seo';
+	import { canonicalUrl, SITE_AUTHOR, SITE_NAME } from '$lib/seo';
 	import { faqItems } from '$lib/faq';
 	import { tutorialSteps } from '$lib/tutorial';
 	import TutorialContent from '$lib/components/content/TutorialContent.svelte';
@@ -36,6 +36,7 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
+	<meta name="author" content={SITE_AUTHOR} />
 	<link rel="canonical" href={canonicalUrl('/about')} />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={title} />
@@ -65,8 +66,8 @@
 		<header>
 			<h1 class="text-2xl font-bold">Getting started</h1>
 			<p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
-				A quick walkthrough of the setup, then the loop you'll repeat while you play. Tap a step
-				for more detail.
+				A quick walkthrough of the setup, then the loop you'll repeat while you play. Tap a step for
+				more detail.
 			</p>
 		</header>
 
@@ -92,7 +93,9 @@
 					<summary class="cursor-pointer list-none text-sm font-medium">
 						{item.question}
 					</summary>
-					<p class="mt-1.5 text-sm leading-relaxed text-gray-600 dark:text-gray-300">{item.answer}</p>
+					<p class="mt-1.5 text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+						{item.answer}
+					</p>
 				</details>
 			{/each}
 		</div>

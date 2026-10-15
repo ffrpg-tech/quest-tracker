@@ -29,7 +29,9 @@ async function fetchItems(): Promise<void> {
 		imageByName = new Map(items.map((item) => [item.name, item.image]));
 		itemNames = new Set(items.map((item) => item.name));
 		canMailByName = new Map(
-			items.filter((item) => item.canMail !== undefined).map((item) => [item.name, item.canMail as boolean])
+			items
+				.filter((item) => item.canMail !== undefined)
+				.map((item) => [item.name, item.canMail as boolean])
 		);
 	} catch (err) {
 		console.error(err);

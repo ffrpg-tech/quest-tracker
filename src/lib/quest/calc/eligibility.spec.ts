@@ -314,7 +314,14 @@ describe('evaluateQuestlineEligibility', () => {
 			]
 		};
 		const activeNow = new Date('2026-10-25T00:00:00Z');
-		const result = evaluateQuestlineEligibility(recurringChain, null, null, new Set(), new Map(), activeNow);
+		const result = evaluateQuestlineEligibility(
+			recurringChain,
+			null,
+			null,
+			new Set(),
+			new Map(),
+			activeNow
+		);
 		expect(result.allEligible).toBe(true);
 		expect(result.canStartNow).toBe(true);
 	});
@@ -746,4 +753,3 @@ describe('unconditional evaluation and unimported indicators', () => {
 		]);
 	});
 });
-

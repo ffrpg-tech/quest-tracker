@@ -11,7 +11,7 @@ describe('buddyFarmLink', () => {
 	it('slugifies item names correctly', () => {
 		expect(slugify('Wood')).toBe('wood');
 		expect(slugify('Buddystone')).toBe('buddystone');
-		expect(slugify("Cursed Effigy Hair")).toBe('cursed-effigy-hair');
+		expect(slugify('Cursed Effigy Hair')).toBe('cursed-effigy-hair');
 		expect(slugify("Santa's Workshop")).toBe('santas-workshop');
 		expect(slugify("Gary's Crushroom")).toBe('garys-crushroom');
 	});
@@ -38,7 +38,9 @@ describe('buddyFarmLink', () => {
 		expect(getSourceUrl('Small Pond', 'fish')).toBe('https://buddy.farm/l/small-pond/');
 		expect(getSourceUrl('Spring Cave', 'mining')).toBe('https://buddy.farm/l/spring-cave/');
 		expect(getSourceUrl('Cat (Level 1)', 'pet')).toBe('https://buddy.farm/p/cat/');
-		expect(getSourceUrl('Sinking Swamp (Explore)', 'explore')).toBe('https://buddy.farm/l/sinking-swamp/');
+		expect(getSourceUrl('Sinking Swamp (Explore)', 'explore')).toBe(
+			'https://buddy.farm/l/sinking-swamp/'
+		);
 		// Other categories should return null (no 404 links)
 		expect(getSourceUrl('Workshop', 'workshop')).toBeNull();
 		expect(getSourceUrl('Sawmill', 'building')).toBeNull();

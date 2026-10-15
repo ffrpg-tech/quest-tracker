@@ -3,7 +3,7 @@
 	import { asset, resolve } from '$app/paths';
 	import { TriangleAlert, Compass } from '@lucide/svelte';
 	import { SvelteSet, SvelteMap } from 'svelte/reactivity';
-	import { canonicalUrl, DEFAULT_DESCRIPTION, SITE_NAME } from '$lib/seo';
+	import { canonicalUrl, DEFAULT_DESCRIPTION, SITE_AUTHOR, SITE_NAME, SITE_TITLE } from '$lib/seo';
 	import {
 		questKey,
 		type ImportTab,
@@ -12,7 +12,7 @@
 		type Questline
 	} from '$lib/quest/types';
 	import { loadQuestlines, getQuestlinesState } from '$lib/quest/storage/questlinesStore.svelte';
-	import { loadItems, getItemsState } from '$lib/quest/storage/itemsStore.svelte';
+	import { loadItems, getItemsState, getItemCanMail } from '$lib/quest/storage/itemsStore.svelte';
 	import { loadSources } from '$lib/quest/storage/sourcesStore.svelte';
 	import { loadNpcs, getNpcsState } from '$lib/quest/storage/npcsStore.svelte';
 	import { loadMining, getMiningState } from '$lib/quest/storage/miningStore.svelte';
@@ -79,9 +79,20 @@
 		url: canonicalUrl('/'),
 		description: DEFAULT_DESCRIPTION,
 		applicationCategory: 'GameApplication',
+		applicationSubCategory: 'Utility / Quest Calculator',
 		operatingSystem: 'Any',
 		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-		author: { '@type': 'Person', name: 'kodyy' }
+		author: { '@type': 'Person', name: SITE_AUTHOR },
+		featureList: [
+			'Shared inventory multi-questline wall point calculation',
+			'Combined shortfall summary across questlines',
+			'Recursive multi-tier craft tree breakdown',
+			'In-game trade and mailbox chat request list generator',
+			'Item drop locations and buddy.farm link integration',
+			'Mining cave floor and progression tracking',
+			'Player skill, NPC friendship, and annual seasonal eligibility checks',
+			'Universal smart auto-detect paste parser'
+		]
 	};
 
 	// Fetched as a static asset (rather than imported) so it ships as its own
@@ -340,36 +351,13 @@
 	});
 
 	$effect(() => {
-		if (showAlternativeSourcesHydrated) trackSave(saveShowAlternativeSources(showAlternativeSources));
+		if (showAlternativeSourcesHydrated)
+			trackSave(saveShowAlternativeSources(showAlternativeSources));
 	});
 
 	$effect(() => {
 		if (maxCapacityHydrated) trackSave(saveMaxCapacity(maxCapacity));
 	});
-
-	const diffResults = $derived<QuestlineDiffResult[]>(
-		diffQuestlineQueue(
-			selectedQuestlines,
-			inventoryMap,
-			completed,
-			inventoryCaps,
-			recipesMap,
-			maxCapacity
-		)
-	);
-
-	// The single item-level shortfall view, regardless of queue length — this
-	// replaces each panel having its own "Total shortfall" block, which was
-	// just a redundant subset of this same data once more than one questline
-	// was queued.
-	const shortfallSummary = $derived(
-		diffResults.length > 0 ? aggregateQueueShortfalls(diffResults) : []
-	);
-
-	// Where each currently-maxed item's stockpile first actually runs out, in
-	// queue order — only computed for maxed items, since a non-maxed item's
-	// shortfall is already visible on every row it's short on.
-	const runsDryAt = $derived(findRunsDryPoints(diffResults, maxedItems));
 
 	// ---------- Player stats / eligibility ----------
 
@@ -385,6 +373,34 @@
 		playerStats = loadPlayerStats();
 		statsHydrated = true;
 	});
+
+	const diffResults = $derived<QuestlineDiffResult[]>(
+		diffQuestlineQueue(
+			selectedQuestlines,
+			inventoryMap,
+			completed,
+			inventoryCaps,
+			recipesMap,
+			maxCapacity,
+			{
+				canMailLookup: getItemCanMail,
+				playerStats
+			}
+		)
+	);
+
+	// The single item-level shortfall view, regardless of queue length — this
+	// replaces each panel having its own "Total shortfall" block, which was
+	// just a redundant subset of this same data once more than one questline
+	// was queued.
+	const shortfallSummary = $derived(
+		diffResults.length > 0 ? aggregateQueueShortfalls(diffResults) : []
+	);
+
+	// Where each currently-maxed item's stockpile first actually runs out, in
+	// queue order — only computed for maxed items, since a non-maxed item's
+	// shortfall is already visible on every row it's short on.
+	const runsDryAt = $derived(findRunsDryPoints(diffResults, maxedItems));
 
 	function handleClearPlayerStats() {
 		playerStats = null;
@@ -563,17 +579,18 @@
 </script>
 
 <svelte:head>
-	<title>{SITE_NAME}</title>
+	<title>{SITE_TITLE}</title>
 	<meta name="description" content={DEFAULT_DESCRIPTION} />
+	<meta name="author" content={SITE_AUTHOR} />
 	<link rel="canonical" href={canonicalUrl('/')} />
 
 	<meta property="og:type" content="website" />
-	<meta property="og:title" content={SITE_NAME} />
+	<meta property="og:title" content={SITE_TITLE} />
 	<meta property="og:description" content={DEFAULT_DESCRIPTION} />
 	<meta property="og:url" content={canonicalUrl('/')} />
 	<meta property="og:site_name" content={SITE_NAME} />
 	<meta name="twitter:card" content="summary" />
-	<meta name="twitter:title" content={SITE_NAME} />
+	<meta name="twitter:title" content={SITE_TITLE} />
 	<meta name="twitter:description" content={DEFAULT_DESCRIPTION} />
 
 	<!-- Preload the runtime-fetched data JSON so the browser starts downloading

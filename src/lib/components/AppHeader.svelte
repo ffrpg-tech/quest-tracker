@@ -1,5 +1,15 @@
 <script lang="ts">
-	import { Sun, Moon, MessageSquarePlus, Upload, Save, Settings, BookOpen, ScrollText, Menu } from '@lucide/svelte';
+	import {
+		Sun,
+		Moon,
+		MessageSquarePlus,
+		Upload,
+		Save,
+		Settings,
+		BookOpen,
+		ScrollText,
+		Menu
+	} from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import BottomSheet from './BottomSheet.svelte';
 	import type { SettingsTab } from './SettingsModal.svelte';

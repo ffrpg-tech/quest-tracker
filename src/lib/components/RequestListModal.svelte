@@ -28,13 +28,9 @@
 	let copiedAll = $state(false);
 	let copiedChunkIndex = $state<number | null>(null);
 
-	const filteredItems = $derived(
-		items.filter((it) => !excludeMaxed || !maxedItems?.has(it.item))
-	);
+	const filteredItems = $derived(items.filter((it) => !excludeMaxed || !maxedItems?.has(it.item)));
 	const excludedMaxedCount = $derived(
-		maxedItems && excludeMaxed
-			? items.filter((it) => maxedItems.has(it.item)).length
-			: 0
+		maxedItems && excludeMaxed ? items.filter((it) => maxedItems.has(it.item)).length : 0
 	);
 
 	const result = $derived(generateRequestList(filteredItems, { deductCraftable }));
@@ -75,7 +71,9 @@
 			use:trapFocus={() => (open = false)}
 		>
 			<!-- Header -->
-			<div class="mb-3 flex items-start justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
+			<div
+				class="mb-3 flex items-start justify-between border-b border-gray-100 pb-3 dark:border-gray-700"
+			>
 				<div>
 					<div class="flex items-center gap-2">
 						<MessageSquare size={18} class="text-emerald-600 dark:text-emerald-400" />
@@ -84,7 +82,9 @@
 						</h2>
 					</div>
 					<p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-						Ready for Giveaways, Trade chat, and mailbox threads &bull; <span class="font-medium">{scopeTitle}</span>
+						Ready for Giveaways, Trade chat, and mailbox threads &bull; <span class="font-medium"
+							>{scopeTitle}</span
+						>
 					</p>
 				</div>
 				<button onclick={() => (open = false)} class={buttonClass('icon')} aria-label="Close modal">
@@ -105,7 +105,9 @@
 					</label>
 
 					{#if maxedItems && maxedItems.size > 0}
-						<label class="flex cursor-pointer items-center gap-1.5 text-gray-700 dark:text-gray-300">
+						<label
+							class="flex cursor-pointer items-center gap-1.5 text-gray-700 dark:text-gray-300"
+						>
 							<input
 								type="checkbox"
 								bind:checked={excludeMaxed}
@@ -127,7 +129,10 @@
 							<span>Copied All!</span>
 						{:else}
 							<Copy size={13} />
-							<span>Copy All ({result.chunks.length} {result.chunks.length === 1 ? 'msg' : 'msgs'})</span>
+							<span
+								>Copy All ({result.chunks.length}
+								{result.chunks.length === 1 ? 'msg' : 'msgs'})</span
+							>
 						{/if}
 					</button>
 				{/if}
@@ -136,7 +141,9 @@
 			<!-- Main content / chunks list -->
 			<div class="flex-1 space-y-3 overflow-y-auto pr-1">
 				{#if result.chunks.length === 0}
-					<div class="rounded-md border border-gray-200 bg-gray-50 p-4 text-center dark:border-gray-700 dark:bg-gray-800/60">
+					<div
+						class="rounded-md border border-gray-200 bg-gray-50 p-4 text-center dark:border-gray-700 dark:bg-gray-800/60"
+					>
 						<p class="text-sm font-medium text-gray-700 dark:text-gray-300">
 							No mailable deficit items found!
 						</p>
@@ -198,7 +205,9 @@
 
 				<!-- Excluded Unmailable Notice -->
 				{#if result.excludedUnmailable.length > 0}
-					<div class="rounded border border-amber-200 bg-amber-50/70 p-2.5 text-xs dark:border-amber-900/40 dark:bg-amber-950/20">
+					<div
+						class="rounded border border-amber-200 bg-amber-50/70 p-2.5 text-xs dark:border-amber-900/40 dark:bg-amber-950/20"
+					>
 						<button
 							type="button"
 							onclick={() => (showUnmailableDetails = !showUnmailableDetails)}
@@ -207,22 +216,31 @@
 							<span class="flex items-center gap-1.5 font-medium">
 								<Info size={14} />
 								<span>
-									Excluded {result.excludedUnmailable.length} non-mailable {result.excludedUnmailable.length === 1 ? 'item' : 'items'}
+									Excluded {result.excludedUnmailable.length} non-mailable {result
+										.excludedUnmailable.length === 1
+										? 'item'
+										: 'items'}
 								</span>
 							</span>
 							<ChevronDown
 								size={14}
-								class="transition-transform duration-150 {showUnmailableDetails ? 'rotate-180' : ''}"
+								class="transition-transform duration-150 {showUnmailableDetails
+									? 'rotate-180'
+									: ''}"
 							/>
 						</button>
 						{#if showUnmailableDetails}
-							<div class="mt-2 text-[11px] text-amber-700 dark:text-amber-400 border-t border-amber-200/50 pt-1.5 dark:border-amber-900/30">
+							<div
+								class="mt-2 text-[11px] text-amber-700 dark:text-amber-400 border-t border-amber-200/50 pt-1.5 dark:border-amber-900/30"
+							>
 								<p class="mb-1 text-gray-500 dark:text-gray-400">
 									These items cannot be mailed or traded in Farm RPG:
 								</p>
 								<div class="flex flex-wrap gap-1">
 									{#each result.excludedUnmailable as unmailable (unmailable.item)}
-										<span class="rounded bg-amber-100/80 px-1.5 py-0.5 font-mono text-[10px] dark:bg-amber-900/40">
+										<span
+											class="rounded bg-amber-100/80 px-1.5 py-0.5 font-mono text-[10px] dark:bg-amber-900/40"
+										>
 											{unmailable.item} &times;{unmailable.qty}
 										</span>
 									{/each}
@@ -234,7 +252,9 @@
 			</div>
 
 			<!-- Footer -->
-			<div class="mt-3 flex items-center justify-end border-t border-gray-100 pt-3 dark:border-gray-700">
+			<div
+				class="mt-3 flex items-center justify-end border-t border-gray-100 pt-3 dark:border-gray-700"
+			>
 				<button
 					type="button"
 					onclick={() => (open = false)}

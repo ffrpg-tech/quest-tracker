@@ -1,166 +1,143 @@
 # FarmRPG Quest Tracker
 
-A static web app for [FarmRPG](https://farmrpg.com) players. Paste your in-game
-inventory, pick one or more questlines, and instantly see which quest in each
-chain you'll run out of materials on (the "wall point") — no more manually
-cross-referencing requirement lists quest by quest.
+A fast, client-side web application for [FarmRPG](https://farmrpg.com) players. Paste your in-game inventory, pick one or more questlines, and instantly see the exact quest in each chain where you will run out of materials (the "wall point") — without manually cross-referencing wiki pages and requirement spreadsheets.
 
-This is a fan project, not affiliated with FarmRPG. It will never be
-monetized. All credit for FarmRPG itself goes to its developers.
+This is an **unofficial, free, non-commercial fan project**. It is not affiliated with, endorsed by, or sponsored by FarmRPG or Magic and Wires, LLC. It will never be monetized. All credit for FarmRPG itself belongs to its developers.
 
-> Notice: This project is created with the assistance of [Claude Code](https://claude.com/claude-code).
+---
 
-## How it works
+## Features
 
-The About page has a full "Getting started" tutorial (`src/lib/tutorial.ts`)
-covering all of this in more depth; short version:
+- **Multi-Chain Simulation & Wall-Point Detection**: Queue multiple questlines in priority order. The simulator threads a single shared inventory across the queue, decrementing materials as quests are completed and flagging the first quest where you run dry.
+- **Combined Shortfall Summary**: Roll up every missing item across your entire queue into one consolidated list. Filter by mailable items, source categories, search by item name, and sort by deficit quantity. Bottlenecks that exceed your bag capacity are flagged as **CAPPED**.
+- **Recursive Craft Tree & Craftable Counts**: Deep ingredient breakdown showing multi-tier recipe requirements and remaining shortages. Inlines craftable quantities (`+N` craftable from current inventory stock), with stock consumption correctly deducted across earlier quests in the queue.
+- **1-Click Trade / Request List Generator**: Export missing mailable items formatted directly for FarmRPG in-game chat (`LF ((Item Name)) xCount`). Automatically excludes unmailable items and greedily chunks lines to strictly adhere to the in-game 250-character chat limit.
+- **Drop Sources & Buddy.farm Integration**: View item drop locations, workshop crafts, fishing spots, farm production buildings, wishing well drops, and mining caves directly inline, with 1-click links out to [buddy.farm](https://buddy.farm).
+- **Mining Floors Dashboard**: Track mining cave floor progression across Spring Cave, Highland Hollow, Sol Grotto, Ember Caverns, Fenrir's Den, and Mossrock Mine, with automatic gating on mining floor quest prerequisites.
+- **Real-Time Eligibility Engine**: Evaluates player skill levels (farming, fishing, crafting, exploring, tower, cooking, mining), NPC friendship ranks, mining floors, quest-to-quest prerequisites, and annual recurring seasonal event date windows (with New Year boundary crossing support).
+- **Universal Smart Importer**: Single unified paste box that auto-detects and parses inventory, player stats, bank silver, mining floors, and completed quests in a single pass, alongside dedicated paste tabs.
+- **Offline-First & Data Backup**: All progress, inventory, queue, and preferences are stored locally in your browser (`localStorage`). Easily export/import progress backups as JSON across devices.
+- **Mobile Optimized**: Clean responsive interface with a floating quick-action menu, bottom sheets for filters, sticky headers, and dark mode support.
 
-1. Optionally paste your "My Profile" page (player stats) first, to unlock
-   skill/Tower/NPC-friendship eligibility checks — questlines you're not
-   eligible for show LOCKED or UNAVAILABLE badges with tap-to-expand details.
-2. Paste your "Help Needed → Completed" page to bulk-mark already-finished
-   quests done, so completion counts and quest-to-quest prerequisite checks
-   are accurate from the start.
-3. Pick one or more questlines from the scrollable, filterable list to build a
-   queue — order matters and can be changed by drag-and-drop, since queued
-   questlines share one simulated inventory (whichever questline is first in
-   the queue gets first claim on scarce shared items).
-4. Select all the text on FarmRPG's own Inventory page (browser Ctrl/Cmd+A,
-   or the Steam client's Edit > Select All), copy it, and paste it into the
-   Inventory box on this site. Separately paste the Bank page (Deposit All /
-   Withdraw All figures) to fold your Silver on hand into the simulated
-   inventory too, since Silver is tracked as a requirement like any other
-   item but isn't on the Inventory page.
-5. The app walks each queued questline's quests in order, decrementing the
-   shared simulated inventory as each quest's requirements are consumed, and
-   reports the first quest in each chain where you don't have enough on hand.
-   A combined "Shortfall summary" section rolls up every missing item across
-   the whole queue, broken down by questline and quest, with search, mailable/
-   maxed filters, and ascending/descending sort by shortfall amount.
-   Shortfalls that exceed a known storage cap (from a "MAX ON HAND" line in
-   your inventory paste) are flagged as CAPPED, since no amount of farming
-   clears those until the cap is raised or the item is spent down elsewhere.
-6. Mark quests done as you complete them — progress, inventory, player stats,
-   and the questline queue are all saved to `localStorage`, and progress
-   (everything except inventory) can be exported/imported as JSON.
+---
 
-## Developing
+## Local Development Setup
 
-Install dependencies, then start the dev server:
+### Prerequisites
+
+- Node.js (v20+ or v24 recommended)
+- npm
+
+### Quickstart
+
+1. Clone the repository and install dependencies:
+   ```sh
+   npm install
+   ```
+2. Start the local development server:
+
+   ```sh
+   npm run dev
+   ```
+
+   > **Zero-Setup Fallback**: `npm run dev` and `npm run test` automatically run `scripts/seed-data.mjs` on `predev`/`pretest`. If no data files exist in `static/`, it copies committed mock sample files (`static/*.sample.json`) into `static/*.json`. It never overwrites existing real data.
+
+   _(Optional)_ **Download Live Game Catalog**:
+   If you want to test against the full, real catalog (~580+ questlines) instead of sample data, download the latest public data files directly from the deployed site into `static/`:
+
+   ```sh
+   curl -o static/questlines.json https://farm-rpg-quest-tracker.pages.dev/questlines.json
+   curl -o static/questlines-meta.json https://farm-rpg-quest-tracker.pages.dev/questlines-meta.json
+   curl -o static/items.json https://farm-rpg-quest-tracker.pages.dev/items.json
+   curl -o static/recipes.json https://farm-rpg-quest-tracker.pages.dev/recipes.json
+   curl -o static/npc.json https://farm-rpg-quest-tracker.pages.dev/npc.json
+   curl -o static/mining.json https://farm-rpg-quest-tracker.pages.dev/mining.json
+   curl -o static/locations.json https://farm-rpg-quest-tracker.pages.dev/locations.json
+   curl -o static/item-sources.json https://farm-rpg-quest-tracker.pages.dev/item-sources.json
+   curl -o static/item-sources-meta.json https://farm-rpg-quest-tracker.pages.dev/item-sources-meta.json
+   ```
+
+3. Open your browser to the local URL shown in your terminal (typically `http://localhost:5173`).
+
+---
+
+## AI Assistant Setup
+
+This project provides unified agent guidelines in [AGENTS.md](AGENTS.md):
+
+- **Claude Code**: Reads [CLAUDE.md](CLAUDE.md), which redirects directly to [AGENTS.md](AGENTS.md) (`@AGENTS.md`).
+- **Google Antigravity**: Configured via workspace rules and references [AGENTS.md](AGENTS.md) for commands, directory architecture, conventions, and calculation invariants.
+
+---
+
+## Available Scripts
+
+The following scripts are defined in `package.json`:
 
 ```sh
-npm install
-npm run dev
+# Development & Sync
+npm run seed-data                  # Dev-only fallback: copies *.sample.json to static/*.json if missing
+npm run predev                     # Runs seed-data before dev
+npm run pretest                    # Runs seed-data before test
+npm run dev                        # Starts Vite development server
+npm run prepare                    # Runs svelte-kit sync
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Testing & Code Quality
+npm run test:unit                  # Runs Vitest unit test suites
+npm test                           # Runs unit tests (--run) followed by Playwright e2e tests
+npm run test:e2e                   # Installs Playwright browser binaries and runs e2e tests
+npm run check                      # Runs svelte-check TypeScript validation
+npm run check:watch                # Runs svelte-check in watch mode
+npm run lint                       # Runs Prettier check and ESLint
+npm run format                     # Auto-formats code with Prettier
+
+# Building & Deployment
+npm run build                      # Builds production bundle via Vite
+npm run preview                    # Previews production build locally
+npm run deploy                     # Builds and deploys to Cloudflare Pages via wrangler
+
+# Legacy Scripts (Non-functional)
+npm run fetch:questlines           # Legacy: bulk GraphQL fetcher (upstream API is now private)
+npm run fetch:questlines:incremental # Legacy: incremental GraphQL fetcher (upstream API is now private)
 ```
 
-## Testing & checks
+---
+
+## Data Pipeline & Architecture
+
+### Irreplaceable Local Database
+
+`static/questlines.json`, `static/items.json`, and `static/recipes.json` are **gitignored** (`.gitignore`) and are **not generated** from an open API. Because the original upstream GraphQL endpoint was made private, bulk automated re-scraping is no longer possible. The local JSON databases maintained on the project author's machine serve as the irreplaceable source of truth.
+
+### Incremental Quest Updates
+
+New quests, items, and seasonal date adjustments are added incrementally using internal maintainer tools:
+
+- `api/paste-to-questline.mjs`: Parses copied raw quest page text (`quest.php?id=...`) and upserts requirements, skills, prerequisites, and dates into `static/questlines.json` and `static/items.json`.
+- `api/append/append.mjs`: Parses `buddy.farm` per-quest page data into the local catalog.
+
+### Client-Side Runtime Loading
+
+Rather than bundling mega-byte JSON files into the client's JavaScript chunks, the client fetches `questlines.json`, `items.json`, `recipes.json`, `npc.json`, `mining.json`, `locations.json`, and `item-sources.json` at runtime via reactive Svelte stores (`src/lib/quest/storage/`). These static requests are cached with long TTL headers defined in `_headers`.
+
+---
+
+## Building & Deploying
+
+Production builds target **Cloudflare Pages** using `@sveltejs/adapter-cloudflare`:
 
 ```sh
-npm run test:unit    # vitest (diff.spec.ts, persistence.spec.ts, types.spec.ts, etc.)
-npm run test:e2e      # playwright install && playwright test
-npm test              # test:unit --run, then test:e2e
-npm run check         # svelte-check / TypeScript
-npm run lint          # prettier + eslint
+npm run deploy
 ```
 
-## Building & deploying
+### Why Manual Wrangler Deploy?
 
-```sh
-npm run build
-npm run deploy   # vite build && wrangler pages deploy .svelte-kit/cloudflare
-```
+Because the master databases (`static/questlines.json`, `static/items.json`, etc.) are gitignored, automatic deployment on git push is **disabled** in the Cloudflare Pages dashboard. A git-triggered cloud build would only have access to synthetic sample fixtures (`*.sample.json`). Deployments are executed manually from the maintainer's environment using `wrangler pages deploy .svelte-kit/cloudflare`.
 
-Preview the production build with `npm run preview`. Deploys to Cloudflare
-Pages manually via `wrangler` (see `api/README.md`) rather than Cloudflare's
-git-triggered auto-build, since the generated data files aren't in git.
+---
 
-## Project structure
+## Contributing & Bug Reports
 
-```
-src/lib/quest/
-  types.ts             Shared types (Quest, Questline, InventoryEntry) + questKey()
-  parsing/
-    pasteParsing.ts    Low-level helpers shared by the other parsers (case-insensitive anchor
-                       search, comma-number parsing, line splitting) over messy pasted page text
-    inventory.ts       Parses a pasted Inventory-page paste into structured items (incl. "MAX ON
-                       HAND" storage caps), merges into state
-    bank.ts            Parses a pasted Bank-page paste into wallet/bank Silver figures
-    completed.ts       Parses a pasted "Completed Requests" paste into a list of quest names
-    stats.ts           Parses a pasted "My Profile" page into skill/Tower/NPC-friendship levels
-  calc/
-    diff.ts            Core calculation: walks questline(s) against inventory, finds the wall
-                       point(s) and flags CAPPED shortfalls against known storage caps;
-                       diffQuestline (single) and diffQuestlineQueue/aggregateQueueShortfalls (queue)
-    eligibility.ts      Checks parsed player stats + quest-to-quest prerequisites against a
-                       questline's requirements, producing LOCKED/UNAVAILABLE eligibility state
-  storage/
-    persistence.ts     localStorage read/write for completed-quest tracking, inventory, player
-                       stats, questline queue, dark mode, JSON export/import
-    questlinesStore.svelte.ts  Fetches/caches questlines.json + questlines-meta.json once per tab
-    itemsStore.svelte.ts       Fetches/caches items.json once per tab
-    npcsStore.svelte.ts        Fetches/caches npc.json once per tab, filters out unavailable NPCs
-static/
-  questlines.json      Generated, not committed — quests grouped into questlines, fetched by the
-                       client at runtime
-  questlines-meta.json Generated, not committed — metadata about the last data regeneration
-  items.json           Generated, not committed — all known item names (for autosuggest/validation)
-  npc.json             Hand-seeded, not committed — NPC friendship-level data for eligibility checks
-src/lib/
-  seo.ts                Site metadata constants + canonicalUrl() helper, used for meta tags/JSON-LD
-  faq.ts                 FAQ Q&A pairs, shared by the visible About page section and its JSON-LD
-  tutorial.ts             "Getting started" tutorial steps, shared by the About page and its JSON-LD
-  changelog.ts           Parses CHANGELOG.md (Keep a Changelog format) for display on /changelog
-  paraglide/              Generated i18n runtime (Paraglide/inlang) — do not hand-edit; messages
-                         live in messages/en.json and messages/es.json
-  ui/
-    buttonClass.ts        Shared button/pill/icon Tailwind class variants
-    matchesQuery.ts        Case-insensitive substring search predicate
-    formatNumber.ts        Thousands-separator formatting for shortfall amounts
-    statusColor.ts          Shared status-to-color mapping (Done/Ready/Short/Wall Point)
-  components/
-    AppHeader.svelte       Title, feedback/import/backup buttons, dark mode toggle
-    InventoryPanel.svelte  Inventory table, search, stale-baseline warning
-    PlayerStatsPanel.svelte View/hand-edit pasted skill/Tower/NPC levels
-    QuestlinePicker.svelte Search/status/eligibility/main-quest filters, questline list,
-                          drag-reorderable queue
-    ShortfallSummary.svelte Collapsible combined shortfall breakdown, with search/filter/sort
-    ResultsList.svelte     Per-questline results table with completion checkboxes
-    ImportModal.svelte     4-tab paste importer (player stats/inventory/bank/completed quests)
-    ProgressBackupModal.svelte  JSON export/import of completed quests, queue, and player stats
-    LoadingOverlay.svelte  Startup hydration-stage spinner
-    SiteFooter.svelte      Static footer + changelog/data-freshness links (self-contained)
-src/routes/
-  +page.svelte          Owns cross-component state (inventory, completion tracking, queue, dark
-                       mode, modal-open flags) and wires it into the components above
-  about/+page.svelte     "Getting started" tutorial + why-this-exists + FAQ
-  changelog/+page.svelte Renders CHANGELOG.md via changelog.ts, grouped by minor version
-  credits/+page.svelte   Static credits/acknowledgements page
-  layout.css             Tailwind entry + dark mode variant
-api/
-  fetch-questlines.mjs  Gitignored data-regeneration script — not committed, see api/README.md
-```
+We welcome bug fixes, UI improvements, and performance optimizations! Please see [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
 
-## Quest data
-
-`static/questlines.json`, `static/items.json`, and `static/npc.json` are
-generated (or, for `npc.json`, hand-seeded) and **not committed to this
-repo**, and are fetched by the client at runtime rather than bundled into
-the page's JS, so each ships as its own cacheable request — see `_headers`
-for the cache headers. See `api/README.md` (gitignored, maintainer-only) for
-how to regenerate `questlines.json`/`items.json`. Note: "Silver" (in-game
-currency) does show up as an item requirement on some quests — that's
-expected, not a data bug.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Quest/item data isn't edited via
-pull request — use the in-app "Feedback / report an issue" button instead.
-
-## Internationalization
-
-UI strings are managed via [Paraglide](https://inlang.com/m/gerre34r/library-inlang-paraglideJs)
-(`messages/en.json`, `messages/es.json`); `src/lib/paraglide/` is generated
-from those and shouldn't be hand-edited.
+- **Reporting Missing or Incorrect Quest Data**: Do not open a PR editing `questlines.json` directly. Instead, use the in-app **Feedback / report an issue** button, message `kodyy` in-game, or submit the 1-click Google Form report when an unmatched quest is flagged during import.

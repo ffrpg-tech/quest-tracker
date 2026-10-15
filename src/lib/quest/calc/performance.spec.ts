@@ -130,9 +130,7 @@ describe('performance characterization', () => {
 		expect(Object.keys(results).length).toBe(3);
 	});
 
-	it(
-		'measures full catalogue eligibility rebuild',
-		async () => {
+	it('measures full catalogue eligibility rebuild', async () => {
 		const questlineMap = new Map(questlines.map((q) => [q.name, q]));
 		const stats: PlayerStats = {
 			farming: 99,

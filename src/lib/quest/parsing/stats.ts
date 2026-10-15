@@ -22,7 +22,7 @@ const SKILL_LINES: { key: keyof Omit<PlayerStats, 'tower' | 'npcLevels'>; line: 
 	{ key: 'crafting', line: 'Crafting' },
 	{ key: 'exploring', line: 'Exploring' },
 	{ key: 'cooking', line: 'Cooking' },
-	{ key: 'mining', line: 'Mining'},
+	{ key: 'mining', line: 'Mining' }
 ];
 
 // Mining has no leveled progression ("Now in Beta" instead of a level) — never

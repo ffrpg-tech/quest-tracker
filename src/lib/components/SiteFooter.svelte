@@ -38,7 +38,8 @@
 	<div class="mt-2 flex items-center justify-center gap-2">
 		<a href="/about" class="text-emerald-600 hover:underline dark:text-emerald-400">About</a>
 		<span class="text-gray-300 dark:text-gray-600">&middot;</span>
-		<a href="/changelog" class="text-emerald-600 hover:underline dark:text-emerald-400">Changelog</a>
+		<a href="/changelog" class="text-emerald-600 hover:underline dark:text-emerald-400">Changelog</a
+		>
 		<span class="text-gray-300 dark:text-gray-600">&middot;</span>
 		<a href="/credits" class="text-emerald-600 hover:underline dark:text-emerald-400">Credits</a>
 	</div>

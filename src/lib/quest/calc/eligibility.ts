@@ -428,7 +428,8 @@ export function evaluateQuestlineEligibility(
 			const prevKey = questKey(questline.name, prevQuest.name);
 			if (!completed.has(prevKey)) {
 				const hasSameQlPred = pred.some(
-					(g) => g.kind === 'pred' && g.label === questline.name && g.detail?.includes(prevQuest.name)
+					(g) =>
+						g.kind === 'pred' && g.label === questline.name && g.detail?.includes(prevQuest.name)
 				);
 				if (!hasSameQlPred) {
 					pred.unshift({
@@ -444,7 +445,8 @@ export function evaluateQuestlineEligibility(
 			const normalizedTargetTitle = norm(ref.questline.title);
 			const target = indexes.questlinesByTitle.get(normalizedTargetTitle);
 			const targetQuest = target?.quests.find((tq) => tq.seq === ref.order);
-			const met = target && targetQuest ? completed.has(questKey(target.name, targetQuest.name)) : true;
+			const met =
+				target && targetQuest ? completed.has(questKey(target.name, targetQuest.name)) : true;
 			return {
 				kind: 'pred',
 				label: target ? target.name : ref.questline.title,

@@ -14,8 +14,7 @@ function isItemQtyArray(v: unknown): v is ItemQty[] {
 	return (
 		Array.isArray(v) &&
 		v.every(
-			(e) =>
-				e && typeof e === 'object' && typeof e.item === 'string' && typeof e.qty === 'number'
+			(e) => e && typeof e === 'object' && typeof e.item === 'string' && typeof e.qty === 'number'
 		)
 	);
 }

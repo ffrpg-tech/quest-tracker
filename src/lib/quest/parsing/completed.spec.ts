@@ -165,11 +165,16 @@ Completed on 2025-10-22 01:34:38
 35,311 players (3.04%) have completed
 check`;
 
-		expect(parseCompletedQuestNames(text)).toEqual(['Curious Postal Note II', 'Curious Postal Note I']);
+		expect(parseCompletedQuestNames(text)).toEqual([
+			'Curious Postal Note II',
+			'Curious Postal Note I'
+		]);
 	});
 
 	it('throws when the "Completed Requests" anchor is missing', () => {
-		expect(() => parseCompletedQuestNames('nothing relevant here')).toThrow(CompletedQuestParseError);
+		expect(() => parseCompletedQuestNames('nothing relevant here')).toThrow(
+			CompletedQuestParseError
+		);
 	});
 
 	it('throws when no entries follow the anchor', () => {
@@ -215,7 +220,7 @@ check`;
 		expect(parseCompletedQuestNames(text)).toEqual(['The Rocket’s Red Glare VII']);
 	});
 
-	it('throws when the parsed quest count does not match the anchor\'s stated count', () => {
+	it("throws when the parsed quest count does not match the anchor's stated count", () => {
 		const text = `Completed Requests (2)
 
 A Towering Investment X

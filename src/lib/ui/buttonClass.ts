@@ -6,7 +6,15 @@
  * pills) as currently selected, not the CSS :active pseudo-class.
  */
 export function buttonClass(
-	variant: 'default' | 'primary' | 'dark' | 'pill' | 'pill-danger' | 'icon' | 'icon-danger' | 'link' = 'default',
+	variant:
+		| 'default'
+		| 'primary'
+		| 'dark'
+		| 'pill'
+		| 'pill-danger'
+		| 'icon'
+		| 'icon-danger'
+		| 'link' = 'default',
 	active = false
 ): string {
 	const base = 'cursor-pointer transition-colors disabled:cursor-not-allowed';

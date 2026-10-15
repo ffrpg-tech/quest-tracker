@@ -1,12 +1,12 @@
 {
-  "permissions": {
-    "allow": [
-      "Skill(simplify)",
-      "Skill(simplify:*)",
-      "Skill(code-review)",
-      "Skill(code-review:*)",
-      "Skill(security-review)",
-      "Skill(security-review:*)"
-    ]
-  }
+	"permissions": {
+		"allow": [
+			"Skill(simplify)",
+			"Skill(simplify:*)",
+			"Skill(code-review)",
+			"Skill(code-review:*)",
+			"Skill(security-review)",
+			"Skill(security-review:*)"
+		]
+	}
 }

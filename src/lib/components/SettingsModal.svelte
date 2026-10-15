@@ -219,7 +219,9 @@
 								class="border-t border-gray-100 pt-4 dark:border-gray-700 flex items-center justify-between gap-4"
 							>
 								<div>
-									<label for="show-location-sources" class="font-medium">Show location sources</label>
+									<label for="show-location-sources" class="font-medium"
+										>Show location sources</label
+									>
 									<p class="text-xs text-gray-500 dark:text-gray-400">
 										Displays primary gathering or crafting sources next to needed items.
 									</p>
@@ -248,9 +250,12 @@
 									class="ml-4 border-l-2 border-gray-100 pl-4 dark:border-gray-700 flex items-center justify-between gap-4"
 								>
 									<div>
-										<label for="show-alternative-sources" class="font-medium text-xs">Show alternative sources</label>
+										<label for="show-alternative-sources" class="font-medium text-xs"
+											>Show alternative sources</label
+										>
 										<p class="text-xs text-gray-500 dark:text-gray-400">
-											Displays (+N more) button and popup for items with multiple obtainable methods.
+											Displays (+N more) button and popup for items with multiple obtainable
+											methods.
 										</p>
 									</div>
 									<button
@@ -396,7 +401,9 @@
 					</div>
 				{:else if activeTab === 'changelog'}
 					<div class="space-y-4">
-						<div class="flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700">
+						<div
+							class="flex items-center justify-between border-b border-gray-100 pb-3 dark:border-gray-700"
+						>
 							<div>
 								<h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">Changelog</h3>
 								<p class="text-xs text-gray-500 dark:text-gray-400">
@@ -431,14 +438,18 @@
 													<h4 class="text-base font-semibold text-gray-900 dark:text-gray-100">
 														{entry.version}
 														{#if entry.date}
-															<span class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400">
+															<span
+																class="ml-2 text-xs font-normal text-gray-500 dark:text-gray-400"
+															>
 																{formatToUserDate(entry.date)}
 															</span>
 														{/if}
 													</h4>
 													{#each entry.sections as section (section.heading)}
 														<div class="mt-2">
-															<h5 class="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+															<h5
+																class="text-sm font-medium text-emerald-600 dark:text-emerald-400"
+															>
 																{section.heading}
 															</h5>
 															<ul

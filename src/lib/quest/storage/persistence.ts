@@ -325,14 +325,15 @@ export function loadQuestlineFilters(): QuestlineFilters {
 		if (!parsed || typeof parsed !== 'object') return { ...DEFAULT_QUESTLINE_FILTERS };
 		return {
 			status: Array.isArray(parsed.status)
-				? parsed.status.filter((s: unknown): s is QuestlineStatusFilter =>
-						s === 'not-started' || s === 'ongoing' || s === 'done'
-				  )
+				? parsed.status.filter(
+						(s: unknown): s is QuestlineStatusFilter =>
+							s === 'not-started' || s === 'ongoing' || s === 'done'
+					)
 				: DEFAULT_QUESTLINE_FILTERS.status,
 			eligibility: Array.isArray(parsed.eligibility)
-				? parsed.eligibility.filter((e: unknown): e is EligibilityFilter =>
-						e === 'eligible' || e === 'locked'
-				  )
+				? parsed.eligibility.filter(
+						(e: unknown): e is EligibilityFilter => e === 'eligible' || e === 'locked'
+					)
 				: DEFAULT_QUESTLINE_FILTERS.eligibility,
 			showUnavailable: typeof parsed.showUnavailable === 'boolean' ? parsed.showUnavailable : false,
 			mainQuestOnly: typeof parsed.mainQuestOnly === 'boolean' ? parsed.mainQuestOnly : false
@@ -377,9 +378,9 @@ export function loadShortfallFilters(): ShortfallFilters {
 		return {
 			sortDirection: parsed.sortDirection === 'asc' ? 'asc' : 'desc',
 			mailFilters: Array.isArray(parsed.mailFilters)
-				? parsed.mailFilters.filter((m: unknown): m is MailFilter =>
-						m === 'mailable' || m === 'not-mailable'
-				  )
+				? parsed.mailFilters.filter(
+						(m: unknown): m is MailFilter => m === 'mailable' || m === 'not-mailable'
+					)
 				: DEFAULT_SHORTFALL_FILTERS.mailFilters,
 			maxedOnly: typeof parsed.maxedOnly === 'boolean' ? parsed.maxedOnly : false,
 			exceedsCapOnly: typeof parsed.exceedsCapOnly === 'boolean' ? parsed.exceedsCapOnly : false,

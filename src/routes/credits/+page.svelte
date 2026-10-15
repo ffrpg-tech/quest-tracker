@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { canonicalUrl, SITE_NAME } from '$lib/seo';
+	import { canonicalUrl, SITE_AUTHOR, SITE_NAME } from '$lib/seo';
 	import CreditsContent from '$lib/components/content/CreditsContent.svelte';
 
 	const title = `Credits — ${SITE_NAME}`;
@@ -11,6 +11,7 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={description} />
+	<meta name="author" content={SITE_AUTHOR} />
 	<link rel="canonical" href={canonicalUrl('/credits')} />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={title} />

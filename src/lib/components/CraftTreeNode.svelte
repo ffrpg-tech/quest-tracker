@@ -14,7 +14,7 @@
 	let expanded = $state(false);
 
 	const satisfied = $derived(node.left <= 0);
-	const hasChildren = $derived(node.craftable && node.children.length > 0);
+	const hasChildren = $derived(node.children.length > 0);
 	const isReady = $derived(node.left <= 0 && node.craftableQty > 0);
 </script>
 
@@ -27,12 +27,14 @@
 			<a
 				href={buddyFarmItemUrl(node.item)}
 				target="_blank"
-				rel="noopener noreferrer"
+				rel="external noopener noreferrer"
 				class="hover:underline">{node.item}</a
 			>
 		</span>
 		<span class="inline-flex items-center gap-1 tabular-nums">
-			<span class="text-gray-500 dark:text-gray-400">{formatNumber(node.have)} / {formatNumber(node.needed)}</span>
+			<span class="text-gray-500 dark:text-gray-400"
+				>{formatNumber(node.have)} / {formatNumber(node.needed)}</span
+			>
 			{#if satisfied}
 				<Check
 					size={13}
@@ -50,6 +52,27 @@
 				>
 			{/if}
 		</span>
+		{#if node.reqCraftingLevel !== undefined}
+			<span
+				class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+			>
+				REQ CRAFTING LVL {node.reqCraftingLevel}
+			</span>
+		{/if}
+		{#if node.reqCookingLevel !== undefined}
+			<span
+				class="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300"
+			>
+				REQ COOKING LVL {node.reqCookingLevel}
+			</span>
+		{/if}
+		{#if node.reqNpc !== undefined}
+			<span
+				class="rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300"
+			>
+				REQ {node.reqNpc.npc.toUpperCase()} LVL {node.reqNpc.level}
+			</span>
+		{/if}
 		{#if hasChildren}
 			<button
 				type="button"

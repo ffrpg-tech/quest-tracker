@@ -4,14 +4,14 @@ import { generateRequestList, MAX_FARM_RPG_CHAT_LENGTH, CHAT_PREFIX } from './re
 describe('requestList generator', () => {
 	const mockMailableMap: Record<string, boolean> = {
 		'Large Net': true,
-		'Aquamarine': true,
+		Aquamarine: true,
 		'Arnold Palmer': true,
-		'Apple': true,
-		'Coal': true,
-		'Iron': false,
+		Apple: true,
+		Coal: true,
+		Iron: false,
 		'Glass Bottle': false,
 		'Large Chest 01': false,
-		'Board': false
+		Board: false
 	};
 
 	const canMailLookup = (name: string) => mockMailableMap[name];

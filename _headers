@@ -1,7 +1,7 @@
 /questlines.json
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
 
-/questlines-meta:json
+/questlines-meta.json
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
 
 /items.json
@@ -23,4 +23,7 @@
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
 
 /locations.json
+  Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800
+
+/recipe-levels.json
   Cache-Control: public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800

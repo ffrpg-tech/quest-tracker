@@ -19,8 +19,8 @@ html {
 [id],
 :target,
 section,
-[data-testid="result-row"],
-[data-testid="queue-row"] {
+[data-testid='result-row'],
+[data-testid='queue-row'] {
 	scroll-margin-top: var(--header-h);
 }
 

@@ -2,22 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 	<url>
 		<loc>https://farm-rpg-quest-tracker.pages.dev/</loc>
-		<changefreq>weekly</changefreq>
+		<lastmod>2026-10-14</lastmod>
+		<changefreq>daily</changefreq>
 		<priority>1.0</priority>
 	</url>
 	<url>
 		<loc>https://farm-rpg-quest-tracker.pages.dev/about</loc>
+		<lastmod>2026-10-14</lastmod>
 		<changefreq>monthly</changefreq>
-		<priority>0.5</priority>
-	</url>
-	<url>
-		<loc>https://farm-rpg-quest-tracker.pages.dev/credits</loc>
-		<changefreq>monthly</changefreq>
-		<priority>0.5</priority>
+		<priority>0.8</priority>
 	</url>
 	<url>
 		<loc>https://farm-rpg-quest-tracker.pages.dev/changelog</loc>
-		<changefreq>monthly</changefreq>
-		<priority>0.5</priority>
+		<lastmod>2026-10-14</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>0.8</priority>
 	</url>
 </urlset>

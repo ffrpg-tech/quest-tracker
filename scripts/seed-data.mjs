@@ -13,7 +13,8 @@ const targets = [
 	['items.sample.json', 'items.json'],
 	['npc.sample.json', 'npc.json'],
 	['locations.sample.json', 'locations.json'],
-	['item-sources.sample.json', 'item-sources.json']
+	['item-sources.sample.json', 'item-sources.json'],
+	['recipe-levels.sample.json', 'recipe-levels.json']
 ];
 
 for (const [sample, target] of targets) {

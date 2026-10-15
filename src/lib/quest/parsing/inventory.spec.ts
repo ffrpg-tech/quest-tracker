@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { InventoryParseError, parseInventoryPaste, toInventoryEntries, replaceInventory } from './inventory';
+import {
+	InventoryParseError,
+	parseInventoryPaste,
+	toInventoryEntries,
+	replaceInventory
+} from './inventory';
 
 const ANCHOR_LINE = 'Currently, you cannot have more than 999 of most items.';
 
@@ -106,7 +111,10 @@ describe('parseInventoryPaste', () => {
 				'Useful to cook other things',
 				'10,033'
 			].join('\n')
-		).replace('Inventory Stats\nFooter junk', 'Inventory Stats\nYour inventory contains 1 unique items.');
+		).replace(
+			'Inventory Stats\nFooter junk',
+			'Inventory Stats\nYour inventory contains 1 unique items.'
+		);
 
 		const parsed = parseInventoryPaste(text);
 		expect(parsed).toEqual([
@@ -198,7 +206,9 @@ Navigation
 	});
 
 	it('flags an item as maxed even when the game renders "MAX ON HAND" in a different case', () => {
-		const text = wrap(['Items chevron_down', 'Iron', 'A sturdy metal.', 'max on hand', '966'].join('\n'));
+		const text = wrap(
+			['Items chevron_down', 'Iron', 'A sturdy metal.', 'max on hand', '966'].join('\n')
+		);
 
 		const parsed = parseInventoryPaste(text);
 		expect(parsed).toEqual([{ itemName: 'Iron', quantity: 966, category: 'Items', maxed: true }]);
@@ -209,9 +219,10 @@ Navigation
 		// any other silent-truncation failure mode — the page's own footer
 		// count is authoritative and a mismatch should fail loudly rather than
 		// return a plausible-looking but incomplete result.
-		const text = wrap(
-			['Items chevron_down', 'Wood', '42'].join('\n')
-		).replace('Inventory Stats\nFooter junk', 'Inventory Stats\nYour inventory contains 515 unique items.');
+		const text = wrap(['Items chevron_down', 'Wood', '42'].join('\n')).replace(
+			'Inventory Stats\nFooter junk',
+			'Inventory Stats\nYour inventory contains 515 unique items.'
+		);
 
 		expect(() => parseInventoryPaste(text)).toThrow(InventoryParseError);
 	});
