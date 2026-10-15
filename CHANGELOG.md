@@ -9,9 +9,33 @@ the page parses this file directly, so an entry added here is what users see.
 
 ## [Unreleased]
 
+## [0.5.3] - 2026-10-15T00:00:00+08:00
+
+### Added
+
+- Acronym-based questline search with relevance ranking: searching common community backronyms (e.g. `ATI` for _A Towering Investment_, `SASSY` for _Secretly A Society Summons You_, `STARMAP` for _Starting To Actually Realize Magic Ain't Pretty_, `DI` for _Distant Illusions_ / _Dig In_, and `CUBE` for _Crates Unlocked for Buddy's Enrichment_) now surfaces target questlines immediately at the top of the picker list, ranked ahead of incidental substring matches.
+- Text file import (`.txt`, `.text`, `.log`) on the Import Data modal: players can now upload or drag-and-drop raw game export text files directly. This bypasses mobile clipboard memory limits (e.g. truncation on lower versions Android) when copying large inventory or completed quest pages.
+- Expanded item drop locations catalog with Locksmith items (contents from opening 28 Grab Bags, Chests, and Baskets), Wheel of Borgen reward drops, and permanent Flea Market wares.
+- Added Temple Regular Chains sacrifice rewards as cataloged item sources for 12 key items (Gold Mega Trout, Cutlass, Lucky Spiral Belt, Runestone 20, Diamond, Honey, Gold Potato, Piece of Heart, Gold Boot, Mini Time Egg, Broken Memory Belt, and Piece 12), with corresponding item catalog additions and CDN image mappings.
+- Skill and recipe unlock gating in recursive craft trees: crafting and cooking planners now evaluate player Crafting level, Cooking level, and NPC friendship recipe requirements, preventing uncraftable recipes from reporting optimistic progress.
+- Hard Cap vs. Soft Cap bottleneck indicators: shortfall calculations now distinguish between absolute capacity blockers on non-mailable single quest turn-ins (Hard Caps) versus mailable items that can overflow bag limits via trade or mailbox delivery (Soft Caps).
+- Added reference guide links to the Credits page for Locksmith, Wheel of Borgen, and Flea Market documentation.
+
+### Changed
+
+- Enhanced `ItemSourcePill` secondary sources popup on mobile viewports to display the item name alongside the other sources count in the title (`{itemName} Other Sources (x)`), providing clear context when opening the alternative sources bottom sheet on phones.
+- Replaced default Svelte starter favicon with the FarmRPG Official Share icon (`/img/items/7896.png`), retiring the legacy SVG asset as the site's official origin badge. (See `/about`!)
+- Updated site metadata and OpenGraph previews to accurately reflect current tool features and author attribution.
+- Refreshed structured data and `sitemap.xml` indexing rules.
+
+### Fixed
+
+- Corrected static cache header path in `_headers` for `questlines-meta.json`.
+- Fixed in-app version detection by parsing CHANGELOG.md directly as the dynamic source of truth for the current release.
+
 ## [0.5.2] - 2026-10-14T00:00:00+08:00
 
-## Fixed
+### Fixed
 
 - Shortfalls and craftable counts now account for stock used by crafts earlier in your queue. Previously, ingredients spent crafting one item could still look available to later quests, so totals could be too optimistic. Your shortfall totals may be larger than before. They now show what you actually need to gather.
 

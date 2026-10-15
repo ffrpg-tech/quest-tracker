@@ -1,6 +1,8 @@
+import changelogRaw from '../../CHANGELOG.md?raw';
+import { parseChangelog, latestVersion } from './changelog';
 import { loadCachedAppVersion, saveCachedAppVersion } from './quest/storage/persistence';
 
-export const APP_VERSION = '0.5.1.1';
+export const APP_VERSION = latestVersion(parseChangelog(changelogRaw)) ?? '0.0.0';
 
 /**
  * Compares two semantic version strings (e.g. '0.4.2' and '0.4.1').

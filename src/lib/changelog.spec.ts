@@ -30,7 +30,9 @@ describe('groupByMinor', () => {
 	it('falls back to grouping a malformed version under itself', () => {
 		const entries = [entry('Unreleased')];
 
-		expect(groupByMinor(entries)).toEqual([{ minor: 'Unreleased', entries: [entry('Unreleased')] }]);
+		expect(groupByMinor(entries)).toEqual([
+			{ minor: 'Unreleased', entries: [entry('Unreleased')] }
+		]);
 	});
 
 	it('returns an empty array for no entries', () => {

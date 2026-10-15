@@ -1,16 +1,18 @@
 {
 	"name": "farm-rpg-quest-tracker",
 	"private": true,
-	"version": "0.5.2",
+	"version": "0.5.3",
 	"type": "module",
 	"scripts": {
 		"seed-data": "node scripts/seed-data.mjs",
-		"predev": "npm run seed-data",
-		"pretest": "npm run seed-data",
+		"sync-version": "node scripts/sync-version.mjs",
+		"sync-version:check": "node scripts/sync-version.mjs --check",
+		"predev": "npm run seed-data && npm run sync-version",
+		"pretest": "npm run seed-data && npm run sync-version",
 		"fetch:questlines": "node --env-file=api/.env api/fetch-questlines.mjs",
 		"fetch:questlines:incremental": "node --env-file=api/.env api/fetch-questlines.mjs --incremental",
 		"dev": "vite dev",
-		"build": "vite build",
+		"build": "npm run sync-version && vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -20,7 +22,7 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright install && playwright test",
-		"deploy": "vite build && wrangler pages deploy .svelte-kit/cloudflare"
+		"deploy": "npm run sync-version && vite build && wrangler pages deploy .svelte-kit/cloudflare"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

@@ -18,7 +18,16 @@ describe('compareSemver', () => {
 		expect(compareSemver('0.4.0', '0.4.2')).toBe(-1);
 	});
 
-	it('exports valid APP_VERSION constant matching 0.5.1.1', () => {
-		expect(APP_VERSION).toBe('0.5.1.1');
+	it('exports valid APP_VERSION constant matching CHANGELOG.md', () => {
+		expect(APP_VERSION).toMatch(/^\d+\.\d+\.\d+(\.\d+)?$/);
+		expect(APP_VERSION).not.toBe('0.0.0');
+	});
+
+	it('ensures package.json and static/version.json match APP_VERSION', async () => {
+		const pkg = await import('../../package.json');
+		const staticVersion = await import('../../static/version.json');
+
+		expect(pkg.version).toBe(APP_VERSION);
+		expect(staticVersion.version).toBe(APP_VERSION);
 	});
 });
