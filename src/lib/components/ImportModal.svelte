@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { SvelteSet } from 'svelte/reactivity';
-	import { X, ExternalLink, ChevronDown, Check, AlertCircle } from '@lucide/svelte';
+	import {
+		X,
+		ExternalLink,
+		ChevronDown,
+		Check,
+		AlertCircle,
+		Upload,
+		FileText
+	} from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
 	import ParseSuccessFlash from './ParseSuccessFlash.svelte';
 	import {
@@ -96,10 +104,15 @@
 		}
 	}
 
+	let fileInputEl = $state<HTMLInputElement>();
+	let isDraggingOver = $state(false);
+	let loadedFileName = $state<string | null>(null);
+
 	function clearPaste() {
 		rawPasteText = '';
 		feedbackStatus = null;
 		unmatchedQuestNames = [];
+		loadedFileName = null;
 	}
 
 	/** Quest name -> every (questline, quest) pair with that exact name. */
@@ -204,8 +217,7 @@
 		}
 
 		if (result.bank) {
-			const silver =
-				result.bank.walletSilver + (includeBankBalance ? result.bank.bankSilver : 0);
+			const silver = result.bank.walletSilver + (includeBankBalance ? result.bank.bankSilver : 0);
 			inventory = mergeInventory(
 				inventory,
 				new Map([['Silver', { item: 'Silver', qty: silver, maxed: false }]])
@@ -238,6 +250,70 @@
 			summary: result.summary,
 			ok: true
 		};
+	}
+
+	async function processFile(file: File) {
+		if (!file) return;
+
+		// Protect against accidental large/binary uploads (5MB ceiling)
+		if (file.size > 5 * 1024 * 1024) {
+			feedbackStatus = {
+				type: 'unknown',
+				summary: `"${file.name}" is too large (${(file.size / (1024 * 1024)).toFixed(1)} MB). Maximum allowed file size is 5 MB.`,
+				ok: false
+			};
+			return;
+		}
+
+		try {
+			const text = await file.text();
+			if (!text.trim()) {
+				feedbackStatus = {
+					type: 'unknown',
+					summary: `"${file.name}" is empty.`,
+					ok: false
+				};
+				return;
+			}
+
+			rawPasteText = text;
+			loadedFileName = file.name;
+			handleParseAndImport();
+		} catch (err) {
+			feedbackStatus = {
+				type: 'unknown',
+				summary: err instanceof Error ? err.message : 'Failed to read file.',
+				ok: false
+			};
+		}
+	}
+
+	function handleFileSelect(e: Event) {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+		if (file) {
+			void processFile(file);
+		}
+		target.value = '';
+	}
+
+	function handleDragOver(e: DragEvent) {
+		e.preventDefault();
+		isDraggingOver = true;
+	}
+
+	function handleDragLeave(e: DragEvent) {
+		e.preventDefault();
+		isDraggingOver = false;
+	}
+
+	function handleDrop(e: DragEvent) {
+		e.preventDefault();
+		isDraggingOver = false;
+		const file = e.dataTransfer?.files?.[0];
+		if (file) {
+			void processFile(file);
+		}
 	}
 </script>
 
@@ -319,11 +395,39 @@
 
 			<!-- Unified Full-Width Auto-Expanding Textarea -->
 			<div class="space-y-2">
-				<div class="flex items-center justify-between text-xs">
-					<label for="smart-paste-box" class="font-medium text-gray-700 dark:text-gray-300">
-						Input Text
+				<div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+					<label
+						for="smart-paste-box"
+						class="flex items-center gap-1.5 font-medium text-gray-700 dark:text-gray-300"
+					>
+						<span>Input Text</span>
+						{#if loadedFileName}
+							<span
+								class="inline-flex items-center gap-1 font-normal text-sky-600 dark:text-sky-400"
+							>
+								<FileText size={12} />
+								{loadedFileName}
+							</span>
+						{/if}
 					</label>
 					<div class="flex items-center gap-2">
+						<input
+							bind:this={fileInputEl}
+							type="file"
+							accept=".txt,.text,.log,text/plain"
+							onchange={handleFileSelect}
+							class="hidden"
+							aria-label="Upload text file"
+						/>
+						<button
+							type="button"
+							onclick={() => fileInputEl?.click()}
+							class={buttonClass('default')}
+							title="Upload raw text file (.txt)"
+						>
+							<Upload size={14} class="mr-1 inline text-gray-500 dark:text-gray-400" />
+							<span>Upload .txt</span>
+						</button>
 						<button type="button" onclick={pasteFromClipboard} class={buttonClass('default')}>
 							Paste from clipboard
 						</button>
@@ -335,15 +439,30 @@
 					</div>
 				</div>
 
-				<div class="relative">
+				<div
+					class="relative rounded border transition-colors {isDraggingOver
+						? 'border-sky-500 ring-2 ring-sky-500/30 dark:border-sky-400'
+						: 'border-gray-300 dark:border-gray-600'}"
+				>
 					<textarea
 						id="smart-paste-box"
 						bind:value={rawPasteText}
 						rows="7"
-						placeholder="Paste anything: Inventory, Player Stats, Mining Floor, Bank, or Quest logs..."
-						aria-label="Paste input text"
-						class="w-full rounded border border-gray-300 p-2.5 font-mono text-xs dark:border-gray-600 dark:bg-gray-900 dark:text-gray-100 focus:border-sky-500 focus:outline-none"
+						placeholder="Paste anything: Inventory, Player Stats, Mining Floor, Bank, or Quest logs... or drop a .txt file here"
+						aria-label="Paste input text or drop text file"
+						ondragover={handleDragOver}
+						ondragleave={handleDragLeave}
+						ondrop={handleDrop}
+						class="w-full rounded p-2.5 font-mono text-xs dark:bg-gray-900 dark:text-gray-100 focus:border-sky-500 focus:outline-none"
 					></textarea>
+					{#if isDraggingOver}
+						<div
+							class="pointer-events-none absolute inset-0 flex items-center justify-center rounded bg-sky-50/90 text-sm font-semibold text-sky-700 dark:bg-gray-900/90 dark:text-sky-300"
+						>
+							<Upload size={18} class="mr-2 animate-bounce" />
+							Drop .txt file to import
+						</div>
+					{/if}
 				</div>
 
 				{#if importMode === 'bank'}
@@ -505,6 +624,12 @@
 											paste into the box above.
 										</li>
 									</ol>
+									<p class="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
+										<strong>Mobile tip:</strong> If your phone's clipboard truncates large text
+										(e.g. Android 9 on Honor Play capping at 1KB), save or share the page to a
+										<code>.txt</code>
+										file and use <strong>Upload .txt</strong> above.
+									</p>
 								</div>
 							{:else if activeGuideTab === 'stats'}
 								<div class="space-y-1.5 text-gray-600 dark:text-gray-300">
@@ -566,6 +691,11 @@
 										</li>
 										<li>Paste into the box above to mark matching quests completed.</li>
 									</ol>
+									<p class="mt-2 text-[11px] text-gray-500 dark:text-gray-400">
+										<strong>Mobile tip:</strong> Long completed quest logs can also be saved as a
+										<code>.txt</code>
+										file and imported using <strong>Upload .txt</strong>.
+									</p>
 								</div>
 							{/if}
 						</div>

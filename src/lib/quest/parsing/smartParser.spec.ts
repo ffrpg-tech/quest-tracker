@@ -196,6 +196,17 @@ describe('detectAndParseInput', () => {
 		}
 	});
 
+	it('handles file text with CRLF Windows line endings', () => {
+		const crlfText = INVENTORY_SAMPLE.replace(/\n/g, '\r\n');
+		const res = detectAndParseInput(crlfText, 'auto');
+		expect(res.ok).toBe(true);
+		if (res.ok) {
+			expect(res.type).toBe('inventory');
+			expect(res.inventory?.rawLines.length).toBe(2);
+			expect(res.inventory?.maxCapacityDetected).toBe(1000);
+		}
+	});
+
 	it('returns ok: false on empty text', () => {
 		const res = detectAndParseInput('   ', 'auto');
 		expect(res.ok).toBe(false);

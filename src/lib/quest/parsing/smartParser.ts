@@ -273,9 +273,7 @@ export function detectAndParseInput(
 		// 4. Bank candidate check
 		if (
 			lower.includes('bulk options') ||
-			(lower.includes('deposit all') &&
-				lower.includes('withdraw all') &&
-				lower.includes('silver'))
+			(lower.includes('deposit all') && lower.includes('withdraw all') && lower.includes('silver'))
 		) {
 			try {
 				const b = parseBankPaste(rawText);
