@@ -13,12 +13,12 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">farmrpg.com</a
-			>. This is an unofficial, non-commercial fan project and is not affiliated with, endorsed
-			by, or sponsored by Magic and Wires, LLC.
+			>. This is an unofficial, non-commercial fan project and is not affiliated with, endorsed by,
+			or sponsored by Magic and Wires, LLC.
 		</p>
 		<p class="mt-2">
-			<strong>Special thanks</strong> to these folks for providing me insights and contributions to
-			create this project:
+			<strong>Special thanks</strong> to these folks for providing me insights and contributions to create
+			this project:
 		</p>
 		<ol class="mt-1 list-decimal space-y-1 pl-5">
 			<li>
@@ -36,8 +36,8 @@
 				> — provided technical assistance and guidance for the data pipeline and several clarifications.
 			</li>
 			<li>
-				<span class="font-medium text-emerald-600 dark:text-emerald-400">Lex 26</span> —
-				contributed in testing and provided feedback, gained inspiration from their
+				<span class="font-medium text-emerald-600 dark:text-emerald-400">Lex 26</span> — contributed
+				in testing and provided feedback, gained inspiration from their
 				<a
 					href="https://crafttree.pages.dev"
 					target="_blank"
@@ -46,10 +46,8 @@
 				> website.
 			</li>
 			<li>
-				FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400">Rkm13</span
-				>
-				— for providing suggestions and clarifications, and for adding this tool to the game's
-				official
+				FarmRPG Staff <span class="font-medium text-emerald-600 dark:text-emerald-400">Rkm13</span>
+				— for providing suggestions and clarifications, and for adding this tool to the game's official
 				<a
 					href="https://farmrpg.com/index.php#!/wiki.php?page=Community%20Guides"
 					target="_blank"
@@ -59,8 +57,8 @@
 				> page!
 			</li>
 			<li>
-				and <span class="font-medium text-emerald-600 dark:text-emerald-400">you!</span> — for using
-				the application itself!
+				and <span class="font-medium text-emerald-600 dark:text-emerald-400">you!</span> — for using the
+				application itself!
 			</li>
 		</ol>
 	</div>
@@ -118,10 +116,37 @@
 					href="https://farmrpg.com/index.php#!/wiki.php?page=WW+Wants"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
-					>WW Wants</a
+					class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">WW Wants</a
 				>
 				— the basis for wishing well drop sources.
+			</li>
+			<li>
+				<a
+					href="https://farmrpg.com/index.php#!/wiki.php?page=Locksmith"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">Locksmith</a
+				>
+				— the basis for chest and grab bag drop tables.
+			</li>
+			<li>
+				<a
+					href="https://farmrpg.com/index.php#!/wiki.php?page=Wheel+Of+Borgen"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="font-medium text-emerald-600 hover:underline dark:text-emerald-400"
+					>Wheel of Borgen</a
+				>
+				— the basis for Wheel of Borgen reward drops.
+			</li>
+			<li>
+				<a
+					href="https://farmrpg.com/index.php#!/flea.php"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="font-medium text-emerald-600 hover:underline dark:text-emerald-400">Flea Market</a
+				>
+				— the basis for permanent Flea Market wares.
 			</li>
 		</ol>
 	</div>

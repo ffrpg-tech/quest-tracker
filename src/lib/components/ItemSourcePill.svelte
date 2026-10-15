@@ -40,7 +40,12 @@
 	}
 
 	function handleWindowClick(e: MouseEvent) {
-		if (wide.current && showSecondary && popoverContainer && !popoverContainer.contains(e.target as Node)) {
+		if (
+			wide.current &&
+			showSecondary &&
+			popoverContainer &&
+			!popoverContainer.contains(e.target as Node)
+		) {
 			showSecondary = false;
 		}
 	}
@@ -133,9 +138,15 @@
 
 		<!-- Secondary sources content snippet -->
 		{#snippet secondarySourcesContent()}
-			<div class="mb-1.5 flex items-center justify-between border-b border-gray-100 pb-1 dark:border-gray-700">
+			<div
+				class="mb-1.5 flex items-center justify-between border-b border-gray-100 pb-1 dark:border-gray-700"
+			>
 				<span class="text-[11px] font-semibold text-gray-700 dark:text-gray-300">
-					Other Sources ({secondary.length})
+					{#if !wide.current}
+						{itemName} Other Sources ({secondary.length})
+					{:else}
+						Other Sources ({secondary.length})
+					{/if}
 				</span>
 				<button
 					type="button"

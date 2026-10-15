@@ -96,6 +96,10 @@
     {
       "locId": "pet-squirrel",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
     }
   ],
   "Bone": [
@@ -109,6 +113,10 @@
     {
       "locId": "pet-wolf",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
     }
   ],
   "Wooden Mask": [
@@ -144,6 +152,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Skeleton Key": [
@@ -157,6 +169,10 @@
     {
       "locId": "pet-bird",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 08"
     }
   ],
   "Model Ship": [
@@ -194,6 +210,17 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Apple": [
@@ -213,6 +240,21 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     },
     {
       "locId": "exchange-center",
@@ -236,6 +278,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Dice": [
@@ -272,6 +322,10 @@
     {
       "locId": "pet-snake",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 02"
     }
   ],
   "Purple Flower": [
@@ -318,6 +372,13 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Caterpillar": [
@@ -331,6 +392,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Strange Letter": [
@@ -353,6 +418,10 @@
     {
       "locId": "pet-blue-dragon",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Medium Chest 01": [
@@ -411,6 +480,13 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Tea Leaves": [
@@ -429,6 +505,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Pocket Watch": [
@@ -486,6 +566,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
     }
   ],
   "Straw": [
@@ -562,6 +646,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Spider": [
@@ -575,6 +667,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 02"
     },
     {
       "locId": "haunted-house"
@@ -599,6 +699,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Gold Feather": [
@@ -622,6 +726,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
     }
   ],
   "Frog": [
@@ -688,6 +796,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
     }
   ],
   "Shimmer Quartz": [
@@ -697,6 +809,9 @@
     {
       "locId": "pet-snake",
       "tier": "Level 3"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Ancient Coin": [
@@ -711,8 +826,50 @@
       "tier": "Level 3"
     },
     {
+      "locId": "flea-market"
+    },
+    {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 03"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Giant Centipede": [
@@ -730,6 +887,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Ruby Scorpion": [
@@ -756,6 +921,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Runestone 13": [
@@ -769,6 +938,10 @@
     {
       "locId": "pet-blue-dragon",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Orange Gecko": [
@@ -827,6 +1000,14 @@
       "tier": "Standard Drops"
     },
     {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 02"
+    },
+    {
       "locId": "santas-workshop"
     }
   ],
@@ -867,6 +1048,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Gold Leaf": [
@@ -884,6 +1073,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
     }
   ],
   "Unpolished Emerald": [
@@ -934,6 +1127,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 01"
     }
   ],
   "Small Chest 02": [
@@ -952,6 +1153,10 @@
     {
       "locId": "pet-blue-dragon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Dragon Skull": [
@@ -973,6 +1178,10 @@
     {
       "locId": "pet-pet-rock",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 02"
     }
   ],
   "Emberstone": [
@@ -1016,6 +1225,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
     }
   ],
   "Magicite": [
@@ -1041,6 +1254,10 @@
     {
       "locId": "pet-red-dragon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Large Chest 01": [
@@ -1063,6 +1280,10 @@
     {
       "locId": "pet-pet-rock",
       "tier": "Level 6"
+    },
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
     }
   ],
   "Oak": [
@@ -1149,6 +1370,14 @@
     {
       "locId": "pet-owl",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 02"
     }
   ],
   "Orange": [
@@ -1164,6 +1393,14 @@
     {
       "locId": "pet-owl",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 02"
     }
   ],
   "Herbs": [
@@ -1191,6 +1428,10 @@
   "Raptor Claw": [
     {
       "locId": "whispering-creek"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
     }
   ],
   "Red Ornament": [
@@ -1356,6 +1597,14 @@
       "tier": "Standard Drops"
     },
     {
+      "locId": "locksmith",
+      "tier": "Treat Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 02"
+    },
+    {
       "locId": "haunted-house"
     }
   ],
@@ -1363,6 +1612,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 02"
     },
     {
       "locId": "haunted-house"
@@ -1374,6 +1631,10 @@
       "tier": "Standard Drops"
     },
     {
+      "locId": "locksmith",
+      "tier": "Treat Bag 03"
+    },
+    {
       "locId": "haunted-house"
     }
   ],
@@ -1381,6 +1642,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
     },
     {
       "locId": "haunted-house"
@@ -1406,6 +1671,10 @@
       "tier": "Standard Drops"
     },
     {
+      "locId": "locksmith",
+      "tier": "Treat Bag 03"
+    },
+    {
       "locId": "haunted-house"
     }
   ],
@@ -1419,6 +1688,9 @@
     }
   ],
   "Treat Bag 02": [
+    {
+      "locId": "wheel-of-borgen"
+    },
     {
       "locId": "haunted-house"
     }
@@ -1605,6 +1877,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 02"
     }
   ],
   "Runestone 08": [
@@ -1622,6 +1898,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Small Key": [
@@ -1635,6 +1915,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 08"
     }
   ],
   "Largemouth Bass": [
@@ -1678,6 +1962,10 @@
   "Catfish": [
     {
       "locId": "farm-pond"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
     }
   ],
   "Flier": [
@@ -1703,6 +1991,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Bluegill": [
@@ -1734,6 +2026,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Square Key": [
@@ -1747,6 +2043,18 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 08"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 03"
     }
   ],
   "Crappie": [
@@ -1772,6 +2080,10 @@
     {
       "locId": "pet-cat",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
     }
   ],
   "Runestone 15": [
@@ -1785,6 +2097,10 @@
     {
       "locId": "pet-spider",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Small Prawn": [
@@ -1910,6 +2226,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 03"
     }
   ],
   "Runestone 12": [
@@ -1923,6 +2243,10 @@
     {
       "locId": "pet-green-dragon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Clam Shell": [
@@ -1978,6 +2302,10 @@
     {
       "locId": "pet-cat",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 01"
     }
   ],
   "Stingray": [
@@ -2147,6 +2475,10 @@
     {
       "locId": "pet-blue-dragon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Diving Helmet": [
@@ -2201,6 +2533,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 08"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
     },
     {
       "locId": "exchange-center",
@@ -2586,6 +2926,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 03"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
     }
   ],
   "Cotton": [
@@ -2630,6 +2978,14 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 02"
     }
   ],
   "Gold Cucumber": [
@@ -2647,6 +3003,18 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 01"
     }
   ],
   "Gold Eggplant": [
@@ -2660,6 +3028,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
     }
   ],
   "Gold Peas": [
@@ -2677,6 +3049,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
     }
   ],
   "Gold Peppers": [
@@ -2690,6 +3066,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
     }
   ],
   "Hops": [
@@ -2774,6 +3154,10 @@
     {
       "locId": "pet-strange-onion",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 01"
     }
   ],
   "Pumpkin": [
@@ -2824,6 +3208,10 @@
     {
       "locId": "pet-bear",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 02"
     }
   ],
   "Tomato": [
@@ -2897,6 +3285,10 @@
     },
     {
       "locId": "steak-market"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 01"
     }
   ],
   "Worms": [
@@ -2910,11 +3302,30 @@
   "Gummy Worms": [
     {
       "locId": "building-worm-habitat"
+    },
+    {
+      "locId": "flea-market"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Treat Bag 02"
     }
   ],
   "Mealworms": [
     {
       "locId": "building-worm-habitat"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Raspberry": [
@@ -2961,6 +3372,14 @@
       "tier": "Level 3"
     },
     {
+      "locId": "locksmith",
+      "tier": "Gift Basket 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 02"
+    },
+    {
       "locId": "exchange-center",
       "tier": "Regular Trades"
     }
@@ -2983,6 +3402,10 @@
     {
       "locId": "pet-swine",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 02"
     }
   ],
   "Steel Wire": [
@@ -3163,6 +3586,10 @@
     },
     {
       "locId": "steak-market"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
     }
   ],
   "Bell": [
@@ -3381,6 +3808,9 @@
   ],
   "Freaky Picture": [
     {
+      "locId": "flea-market"
+    },
+    {
       "locId": "wishing-well",
       "tier": "Exclusives and Curios"
     }
@@ -3489,6 +3919,10 @@
     {
       "locId": "wishing-well",
       "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
     }
   ],
   "Purple Bag": [
@@ -3517,6 +3951,10 @@
     {
       "locId": "wishing-well",
       "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 02"
     }
   ],
   "Rubber Duckie": [
@@ -3563,6 +4001,10 @@
     {
       "locId": "wishing-well",
       "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 02"
     }
   ],
   "Small Screw": [
@@ -3573,6 +4015,10 @@
     {
       "locId": "wishing-well",
       "tier": "Exclusives and Curios"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 02"
     }
   ],
   "Spool of Copper": [
@@ -3673,24 +4119,47 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Gold Catfish": [
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
     }
   ],
   "Gold Coral": [
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
     }
   ],
   "Gold Drum": [
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
     }
   ],
   "Goldfin": [
@@ -3713,12 +4182,24 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
     }
   ],
   "Goldgill": [
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
     }
   ],
   "Goldjack": [
@@ -3731,6 +4212,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
     }
   ],
   "Gold Sea Bass": [
@@ -3743,6 +4228,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
     }
   ],
   "Honey": [
@@ -3759,8 +4248,16 @@
       "tier": "Standard Drops"
     },
     {
+      "locId": "locksmith",
+      "tier": "Large Chest 03"
+    },
+    {
       "locId": "exchange-center",
       "tier": "Regular Trades"
+    },
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
     }
   ],
   "Iced Tea": [
@@ -3770,6 +4267,9 @@
     {
       "locId": "pet-seal",
       "tier": "Level 3"
+    },
+    {
+      "locId": "flea-market"
     },
     {
       "locId": "wishing-well",
@@ -3789,8 +4289,22 @@
       "tier": "Level 3"
     },
     {
+      "locId": "flea-market"
+    },
+    {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Orange Juice": [
@@ -3806,8 +4320,22 @@
       "tier": "Level 3"
     },
     {
+      "locId": "flea-market"
+    },
+    {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Ruby": [
@@ -3817,6 +4345,17 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Runestone 01": [
@@ -3831,6 +4370,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Runestone 06": [
@@ -3849,6 +4392,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Runestone 07": [
@@ -3863,6 +4410,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Runestone 10": [
@@ -3877,6 +4428,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 04"
     }
   ],
   "Small Spring": [
@@ -3891,6 +4446,10 @@
     {
       "locId": "wishing-well",
       "tier": "Standard Drops"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 02"
     }
   ],
   "Salt": [
@@ -3906,6 +4465,14 @@
       "tier": "Level 6"
     },
     {
+      "locId": "locksmith",
+      "tier": "Large Chest 03"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
+    },
+    {
       "locId": "exchange-center",
       "tier": "Regular Trades"
     }
@@ -3914,6 +4481,10 @@
     {
       "locId": "pet-cat",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 03"
     },
     {
       "locId": "exchange-center",
@@ -3937,6 +4508,10 @@
       "tier": "Level 3"
     },
     {
+      "locId": "locksmith",
+      "tier": "Small Chest 02"
+    },
+    {
       "locId": "exchange-center",
       "tier": "Regular Trades"
     }
@@ -3955,11 +4530,27 @@
     {
       "locId": "exchange-center",
       "tier": "One Time Trades"
+    },
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
     }
   ],
   "Arnold Palmer": [
     {
       "locId": "workshop"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 02"
     },
     {
       "locId": "exchange-center",
@@ -4050,6 +4641,80 @@
     {
       "locId": "exchange-center",
       "tier": "Seasonal & Discontinued Trades"
+    }
+  ],
+  "Gold Mega Trout": [
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Lucky Spiral Belt": [
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Runestone 20": [
+    {
+      "locId": "pet-squirrel",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "pet-spider",
+      "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
+    },
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Gold Potato": [
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 03"
+    },
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Piece of Heart": [
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    },
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Gold Boot": [
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Mini Time Egg": [
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Broken Memory Belt": [
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
+    }
+  ],
+  "Piece 12": [
+    {
+      "locId": "temple",
+      "tier": "Regular Chains"
     }
   ],
   "Spring Basket 01": [
@@ -4173,6 +4838,10 @@
     {
       "locId": "pet-dog",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 02"
     }
   ],
   "Large Clam Shell": [
@@ -4194,20 +4863,18 @@
       "tier": "Level 3"
     }
   ],
-  "Runestone 20": [
+  "Gold Crab": [
     {
       "locId": "pet-squirrel",
       "tier": "Level 6"
     },
     {
-      "locId": "pet-spider",
-      "tier": "Level 6"
-    }
-  ],
-  "Gold Crab": [
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    },
     {
-      "locId": "pet-squirrel",
-      "tier": "Level 6"
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
     }
   ],
   "Runestone 11": [
@@ -4218,6 +4885,14 @@
     {
       "locId": "pet-green-dragon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
     }
   ],
   "Green Dye": [
@@ -4227,6 +4902,10 @@
     {
       "locId": "pet-swine",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
     }
   ],
   "Hammer": [
@@ -4276,6 +4955,17 @@
     {
       "locId": "pet-swine",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Horseshoe": [
@@ -4309,6 +4999,10 @@
     {
       "locId": "pet-lemur",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Cyclops Spider": [
@@ -4321,6 +5015,10 @@
     {
       "locId": "pet-lemur",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
     }
   ],
   "Sturdy Shield": [
@@ -4343,6 +5041,10 @@
     {
       "locId": "pet-pet-rock",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Large Chest 01"
     }
   ],
   "Grape Juice": [
@@ -4352,6 +5054,17 @@
     {
       "locId": "pet-baboon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "flea-market"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 01"
     }
   ],
   "Explosive": [
@@ -4371,6 +5084,10 @@
     {
       "locId": "pet-hedgehog",
       "tier": "Level 1"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
     }
   ],
   "Twine": [
@@ -4402,6 +5119,10 @@
     {
       "locId": "pet-red-dragon",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 02"
     }
   ],
   "Peach": [
@@ -4439,6 +5160,10 @@
     {
       "locId": "pet-spider",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 02"
     }
   ],
   "Emerald Ring": [
@@ -4448,6 +5173,10 @@
     {
       "locId": "pet-spider",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 02"
     }
   ],
   "Mystic Ring": [
@@ -4457,6 +5186,10 @@
     {
       "locId": "pet-spider",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
     }
   ],
   "Shimmer Ring": [
@@ -4466,6 +5199,14 @@
     {
       "locId": "pet-spider",
       "tier": "Level 3"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
     }
   ],
   "Unpolished Jade": [
@@ -4490,6 +5231,20 @@
     {
       "locId": "pet-bird",
       "tier": "Level 1"
+    },
+    {
+      "locId": "flea-market"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 06"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Gift Basket 01"
+    },
+    {
+      "locId": "wheel-of-borgen"
     }
   ],
   "Blue Dye": [
@@ -4512,6 +5267,18 @@
     {
       "locId": "pet-shark",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 02"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 02"
     }
   ],
   "Anglerfish": [
@@ -4528,6 +5295,10 @@
     {
       "locId": "pet-blue-dragon",
       "tier": "Level 6"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 05"
     }
   ],
   "Lantern": [
@@ -4556,6 +5327,9 @@
     {
       "locId": "pet-capybara",
       "tier": "Level 6"
+    },
+    {
+      "locId": "borgen"
     }
   ],
   "Inferno Sphere": [
@@ -4575,6 +5349,9 @@
     {
       "locId": "pet-capybara",
       "tier": "Level 6"
+    },
+    {
+      "locId": "borgen"
     }
   ],
   "Apple Cider": [
@@ -4584,6 +5361,13 @@
     {
       "locId": "pet-capybara",
       "tier": "Level 3"
+    },
+    {
+      "locId": "flea-market"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Present 02"
     }
   ],
   "Mega Sunflower Seeds": [
@@ -4813,6 +5597,10 @@
   "Amethyst Necklace": [
     {
       "locId": "workshop"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 02"
     }
   ],
   "Ancient Bird Fossil": [
@@ -4843,6 +5631,10 @@
   "Aquamarine Ring": [
     {
       "locId": "workshop"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Medium Chest 02"
     }
   ],
   "Awl": [
@@ -5508,6 +6300,9 @@
   "Peach Juice": [
     {
       "locId": "workshop"
+    },
+    {
+      "locId": "flea-market"
     }
   ],
   "Pear Grease": [
@@ -5988,6 +6783,10 @@
   "Wooden Plank": [
     {
       "locId": "workshop"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Small Chest 02"
     }
   ],
   "Wooden Shield": [
@@ -6313,6 +7112,123 @@
   "Ruined Ether Hammer": [
     {
       "locId": "mossrock-mine"
+    }
+  ],
+  "Gold Carp": [
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    }
+  ],
+  "Gold Bass": [
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    }
+  ],
+  "Gold Jellyfish": [
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
+    }
+  ],
+  "Gold Starfish": [
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    },
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
+    }
+  ],
+  "Gold Snapping Turtle": [
+    {
+      "locId": "locksmith",
+      "tier": "Grab Bag 07"
+    }
+  ],
+  "Gold Sea Turtle": [
+    {
+      "locId": "locksmith",
+      "tier": "Mystical Chest 01"
+    }
+  ],
+  "Corn Husk": [
+    {
+      "locId": "locksmith",
+      "tier": "Corn Prize Bag"
+    }
+  ],
+  "Spooky Cookies": [
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    }
+  ],
+  "Cider": [
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    }
+  ],
+  "Magic Mushroom": [
+    {
+      "locId": "locksmith",
+      "tier": "Borgen Bag 01"
+    }
+  ],
+  "Stag Beetle": [
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
+    }
+  ],
+  "Ladybug": [
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
+    }
+  ],
+  "Fly": [
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
+    }
+  ],
+  "Scorpion": [
+    {
+      "locId": "locksmith",
+      "tier": "Bug Bag 01"
+    }
+  ],
+  "Grab Bag 03": [
+    {
+      "locId": "borgen"
+    }
+  ],
+  "Present 01": [
+    {
+      "locId": "borgen"
+    }
+  ],
+  "Lemon Cream Pie": [
+    {
+      "locId": "flea-market"
+    }
+  ],
+  "Protein Bar": [
+    {
+      "locId": "flea-market"
+    }
+  ],
+  "Prune Juice": [
+    {
+      "locId": "flea-market"
     }
   ]
 }

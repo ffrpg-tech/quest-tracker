@@ -18,19 +18,19 @@ const itemNames = new Set(items.map((i) => i.name));
 
 /** Name alias corrections for common minor typos / plural differences */
 const ALIASES = {
-	'Boards': 'Board',
-	'Apples': 'Apple',
-	'Oranges': 'Orange',
-	'Lemons': 'Lemon',
-	'Antlers': 'Antler',
-	'Gummies': 'Gummy Worms',
-	'Wire': 'Steel Wire',
-	'Kabobs': 'Steak Kabob',
-	'Kebabs': 'Steak Kabob',
-	'Raspberries': 'Raspberry',
-	'Cherries': 'Cherry',
-	'Blueberries': 'Blueberry',
-	'Oddvocado': 'Avocado',
+	Boards: 'Board',
+	Apples: 'Apple',
+	Oranges: 'Orange',
+	Lemons: 'Lemon',
+	Antlers: 'Antler',
+	Gummies: 'Gummy Worms',
+	Wire: 'Steel Wire',
+	Kabobs: 'Steak Kabob',
+	Kebabs: 'Steak Kabob',
+	Raspberries: 'Raspberry',
+	Cherries: 'Cherry',
+	Blueberries: 'Blueberry',
+	Oddvocado: 'Avocado',
 	'Mega Trout': 'Trout',
 	'Void Bags': 'Void Bag 01',
 	'Witch Hat': 'Witch Hat',
@@ -59,25 +59,88 @@ export function slugify(name) {
 /** Pre-configured location metadata with level gates and verified image paths */
 const LOCATION_METADATA = {
 	// Exploring (only verified images kept)
-	'small-cave': { name: 'Small Cave', type: 'explore', reqSkill: 'exploring', reqLevel: 1, image: '/img/items/cave.png' },
+	'small-cave': {
+		name: 'Small Cave',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 1,
+		image: '/img/items/cave.png'
+	},
 	'small-spring': { name: 'Small Spring', type: 'explore', reqSkill: 'exploring', reqLevel: 10 },
-	'highland-hills': { name: 'Highland Hills', type: 'explore', reqSkill: 'exploring', reqLevel: 25 },
-	'cane-pole-ridge': { name: 'Cane Pole Ridge', type: 'explore', reqSkill: 'exploring', reqLevel: 40 },
+	'highland-hills': {
+		name: 'Highland Hills',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 25
+	},
+	'cane-pole-ridge': {
+		name: 'Cane Pole Ridge',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 40
+	},
 	'misty-forest': { name: 'Misty Forest', type: 'explore', reqSkill: 'exploring', reqLevel: 55 },
-	'black-rock-canyon': { name: 'Black Rock Canyon', type: 'explore', reqSkill: 'exploring', reqLevel: 60 },
-	'forest': { name: 'Forest', type: 'explore', reqSkill: 'exploring', reqLevel: 1 },
+	'black-rock-canyon': {
+		name: 'Black Rock Canyon',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 60
+	},
+	forest: { name: 'Forest', type: 'explore', reqSkill: 'exploring', reqLevel: 1 },
 	'mount-banon': { name: 'Mount Banon', type: 'explore', reqSkill: 'exploring', reqLevel: 70 },
 	'ember-lagoon': { name: 'Ember Lagoon', type: 'explore', reqSkill: 'exploring', reqLevel: 80 },
-	'whispering-creek': { name: 'Whispering Creek', type: 'explore', reqSkill: 'exploring', reqLevel: 90 },
-	'santas-workshop': { name: "Santa's Workshop", type: 'explore', season: { startDate: '12-01', endDate: '12-31' }, image: '/img/items/workshop.png' },
-	'jundland-desert': { name: 'Jundland Desert', type: 'explore', reqSkill: 'exploring', reqLevel: 99 },
-	'haunted-house': { name: 'Haunted House', type: 'explore', season: { startDate: '10-15', endDate: '11-05' } },
-	'garys-crushroom': { name: "Gary's Crushroom", type: 'explore', reqSkill: 'exploring', reqLevel: 99 },
-	'sinking-swamp-explore': { name: 'Sinking Swamp (Explore)', type: 'explore', reqSkill: 'exploring', reqLevel: 99, image: '/img/items/swamp.png' },
+	'whispering-creek': {
+		name: 'Whispering Creek',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 90
+	},
+	'santas-workshop': {
+		name: "Santa's Workshop",
+		type: 'explore',
+		season: { startDate: '12-01', endDate: '12-31' },
+		image: '/img/items/workshop.png'
+	},
+	'jundland-desert': {
+		name: 'Jundland Desert',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 99
+	},
+	'haunted-house': {
+		name: 'Haunted House',
+		type: 'explore',
+		season: { startDate: '10-15', endDate: '11-05' }
+	},
+	'garys-crushroom': {
+		name: "Gary's Crushroom",
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 99
+	},
+	'sinking-swamp-explore': {
+		name: 'Sinking Swamp (Explore)',
+		type: 'explore',
+		reqSkill: 'exploring',
+		reqLevel: 99,
+		image: '/img/items/swamp.png'
+	},
 
 	// Fishing (only verified images kept)
-	'small-pond': { name: 'Small Pond', type: 'fish', reqSkill: 'fishing', reqLevel: 1, image: '/img/items/pond.png' },
-	'farm-pond': { name: 'Farm Pond', type: 'fish', reqSkill: 'fishing', reqLevel: 1, image: '/img/items/pond.png' },
+	'small-pond': {
+		name: 'Small Pond',
+		type: 'fish',
+		reqSkill: 'fishing',
+		reqLevel: 1,
+		image: '/img/items/pond.png'
+	},
+	'farm-pond': {
+		name: 'Farm Pond',
+		type: 'fish',
+		reqSkill: 'fishing',
+		reqLevel: 1,
+		image: '/img/items/pond.png'
+	},
 	'forest-pond': { name: 'Forest Pond', type: 'fish', reqSkill: 'fishing', reqLevel: 10 },
 	'lake-tempest': { name: 'Lake Tempest', type: 'fish', reqSkill: 'fishing', reqLevel: 30 },
 	'small-island': { name: 'Small Island', type: 'fish', reqSkill: 'fishing', reqLevel: 45 },
@@ -85,22 +148,92 @@ const LOCATION_METADATA = {
 	'emerald-beach': { name: 'Emerald Beach', type: 'fish', reqSkill: 'fishing', reqLevel: 70 },
 	'vast-ocean': { name: 'Vast Ocean', type: 'fish', reqSkill: 'fishing', reqLevel: 80 },
 	'lake-minerva': { name: 'Lake Minerva', type: 'fish', reqSkill: 'fishing', reqLevel: 90 },
-	'large-island': { name: 'Large Island', type: 'fish', reqSkill: 'fishing', reqLevel: 95, image: '/img/items/largeisland.png' },
+	'large-island': {
+		name: 'Large Island',
+		type: 'fish',
+		reqSkill: 'fishing',
+		reqLevel: 95,
+		image: '/img/items/largeisland.png'
+	},
 	'pirates-cove': { name: "Pirate's Cove", type: 'fish', reqSkill: 'fishing', reqLevel: 99 },
 	'glacier-lake': { name: 'Glacier Lake', type: 'fish', reqSkill: 'fishing', reqLevel: 99 },
-	'apple-bobbing': { name: 'Apple Bobbing', type: 'fish', season: { startDate: '09-15', endDate: '10-31' } },
-	'sinking-swamp-fish': { name: 'Sinking Swamp (Fishing)', type: 'fish', reqSkill: 'fishing', reqLevel: 99 },
+	'apple-bobbing': {
+		name: 'Apple Bobbing',
+		type: 'fish',
+		season: { startDate: '09-15', endDate: '10-31' }
+	},
+	'sinking-swamp-fish': {
+		name: 'Sinking Swamp (Fishing)',
+		type: 'fish',
+		reqSkill: 'fishing',
+		reqLevel: 99
+	},
 
 	// Farm & Store (only verified images kept)
-	'crops': { name: 'Farm Crops', type: 'farm' },
+	crops: { name: 'Farm Crops', type: 'farm' },
 	'country-store': { name: 'Country Store', type: 'store' },
 	'steak-market': { name: 'Steak Market', type: 'store', image: '/img/items/steak.png' },
+	locksmith: {
+		name: 'Locksmith',
+		type: 'store',
+		image: '/img/items/basickey.png'
+	},
+	'wheel-of-borgen': {
+		name: 'Wheel of Borgen',
+		type: 'store',
+		image: '/img/items/wheel.png'
+	},
+	'flea-market': {
+		name: 'Flea Market',
+		type: 'store'
+	},
+	borgen: {
+		name: "Borgen's Shop",
+		type: 'store',
+		image: '/img/items/borgen.png'
+	},
 	'wishing-well': { name: 'Wishing Well', type: 'well', image: '/img/items/well.png' },
-	'exchange-center': { name: 'Exchange Center', type: 'exchange', image: '/img/items/exchange.png' },
-	'temple': { name: 'Temples', type: 'temple', image: '/img/items/temple.png' },
+	'exchange-center': {
+		name: 'Exchange Center',
+		type: 'exchange',
+		image: '/img/items/exchange.png'
+	},
+	temple: { name: 'Temples', type: 'temple', image: '/img/items/temple.png' },
+
+	// Mining (only verified images kept)
+	'spring-cave': {
+		name: 'Spring Cave',
+		type: 'mining',
+		image: '/img/items/springcave.png'
+	},
+	'highland-hollow': {
+		name: 'Highland Hollow',
+		type: 'mining',
+		image: '/img/items/highlandhollow.png'
+	},
+	'sol-grotto': {
+		name: 'Sol Grotto',
+		type: 'mining',
+		image: '/img/items/solgrotto.png'
+	},
+	'ember-caverns': {
+		name: 'Ember Caverns',
+		type: 'mining',
+		image: '/img/items/embercaverns.png'
+	},
+	'fenrirs-den': {
+		name: "Fenrir's Den",
+		type: 'mining',
+		image: '/img/items/fenrircave.png'
+	},
+	'mossrock-mine': {
+		name: 'Mossrock Mine',
+		type: 'mining',
+		image: '/img/items/Moss_cave.png'
+	},
 
 	// Workshop / Crafting
-	'workshop': { name: 'Workshop', type: 'workshop', image: '/img/items/hammer.png?2' }
+	workshop: { name: 'Workshop', type: 'workshop', image: '/img/items/hammer.png?2' }
 };
 
 const locations = { ...LOCATION_METADATA };
@@ -224,12 +357,300 @@ for (const craftableItem of Object.keys(recipes)) {
 	addSource(item, { locId: 'workshop' });
 }
 
+// 10. Process Mining Locations
+const MINING_DROPS = {
+	'spring-cave': [
+		'Esperium',
+		'Green Halite',
+		'Briomine',
+		'Calcifite',
+		'Unpolished Aquacite',
+		'Bone Fragments',
+		'Cave Mushroom',
+		'Bird Skull 01',
+		'Fossilized Print'
+	],
+	'highland-hollow': [
+		'Plum Ore',
+		'Fairy Crystal',
+		'Lapis Lazuli',
+		'Bone 02',
+		'Oceanite',
+		'Bone 03',
+		'Purple Mushroom',
+		'Ram Skull 01',
+		'Fossilized Frog'
+	],
+	'sol-grotto': [
+		'Pyredrop',
+		'Sunstone',
+		'Stone Shell',
+		'Bone 04',
+		'Orange Calcite',
+		'Fire Crystal',
+		'Red Mushrooms',
+		'Fossilized Leaf',
+		'Sol Orb'
+	],
+	'ember-caverns': [
+		'Embershard',
+		'Magmastone',
+		'Unpolished Flarite',
+		'Bone 05',
+		'Pitviper Tail',
+		'Brain Fungus',
+		'Fossilized Shell',
+		'Broken Sword',
+		'Runestone 27'
+	],
+	'fenrirs-den': [
+		'Mossy Stone',
+		'Jadeite',
+		'Unpolished Pyrite',
+		'Bone 06',
+		'Blood Crystal',
+		'Nightshade Cap',
+		'Rune Shard',
+		'Broken Bangle',
+		"Fenrir's Coin"
+	],
+	'mossrock-mine': [
+		'Gravicite',
+		'Unpolished Peridot',
+		'Veinshard',
+		'Gravity Orb',
+		'Mossroom',
+		'Green Gel',
+		'Mossy Cog',
+		'Mossy Bone',
+		'Ancient Rune',
+		'Fossilized Viper',
+		'Ruined Ether Hammer'
+	]
+};
+
+for (const [locId, itemList] of Object.entries(MINING_DROPS)) {
+	for (const rawItem of itemList) {
+		const item = normalizeItemName(rawItem);
+		addSource(item, { locId });
+	}
+}
+
+// 11. Process Locksmith, Wheel of Borgen, Flea Market, and Borgen
+const LOCKSMITH_MAPPINGS = {
+	'Grab Bag 01': [
+		'Aquamarine',
+		'Gold Cucumber',
+		'3-leaf Clover',
+		'Bone',
+		'Catfish',
+		'Mushroom',
+		'Potato'
+	],
+	'Grab Bag 02': [
+		'Gummy Worms',
+		'Globber',
+		'Horn',
+		'Shiny Beetle',
+		'Ancient Coin',
+		'Antler',
+		'Fire Ant',
+		'Giant Centipede',
+		'Snail'
+	],
+	'Grab Bag 03': [
+		'Gold Eggplant',
+		'Gold Peas',
+		'Gold Peppers',
+		'Gold Feather',
+		'Gold Leaf',
+		'Gold Carrot',
+		'Gold Potato',
+		'Gold Cucumber'
+	],
+	'Grab Bag 04': [
+		'Runestone 01',
+		'Runestone 02',
+		'Runestone 03',
+		'Runestone 04',
+		'Runestone 05',
+		'Runestone 06',
+		'Runestone 07',
+		'Runestone 08',
+		'Runestone 09',
+		'Runestone 10'
+	],
+	'Grab Bag 05': [
+		'Runestone 11',
+		'Runestone 12',
+		'Runestone 13',
+		'Runestone 14',
+		'Runestone 15',
+		'Runestone 16',
+		'Runestone 17',
+		'Runestone 18',
+		'Runestone 19',
+		'Runestone 20'
+	],
+	'Grab Bag 06': [
+		'Steak',
+		'Fishing Net',
+		'Lemonade',
+		'Orange Juice',
+		'Grape Juice',
+		'Arnold Palmer',
+		'Green Dye'
+	],
+	'Grab Bag 07': [
+		'Gold Trout',
+		'Gold Catfish',
+		'Gold Flier',
+		'Goldgill',
+		'Goldray',
+		'Gold Drum',
+		'Gold Carp',
+		'Gold Bass',
+		'Gold Crab',
+		'Gold Jellyfish',
+		'Gold Starfish',
+		'Gold Snapping Turtle'
+	],
+	'Grab Bag 08': ['Square Key', 'Small Key', 'Treasure Key', 'Skeleton Key'],
+	'Large Chest 01': ['Ancient Coin', 'Emerald', 'Ruby', 'Jade', 'Shimmer Topaz', 'Pearl'],
+	'Large Chest 02': ['Small Gear', 'Small Screw', 'Cogwheel', 'Small Spring', 'Steel'],
+	'Large Chest 03': ['Corn', 'Salt', 'Glass Bottle', 'Honey', 'Shinefish'],
+	'Medium Chest 01': ['Ancient Coin', 'Apple', 'Grape Juice'],
+	'Medium Chest 02': [
+		'Emerald Ring',
+		'Amethyst Necklace',
+		'Aquamarine Ring',
+		'Ruby Ring',
+		'Shimmer Ring'
+	],
+	'Small Chest 01': ['Emerald', 'Ruby', 'Lemon Quartz', 'Amethyst', 'Jade', 'Aquamarine'],
+	'Small Chest 02': ['Leather', 'Glass Orb', 'Wooden Plank', 'Rope', 'Antler'],
+	'Mystical Chest 01': [
+		'Shimmer Ring',
+		'Gold Coral',
+		'Mystic Ring',
+		'Square Key',
+		'Goldgill',
+		'Gold Crab',
+		'Gold Sea Turtle',
+		'Gold Starfish',
+		'Gold Jellyfish'
+	],
+	'Mystical Chest 02': ['Red Shield', 'Green Cloak', 'Sunflower', 'Large Net', 'Skull Coin'],
+	'Corn Prize Bag': [
+		'Runestone 11',
+		'Moonstone',
+		'Popcorn',
+		'Salt',
+		'Cheese',
+		'Corn',
+		'Candy Corn',
+		'Corn Husk'
+	],
+	'Borgen Bag 01': [
+		'Piece of Heart',
+		'Spooky Cookies',
+		'Raptor Claw',
+		'Treasure Key',
+		'Arnold Palmer',
+		'Cider',
+		'Lemonade',
+		'Orange Juice',
+		'Ancient Coin',
+		'Large Net',
+		'Magic Mushroom'
+	],
+	'Bug Bag 01': [
+		'Giant Centipede',
+		'Mealworms',
+		'Gummy Worms',
+		'Shiny Beetle',
+		'Horned Beetle',
+		'Stag Beetle',
+		'Fire Ant',
+		'Spider',
+		'Snail',
+		'Grasshopper',
+		'Caterpillar',
+		'Ladybug',
+		'Dragonfly',
+		'Fly',
+		'Scorpion'
+	],
+	'Present 01': ['Ancient Coin', 'Steak Kabob', 'Bacon'],
+	'Present 02': ['Ancient Coin', 'Apple Cider', 'Arnold Palmer', 'Large Net'],
+	'Gift Basket 01': ['Lemon', 'Orange', 'Grapes', 'Fishing Net', 'Ancient Coin', 'Gold Cucumber'],
+	'Gift Basket 02': ['Orange', 'Apple', 'Lemon', 'Grapes', 'Ancient Coin', 'Gold Carrot'],
+	'Treat Bag 01': ['Apple', 'Candy', 'Bacon', 'Lollipop'],
+	'Treat Bag 02': ['Spider', 'Candy', 'Lollipop', 'Gummy Worms'],
+	'Treat Bag 03': ['Taffy', 'Square Key', 'Chattering Teeth', 'Ancient Coin']
+};
+
+for (const [chestName, outputs] of Object.entries(LOCKSMITH_MAPPINGS)) {
+	for (const rawItem of outputs) {
+		const item = normalizeItemName(rawItem);
+		addSource(item, { locId: 'locksmith', tier: chestName });
+	}
+}
+
+addSource('Grab Bag 03', { locId: 'borgen' });
+addSource('Grab Bag 04', { locId: 'borgen' });
+addSource('Grab Bag 05', { locId: 'borgen' });
+addSource('Present 01', { locId: 'borgen' });
+addSource('Treat Bag 02', { locId: 'wheel-of-borgen' });
+
+const WHEEL_ITEMS = [
+	'Fishing Net',
+	'Ancient Coin',
+	'Lemonade',
+	'Orange Juice',
+	'Apple',
+	'Amethyst',
+	'Aquamarine',
+	'Emerald',
+	'Shimmer Quartz',
+	'Ruby',
+	'Lemon Quartz',
+	'Jade',
+	'Treat Bag 02'
+];
+
+for (const rawItem of WHEEL_ITEMS) {
+	const item = normalizeItemName(rawItem);
+	addSource(item, { locId: 'wheel-of-borgen' });
+}
+
+const FLEA_ITEMS = [
+	'Ancient Coin',
+	'Apple Cider',
+	'Fishing Net',
+	'Freaky Picture',
+	'Grape Juice',
+	'Gummy Worms',
+	'Iced Tea',
+	'Lemon Cream Pie',
+	'Lemonade',
+	'Orange Juice',
+	'Peach Juice',
+	'Protein Bar',
+	'Prune Juice'
+];
+
+for (const rawItem of FLEA_ITEMS) {
+	const item = normalizeItemName(rawItem);
+	addSource(item, { locId: 'flea-market' });
+}
+
 /** Subjective primary overrides for items best known for a specific farm building */
 const PRIMARY_OVERRIDES = {
-	'Bacon': 'building-pig-pen',
-	'Milk': 'building-cow-pasture',
-	'Egg': 'building-chicken-coop',
-	'Eggs': 'building-chicken-coop',
+	Bacon: 'building-pig-pen',
+	Milk: 'building-cow-pasture',
+	Egg: 'building-chicken-coop',
+	Eggs: 'building-chicken-coop',
 	'Black Truffle': 'building-pig-pen',
 	'White Truffle': 'building-pig-pen'
 };
@@ -237,7 +658,7 @@ const PRIMARY_OVERRIDES = {
 /**
  * 5-tier scoring function:
  * 0: Primary Override
- * Tier 1 (1000..1999): Permanent Active Locations (Explore, Fish, Farm Crops), ordered by level gate
+ * Tier 1 (1000..1999): Permanent Active Locations (Explore, Fish, Farm Crops, Mining), ordered by level gate
  * Tier 2 (2000): Permanent Workshop (Crafting)
  * Tier 3 (3000..3999): Permanent Passives (Farm buildings first, then Pets L1 < L3 < L6)
  * Tier 4 (4000..4999): Permanent Markets, Temples, Exchange Center, Wishing Well
@@ -253,8 +674,8 @@ function getSourceScore(itemName, sourceRef) {
 	const type = loc?.type || 'other';
 
 	if (!isSeasonal) {
-		// Tier 1: Permanent Active Locations
-		if (type === 'explore' || type === 'fish' || type === 'farm') {
+		// Tier 1: Permanent Active Locations (Explore, Fish, Farm Crops, Mining)
+		if (type === 'explore' || type === 'fish' || type === 'farm' || type === 'mining') {
 			const reqLevel = loc?.reqLevel ?? 1;
 			return 1000 + reqLevel;
 		}
@@ -274,8 +695,15 @@ function getSourceScore(itemName, sourceRef) {
 			return 3500 + petLvl;
 		}
 
-		// Tier 4: Permanent Markets, Temples, Exchange Center, Wishing Well
-		if (type === 'store') return 4100;
+		// Tier 4: Permanent Stores, Markets, Temples, Well, Exchange
+		if (type === 'store') {
+			if (sourceRef.locId === 'country-store' || sourceRef.locId === 'steak-market') return 4100;
+			if (sourceRef.locId === 'flea-market') return 4150;
+			if (sourceRef.locId === 'borgen') return 4160;
+			if (sourceRef.locId === 'locksmith') return 4250;
+			if (sourceRef.locId === 'wheel-of-borgen') return 4260;
+			return 4180;
+		}
 		if (type === 'well') return 4200;
 		if (type === 'exchange') return 4300;
 		if (type === 'temple') return 4400;
@@ -283,11 +711,12 @@ function getSourceScore(itemName, sourceRef) {
 		return 4900;
 	} else {
 		// Tier 5: Seasonals
-		if (type === 'explore' || type === 'fish' || type === 'farm') return 5100;
+		if (type === 'explore' || type === 'fish' || type === 'farm' || type === 'mining') return 5100;
 		if (type === 'workshop') return 5200;
 		if (type === 'building') return 5300;
 		if (type === 'pet') return 5400;
-		if (type === 'well' || type === 'exchange' || type === 'temple' || type === 'store') return 5500;
+		if (type === 'well' || type === 'exchange' || type === 'temple' || type === 'store')
+			return 5500;
 		return 5900;
 	}
 }
@@ -329,10 +758,14 @@ fs.writeFileSync(outItemSourcesMetaSamplePath, JSON.stringify(metaPayload, null,
 
 console.log(`Successfully compiled:`);
 console.log(`  - ${Object.keys(locations).length} locations -> ${outLocationsPath}`);
-console.log(`  - ${Object.keys(itemSourcesOutput).length} item source entries -> ${outItemSourcesPath}`);
+console.log(
+	`  - ${Object.keys(itemSourcesOutput).length} item source entries -> ${outItemSourcesPath}`
+);
 console.log(`  - Metadata -> ${outItemSourcesMetaPath}`);
 
 if (uncataloged.length > 0) {
-	console.warn(`\nWarning: Found ${uncataloged.length} uncataloged item names (not in static/items.json):`);
+	console.warn(
+		`\nWarning: Found ${uncataloged.length} uncataloged item names (not in static/items.json):`
+	);
 	console.warn(uncataloged.join(', '));
 }

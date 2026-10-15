@@ -198,6 +198,25 @@
     "type": "store",
     "image": "/img/items/steak.png"
   },
+  "locksmith": {
+    "name": "Locksmith",
+    "type": "store",
+    "image": "/img/items/basickey.png"
+  },
+  "wheel-of-borgen": {
+    "name": "Wheel of Borgen",
+    "type": "store",
+    "image": "/img/items/wheel.png"
+  },
+  "flea-market": {
+    "name": "Flea Market",
+    "type": "store"
+  },
+  "borgen": {
+    "name": "Borgen's Shop",
+    "type": "store",
+    "image": "/img/items/borgen.png"
+  },
   "wishing-well": {
     "name": "Wishing Well",
     "type": "well",
@@ -212,6 +231,36 @@
     "name": "Temples",
     "type": "temple",
     "image": "/img/items/temple.png"
+  },
+  "spring-cave": {
+    "name": "Spring Cave",
+    "type": "mining",
+    "image": "/img/items/springcave.png"
+  },
+  "highland-hollow": {
+    "name": "Highland Hollow",
+    "type": "mining",
+    "image": "/img/items/highlandhollow.png"
+  },
+  "sol-grotto": {
+    "name": "Sol Grotto",
+    "type": "mining",
+    "image": "/img/items/solgrotto.png"
+  },
+  "ember-caverns": {
+    "name": "Ember Caverns",
+    "type": "mining",
+    "image": "/img/items/embercaverns.png"
+  },
+  "fenrirs-den": {
+    "name": "Fenrir's Den",
+    "type": "mining",
+    "image": "/img/items/fenrircave.png"
+  },
+  "mossrock-mine": {
+    "name": "Mossrock Mine",
+    "type": "mining",
+    "image": "/img/items/Moss_cave.png"
   },
   "workshop": {
     "name": "Workshop",
@@ -404,35 +453,5 @@
   "pet-hummingbird": {
     "name": "Hummingbird",
     "type": "pet"
-  },
-  "spring-cave": {
-    "name": "Spring Cave",
-    "type": "mining",
-    "image": "/img/items/springcave.png"
-  },
-  "highland-hollow": {
-    "name": "Highland Hollow",
-    "type": "mining",
-    "image": "/img/items/highlandhollow.png"
-  },
-  "sol-grotto": {
-    "name": "Sol Grotto",
-    "type": "mining",
-    "image": "/img/items/solgrotto.png"
-  },
-  "ember-caverns": {
-    "name": "Ember Caverns",
-    "type": "mining",
-    "image": "/img/items/embercaverns.png"
-  },
-  "fenrirs-den": {
-    "name": "Fenrir's Den",
-    "type": "mining",
-    "image": "/img/items/fenrircave.png"
-  },
-  "mossrock-mine": {
-    "name": "Mossrock Mine",
-    "type": "mining",
-    "image": "/img/items/Moss_cave.png"
   }
 }

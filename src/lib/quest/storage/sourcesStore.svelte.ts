@@ -6,7 +6,18 @@ import type { PlayerStats } from '../types';
 export interface LocationMeta {
 	name: string;
 	image?: string;
-	type: 'explore' | 'fish' | 'store' | 'farm' | 'building' | 'pet' | 'well' | 'exchange' | 'temple' | 'workshop' | 'mining';
+	type:
+		| 'explore'
+		| 'fish'
+		| 'store'
+		| 'farm'
+		| 'building'
+		| 'pet'
+		| 'well'
+		| 'exchange'
+		| 'temple'
+		| 'workshop'
+		| 'mining';
 	reqSkill?: 'exploring' | 'fishing' | 'farming' | 'mining';
 	reqLevel?: number;
 	reqQuest?: string;
