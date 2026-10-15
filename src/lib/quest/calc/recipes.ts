@@ -1,4 +1,5 @@
-import type { ItemQty } from '../types';
+import type { ItemQty, PlayerStats } from '../types';
+import { RECIPE_GATES, type RecipeGate, type RecipeGateMap } from './recipeLevels';
 
 export type RecipeMap = Map<string, ItemQty[]>;
 
@@ -11,6 +12,9 @@ export interface CraftTreeNode {
 	craftableQty: number;
 	unresolved: boolean;
 	children: CraftTreeNode[];
+	reqCraftingLevel?: number;
+	reqCookingLevel?: number;
+	reqNpc?: { npc: string; level: number };
 }
 
 export interface CraftingPlan {
@@ -19,6 +23,11 @@ export interface CraftingPlan {
 	rawShortfalls: Map<string, number>;
 	unresolved: boolean;
 	craftTree: CraftTreeNode;
+}
+
+export interface CraftingPlannerOptions {
+	playerStats?: PlayerStats | null;
+	recipeGates?: RecipeGateMap | ((item: string) => RecipeGate | undefined);
 }
 
 export interface CraftingPlanner {
@@ -45,6 +54,8 @@ function canCraft(
 	qty: number,
 	stock: Map<string, number>,
 	recipes: RecipeMap,
+	playerStats?: PlayerStats | null,
+	recipeGates?: RecipeGateMap | ((item: string) => RecipeGate | undefined),
 	stack = new Set<string>()
 ): boolean {
 	if (qty <= 0) return true;
@@ -61,10 +72,26 @@ function canCraft(
 		return false;
 	}
 
+	if (playerStats) {
+		const gate =
+			typeof recipeGates === 'function'
+				? recipeGates(item)
+				: (recipeGates?.get(item) ?? RECIPE_GATES.get(item));
+		if (gate) {
+			if (gate.skill === 'cooking') {
+				if ((playerStats.cooking ?? 0) < gate.level) return false;
+				if (gate.npc && (playerStats.npcLevels?.[gate.npc] ?? 0) < (gate.npcLevel ?? 0))
+					return false;
+			} else {
+				if ((playerStats.crafting ?? 0) < gate.level) return false;
+			}
+		}
+	}
+
 	stack.add(item);
 	for (const ingredient of ingredients) {
 		const needed = ingredient.qty * remaining;
-		if (!canCraft(ingredient.item, needed, stock, recipes, stack)) {
+		if (!canCraft(ingredient.item, needed, stock, recipes, playerStats, recipeGates, stack)) {
 			stack.delete(item);
 			return false;
 		}
@@ -77,9 +104,26 @@ function findMaxCraftableQty(
 	item: string,
 	maxQty: number,
 	resources: Map<string, number>,
-	recipes: RecipeMap
+	recipes: RecipeMap,
+	playerStats?: PlayerStats | null,
+	recipeGates?: RecipeGateMap | ((item: string) => RecipeGate | undefined)
 ): number {
 	if (maxQty <= 0) return 0;
+
+	if (playerStats) {
+		const gate =
+			typeof recipeGates === 'function'
+				? recipeGates(item)
+				: (recipeGates?.get(item) ?? RECIPE_GATES.get(item));
+		if (gate) {
+			if (gate.skill === 'cooking') {
+				if ((playerStats.cooking ?? 0) < gate.level) return 0;
+				if (gate.npc && (playerStats.npcLevels?.[gate.npc] ?? 0) < (gate.npcLevel ?? 0)) return 0;
+			} else {
+				if ((playerStats.crafting ?? 0) < gate.level) return 0;
+			}
+		}
+	}
 
 	let low = 1;
 	let high = maxQty;
@@ -88,7 +132,7 @@ function findMaxCraftableQty(
 	while (low <= high) {
 		const mid = Math.floor((low + high) / 2);
 		const stock = new Map(resources);
-		if (canCraft(item, mid, stock, recipes)) {
+		if (canCraft(item, mid, stock, recipes, playerStats, recipeGates)) {
 			best = mid;
 			low = mid + 1;
 		} else {
@@ -104,11 +148,43 @@ function buildCraftTree(
 	needed: number,
 	resources: Map<string, number>,
 	recipes: RecipeMap,
+	playerStats?: PlayerStats | null,
+	recipeGates?: RecipeGateMap | ((item: string) => RecipeGate | undefined),
 	stack = new Set<string>()
 ): CraftTreeNode {
 	const have = resources.get(item) ?? 0;
 	const ingredients = recipes.get(item);
 	const unresolved = stack.has(item);
+
+	let reqCraftingLevel: number | undefined;
+	let reqCookingLevel: number | undefined;
+	let reqNpc: { npc: string; level: number } | undefined;
+	let isGated = false;
+
+	if (playerStats && ingredients && ingredients.length > 0) {
+		const gate =
+			typeof recipeGates === 'function'
+				? recipeGates(item)
+				: (recipeGates?.get(item) ?? RECIPE_GATES.get(item));
+		if (gate) {
+			if (gate.skill === 'cooking') {
+				if ((playerStats.cooking ?? 0) < gate.level) {
+					reqCookingLevel = gate.level;
+					isGated = true;
+				}
+				if (gate.npc && (playerStats.npcLevels?.[gate.npc] ?? 0) < (gate.npcLevel ?? 0)) {
+					reqNpc = { npc: gate.npc, level: gate.npcLevel! };
+					isGated = true;
+				}
+			} else {
+				if ((playerStats.crafting ?? 0) < gate.level) {
+					reqCraftingLevel = gate.level;
+					isGated = true;
+				}
+			}
+		}
+	}
+
 	if (!ingredients || ingredients.length === 0 || unresolved) {
 		return {
 			item,
@@ -118,7 +194,10 @@ function buildCraftTree(
 			craftable: false,
 			craftableQty: 0,
 			unresolved,
-			children: []
+			children: [],
+			...(reqCraftingLevel && { reqCraftingLevel }),
+			...(reqCookingLevel && { reqCookingLevel }),
+			...(reqNpc && { reqNpc })
 		};
 	}
 
@@ -132,6 +211,8 @@ function buildCraftTree(
 			ingredient.qty * missingOutputs,
 			resources,
 			recipes,
+			playerStats,
+			recipeGates,
 			stack
 		);
 		children.push(child);
@@ -139,16 +220,29 @@ function buildCraftTree(
 	}
 	stack.delete(item);
 
-	const craftableQty = findMaxCraftableQty(item, missingOutputs, initialResources, recipes);
+	const craftableQty = isGated
+		? 0
+		: findMaxCraftableQty(
+				item,
+				missingOutputs,
+				initialResources,
+				recipes,
+				playerStats,
+				recipeGates
+			);
+
 	return {
 		item,
 		have,
 		needed,
 		left: Math.max(0, missingOutputs - craftableQty),
-		craftable: true,
+		craftable: !isGated,
 		craftableQty,
 		unresolved: children.some((child) => child.unresolved),
-		children
+		children,
+		...(reqCraftingLevel && { reqCraftingLevel }),
+		...(reqCookingLevel && { reqCookingLevel }),
+		...(reqNpc && { reqNpc })
 	};
 }
 
@@ -214,13 +308,23 @@ function collectRawShortfalls(
 /** Creates a crafting planner that mutates the provided starting inventory Map in place as items and ingredients are consumed. */
 export function createCraftingPlanner(
 	startingInventory: Map<string, number>,
-	recipes: RecipeMap
+	recipes: RecipeMap,
+	options: CraftingPlannerOptions = {}
 ): CraftingPlanner {
 	const resources = startingInventory;
+	const playerStats = options.playerStats ?? null;
+	const recipeGates = options.recipeGates ?? RECIPE_GATES;
 
 	return {
 		plan(item, quantity) {
-			const craftTree = buildCraftTree(item, quantity, resources, recipes);
+			const craftTree = buildCraftTree(
+				item,
+				quantity,
+				resources,
+				recipes,
+				playerStats,
+				recipeGates
+			);
 			const have = resources.get(item) ?? 0;
 			const craftableQty = Math.min(quantity, have + craftTree.craftableQty);
 
