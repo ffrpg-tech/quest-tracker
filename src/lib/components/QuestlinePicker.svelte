@@ -15,7 +15,7 @@
 		RotateCcw
 	} from '@lucide/svelte';
 	import { buttonClass } from '$lib/ui/buttonClass';
-	import { matchesQuery } from '$lib/ui/matchesQuery';
+	import { filterAndRankQuestlines } from '$lib/quest/calc/questSearch';
 	import { retryQuestlines, getQuestlinesState } from '$lib/quest/storage/questlinesStore.svelte';
 	import { getNpcImagePath } from '$lib/quest/storage/npcsStore.svelte';
 	import { statusTextColorClass, type SemanticStatus } from '$lib/ui/statusColor';
@@ -208,17 +208,17 @@
 	}
 
 	const filteredQuestlines = $derived(
-		questlineOptions.filter((g) => {
-			const matchesStatus = questlineStatusFilters.has(
-				questlineStatus(g, completedCountByQuestline.get(g.name) ?? 0)
-			);
-			return (
-				matchesQuery(g.name, questlineQuery) &&
-				matchesStatus &&
-				matchesEligibilityFilter(g) &&
-				(!mainQuestOnly || isMainQuestline(g))
-			);
-		})
+		filterAndRankQuestlines(
+			questlineOptions.filter((g) => {
+				const matchesStatus = questlineStatusFilters.has(
+					questlineStatus(g, completedCountByQuestline.get(g.name) ?? 0)
+				);
+				return (
+					matchesStatus && matchesEligibilityFilter(g) && (!mainQuestOnly || isMainQuestline(g))
+				);
+			}),
+			questlineQuery
+		)
 	);
 
 	const selectedQuestlineNameSet = $derived(new Set(selectedQuestlineNames));
@@ -391,7 +391,10 @@
 			aria-label="Reset filters to default"
 			class={buttonClass('icon')}
 		>
-			<RotateCcw size={14} class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200" />
+			<RotateCcw
+				size={14}
+				class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+			/>
 		</button>
 	</div>
 
